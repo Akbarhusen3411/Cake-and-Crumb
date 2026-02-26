@@ -1,0 +1,405 @@
+@import "tailwindcss";
+
+/* ===== Custom Theme ===== */
+@theme {
+  --color-chocolate: #3E2723;
+  --color-chocolate-light: #5D4037;
+  --color-cream: #F5E6D3;
+  --color-cream-dark: #EDD5BC;
+  --color-cream-light: #FFF9F2;
+  --color-soft-pink: #F8E8E0;
+  --color-berry: #C62828;
+  --color-berry-light: #E57373;
+  --color-gold: #D4A574;
+
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* ===== Base ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-chocolate);
+  background-color: var(--color-cream-light);
+  overflow-x: hidden;
+}
+
+/* ===== Scroll Reveal Animations ===== */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fade-in.visible {
+  opacity: 1;
+}
+
+.slide-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scale-in {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scale-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.blur-in {
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.8s ease-out, filter 0.8s ease-out;
+}
+.blur-in.visible {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* ===== Staggered Children ===== */
+.stagger-children > *:nth-child(1) { transition-delay: 0ms; }
+.stagger-children > *:nth-child(2) { transition-delay: 120ms; }
+.stagger-children > *:nth-child(3) { transition-delay: 240ms; }
+.stagger-children > *:nth-child(4) { transition-delay: 360ms; }
+.stagger-children > *:nth-child(5) { transition-delay: 480ms; }
+.stagger-children > *:nth-child(6) { transition-delay: 600ms; }
+
+/* ===== Parallax Layer ===== */
+.parallax-layer {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* ===== Navbar ===== */
+.navbar-scrolled {
+  background-color: rgba(255, 249, 242, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 30px rgba(62, 39, 35, 0.06);
+}
+
+/* ===== Floating Animation ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 5s ease-in-out infinite;
+}
+
+/* ===== Shimmer / Shine Sweep ===== */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,0.15) 45%,
+    rgba(255,255,255,0.25) 50%,
+    rgba(255,255,255,0.15) 55%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ===== Glow Button ===== */
+.btn-glow {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-glow:hover {
+  box-shadow:
+    0 0 20px rgba(198, 40, 40, 0.25),
+    0 0 60px rgba(198, 40, 40, 0.1);
+}
+
+/* ===== Magnetic hover cards ===== */
+.card-hover {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(62, 39, 35, 0.12);
+}
+
+/* ===== Text gradient ===== */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-chocolate), var(--color-berry));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Pulse glow for badges ===== */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(198, 40, 40, 0.3); }
+  50% { box-shadow: 0 0 35px rgba(198, 40, 40, 0.5); }
+}
+.badge-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ===== Contact Glassmorphism ===== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Rotating border for contact ===== */
+@keyframes border-rotate {
+  0% { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-chocolate-light);
+}
+
+/* ===== Image reveal on scroll ===== */
+.img-reveal {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-reveal.visible {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ===== Hide scrollbar on tab row ===== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Tab Content Animation ===== */
+@keyframes tab-fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content-enter {
+  animation: tab-fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== Marquee Ticker ===== */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 25s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ===== Instagram Scroll Rows ===== */
+@keyframes insta-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes insta-scroll-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.insta-scroll {
+  animation: insta-scroll 35s linear infinite;
+}
+.insta-scroll-reverse {
+  animation: insta-scroll-reverse 35s linear infinite;
+}
+
+/* ===== Section divider wave ===== */
+.wave-divider {
+  position: relative;
+}
+.wave-divider::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--color-cream-light);
+  clip-path: ellipse(55% 100% at 50% 0%);
+  z-index: 1;
+}
+
+/* ===== Mobile Optimizations ===== */
+@media (max-width: 1023px) {
+  /* Softer, shorter scroll reveal distances on mobile */
+  .fade-up {
+    transform: translateY(24px);
+    transition-duration: 0.6s;
+  }
+  .slide-left {
+    transform: translateX(-30px);
+    transition-duration: 0.7s;
+  }
+  .slide-right {
+    transform: translateX(30px);
+    transition-duration: 0.7s;
+  }
+  .scale-in {
+    transform: scale(0.92);
+    transition-duration: 0.6s;
+  }
+
+  /* Touch-friendly tap highlight */
+  a, button {
+    -webkit-tap-highlight-color: rgba(212, 165, 116, 0.15);
+  }
+
+  /* Faster Instagram scroll on smaller screens */
+  .insta-scroll {
+    animation-duration: 22s;
+  }
+  .insta-scroll-reverse {
+    animation-duration: 22s;
+  }
+
+  /* Smaller wave divider on mobile */
+  .wave-divider::before {
+    height: 35px;
+  }
+}
+
+/* ===== Mobile Drawer Custom Scrollbar ===== */
+@media (max-width: 1023px) {
+  .drawer-scroll::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+  .drawer-scroll {
+    scrollbar-width: none;
+  }
+}
+
+/* ===== Dialog Enter (Location popup) ===== */
+@keyframes dialog-enter {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.dialog-enter {
+  animation: dialog-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes dialog-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.dialog-backdrop-enter {
+  animation: dialog-backdrop 0.3s ease-out forwards;
+}
+
+/* ===== Badge Pop (Cart count) ===== */
+@keyframes badge-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.badge-pop {
+  animation: badge-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== Toast Notifications ===== */
+@keyframes toast-enter {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast-enter {
+  animation: toast-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== Confirmation Checkmark ===== */
+@keyframes check-animate {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.check-animate {
+  animation: check-animate 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+/* ===== Smooth GPU-accelerated transitions ===== */
+.fade-up, .fade-in, .slide-left, .slide-right, .scale-in, .blur-in {
+  will-change: opacity, transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
