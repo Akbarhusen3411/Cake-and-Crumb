@@ -56,14 +56,38 @@ export default function ConfirmationStep({ onClose }) {
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
 
-    const confirmMsg = `✅ Hi ${checkout.customerName}! Your Cake & Crumb order *${orderId}* is *CONFIRMED*! 🎂\n\nWe'll deliver on ${formatDate(checkout.selectedDate)} (${timeLabel}).\nTotal: ₹${total} ${checkout.paymentMethod === 'cod' ? '(COD)' : '(Paid Online)'}\n\nThank you! 🙏`
+    const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
+
+    const confirmMsg = `✅ *ORDER CONFIRMED — Cake & Crumb* 🎂\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `Hi *${checkout.customerName}*! Tamari order confirm thai gai che.\n\n` +
+      `*🆔 Order ID:* ${orderId}\n\n` +
+      `*📋 Tamara Items:*\n${itemsList}\n\n` +
+      `*💰 Total:* ₹${total} ${deliveryFee === 0 ? '(Free Delivery)' : `(incl. ₹${deliveryFee} delivery)`}\n` +
+      `*💳 Payment:* ${payLabel}\n\n` +
+      `*📍 Delivery Address:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
+      `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `Ame tamari order prepare kari rahya che! Thank you! 🙏❤️\n` +
+      `— *Cake & Crumb*`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
 
-    const rejectMsg = `Hi ${checkout.customerName}, we're sorry but we cannot fulfill your order *${orderId}* at this time. Please contact us for alternatives. — Cake & Crumb`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
-
-    const shippedMsg = `📦 Hi ${checkout.customerName}! Your order *${orderId}* has been *SHIPPED*! 🚗\n\nIt's on the way to: ${checkout.fullAddress}\nExpected: ${formatDate(checkout.selectedDate)} (${timeLabel})\n\nEnjoy your treats! — Cake & Crumb 🎂`
+    const shippedMsg = `📦 *ORDER SHIPPED — Cake & Crumb* 🚗\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `Hi *${checkout.customerName}*! Tamari order *${orderId}* ship thai gai che!\n\n` +
+      `*📋 Items:*\n${itemsList}\n\n` +
+      `*💰 Total:* ₹${total} (${payLabel} — ${checkout.paymentMethod === 'cod' ? 'please keep ready' : 'already paid'})\n\n` +
+      `*📍 Delivering to:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
+      `*⏰ Expected:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `Enjoy! — *Cake & Crumb* 🎂❤️`
     const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
+
+    const rejectMsg = `Hi *${checkout.customerName}*,\n\n` +
+      `Maaf karo pan tamari order *${orderId}* ame atyare fulfill nahi kari shakiye.\n\n` +
+      `*Reason:* [Admin will type reason]\n\n` +
+      `Alternatives mate contact karo:\n📞 +91 90816 68490\n\n— Cake & Crumb 🙏`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
     // Message sent BY customer TO admin (customer can see this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +

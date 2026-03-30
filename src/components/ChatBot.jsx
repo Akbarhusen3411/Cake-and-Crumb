@@ -411,14 +411,38 @@ export default function ChatBot() {
       })
     })
 
-    // Pre-built reply links for admin
-    const confirmMsg = `✅ Hi ${orderInfo.name}! Your Cake & Crumb order *${orderId}* is *CONFIRMED*! 🎂\n\nDelivery: ${orderInfo.date}\nTotal: ₹${grandTotal} (COD)\n\nThank you! 🙏`
+    // Simple order list for user message
+    const userItemsList = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
+
+    // Pre-built reply links for admin → sends to USER's WhatsApp
+    const confirmMsg = `✅ *ORDER CONFIRMED — Cake & Crumb* 🎂\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `Hi *${orderInfo.name}*! Your order is confirmed.\n\n` +
+      `*🆔 Order ID:* ${orderId}\n\n` +
+      `*📋 Your Items:*\n${userItemsList}\n\n` +
+      `*💰 Total:* ₹${grandTotal} ${total >= 499 ? '(Free Delivery)' : '(incl. ₹49 delivery)'}\n` +
+      `*💳 Payment:* Cash on Delivery\n\n` +
+      `*📍 Delivery to:*\n${orderInfo.address}\n\n` +
+      `*📅 Delivery:* ${orderInfo.date}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `We're preparing your order! Thank you for choosing Cake & Crumb 🙏❤️`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
 
-    const shippedMsg = `📦 Hi ${orderInfo.name}! Your order *${orderId}* has been *SHIPPED*! 🚗\n\nOn the way to: ${orderInfo.address}\nExpected: ${orderInfo.date}\n\nEnjoy! — Cake & Crumb 🎂`
+    const shippedMsg = `📦 *ORDER SHIPPED — Cake & Crumb* 🚗\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `Hi *${orderInfo.name}*! Great news — your order *${orderId}* is on its way!\n\n` +
+      `*📋 Items:*\n${userItemsList}\n\n` +
+      `*💰 Total:* ₹${grandTotal} (COD — please keep ready)\n\n` +
+      `*📍 Delivering to:*\n${orderInfo.address}\n\n` +
+      `*⏰ Expected:* ${orderInfo.date}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `Enjoy your treats! — Cake & Crumb 🎂❤️`
     const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
 
-    const rejectMsg = `Hi ${orderInfo.name}, sorry but we cannot fulfill order *${orderId}* right now. Please contact us for alternatives. — Cake & Crumb`
+    const rejectMsg = `Hi *${orderInfo.name}*,\n\n` +
+      `We're sorry but we cannot fulfill your order *${orderId}* at this time.\n\n` +
+      `*Reason:* [Admin will type reason]\n\n` +
+      `Please contact us to discuss alternatives:\n📞 +91 90816 68490\n\nSorry for the inconvenience. — Cake & Crumb 🙏`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
     // Clean order message (customer can see this)
