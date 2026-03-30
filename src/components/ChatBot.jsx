@@ -382,23 +382,40 @@ export default function ChatBot() {
     const total = getCartTotal()
     const deliveryFee = total >= 499 ? 0 : 49
     const grandTotal = total + deliveryFee
+    const orderId = `CC-${Date.now().toString(36).toUpperCase()}`
+
+    const phone = orderInfo.phone.replace(/\s/g, '')
+    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
 
     const orderLines = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
 
-    const msg = `🎂 *NEW ORDER — Cake & Crumb*\n` +
+    // Pre-built reply links for admin
+    const confirmMsg = `✅ Hi ${orderInfo.name}! Your Cake & Crumb order *${orderId}* is *CONFIRMED*! 🎂\n\nDelivery: ${orderInfo.date}\nTotal: ₹${grandTotal} (COD)\n\nThank you! 🙏`
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
+
+    const shippedMsg = `📦 Hi ${orderInfo.name}! Your order *${orderId}* has been *SHIPPED*! 🚗\n\nOn the way to: ${orderInfo.address}\nExpected: ${orderInfo.date}\n\nEnjoy! — Cake & Crumb 🎂`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
+
+    const rejectMsg = `Hi ${orderInfo.name}, sorry but we cannot fulfill order *${orderId}* right now. Please contact us for alternatives. — Cake & Crumb`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
+
+    const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*📋 Order Items:*\n${orderLines}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*📋 Items:*\n${orderLines}\n\n` +
       `*Subtotal:* ₹${total}\n` +
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
-      `*💰 Grand Total: ₹${grandTotal}*\n` +
+      `*💰 Total: ₹${grandTotal}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*👤 Customer:* ${orderInfo.name}\n` +
-      `*📞 Phone:* ${orderInfo.phone}\n` +
-      `*📍 Address:* ${orderInfo.address}\n` +
-      `*📅 Delivery:* ${orderInfo.date}\n\n` +
+      `*👤* ${orderInfo.name}\n` +
+      `*📞* ${orderInfo.phone}\n` +
+      `*📍* ${orderInfo.address}\n` +
+      `*📅* ${orderInfo.date}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
-      `Please confirm & share payment details. Thank you! 🙏`
+      `*👇 TAP TO REPLY TO CUSTOMER:*\n\n` +
+      `✅ *Confirm:*\n${confirmLink}\n\n` +
+      `📦 *Shipped:*\n${shippedLink}\n\n` +
+      `❌ *Reject:*\n${rejectLink}\n` +
+      `━━━━━━━━━━━━━━━━━━━━`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
   }

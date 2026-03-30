@@ -50,17 +50,39 @@ export default function ConfirmationStep({ onClose }) {
       paymentId: checkout.razorpayOrderId,
     })
 
-    // Send WhatsApp summary
-    const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} (₹${i.price * i.quantity})`).join('\n')
-    const msg = `🎂 New Order — ${orderId}\n\n` +
-      `${itemsList}\n\n` +
-      `Subtotal: ₹${subtotal}\n` +
-      `Delivery: ${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}\n` +
-      `Total: ₹${total}\n\n` +
-      `📍 ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
-      `📅 ${formatDate(checkout.selectedDate)} | ${TIME_SLOT_LABELS[checkout.selectedSlot] || ''}\n` +
-      `💳 ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'COD'}\n` +
-      `📞 ${checkout.phone}`
+    // Send WhatsApp summary to admin
+    const phone = checkout.phone.replace(/\s/g, '')
+    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
+    const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
+    const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
+
+    const confirmMsg = `✅ Hi ${checkout.customerName}! Your Cake & Crumb order *${orderId}* is *CONFIRMED*! 🎂\n\nWe'll deliver on ${formatDate(checkout.selectedDate)} (${timeLabel}).\nTotal: ₹${total} ${checkout.paymentMethod === 'cod' ? '(COD)' : '(Paid Online)'}\n\nThank you! 🙏`
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
+
+    const rejectMsg = `Hi ${checkout.customerName}, we're sorry but we cannot fulfill your order *${orderId}* at this time. Please contact us for alternatives. — Cake & Crumb`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
+
+    const shippedMsg = `📦 Hi ${checkout.customerName}! Your order *${orderId}* has been *SHIPPED*! 🚗\n\nIt's on the way to: ${checkout.fullAddress}\nExpected: ${formatDate(checkout.selectedDate)} (${timeLabel})\n\nEnjoy your treats! — Cake & Crumb 🎂`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
+
+    const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*📋 Items:*\n${itemsList}\n\n` +
+      `*Subtotal:* ₹${subtotal}\n` +
+      `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
+      `*💰 Total: ₹${total}*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*👤 Customer:* ${checkout.customerName}\n` +
+      `*📞 Phone:* ${checkout.phone}\n` +
+      `*📍 Address:* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
+      `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
+      `*💳 Payment:* ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*👇 ADMIN ACTIONS — Tap to reply:*\n\n` +
+      `✅ *Confirm Order:*\n${confirmLink}\n\n` +
+      `📦 *Mark Shipped:*\n${shippedLink}\n\n` +
+      `❌ *Reject Order:*\n${rejectLink}\n` +
+      `━━━━━━━━━━━━━━━━━━━━`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
