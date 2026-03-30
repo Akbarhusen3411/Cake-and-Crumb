@@ -473,22 +473,16 @@ export default function ChatBot() {
       `*📍* ${orderInfo.address}\n` +
       `*📅* ${orderInfo.date}\n` +
       `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancellation:* You can cancel within 30 minutes.\n\n` +
-      `Please confirm my order. Thank you! 🙏`
+      `⚠️ *Cancel:* 30 min from order time.\n\n` +
+      `Please confirm my order. Thank you! 🙏\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*ADMIN REPLY:*\n\n` +
+      `✅ Confirm:\n${confirmLink}\n\n` +
+      `📦 Shipped:\n${shippedLink}\n\n` +
+      `🚫 Cancel:\n${cancelLink}\n\n` +
+      `❌ Reject:\n${rejectLink}`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
-
-    setTimeout(() => {
-      const adminNote = `📋 *${orderId}* — Quick Reply\n` +
-        `👤 ${orderInfo.name} | 📞 ${orderInfo.phone}\n` +
-        `🕐 Order: ${orderTime} | ⚠️ Cancel deadline: 30 min\n\n` +
-        `━━━ Tap to reply ━━━\n\n` +
-        `✅ Confirm → ${confirmLink}\n\n` +
-        `📦 Shipped → ${shippedLink}\n\n` +
-        `🚫 Cancel → ${cancelLink}\n\n` +
-        `❌ Reject → ${rejectLink}`
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(adminNote)}`, '_blank')
-    }, 2000)
   }
 
   const handleAction = async (action, label) => {

@@ -137,22 +137,16 @@ export default function ConfirmationStep({ onClose }) {
       `*📅* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
       `*💳* ${payLabel}\n` +
       `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancel window:* 30 minutes from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏`
+      `⚠️ *Cancel:* 30 min from order time.\n\n` +
+      `Please confirm my order. Thank you! 🙏\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*ADMIN REPLY:*\n\n` +
+      `✅ Confirm:\n${confirmLink}\n\n` +
+      `📦 Shipped:\n${shippedLink}\n\n` +
+      `🚫 Cancel:\n${cancelLink}\n\n` +
+      `❌ Reject:\n${rejectLink}`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
-
-    setTimeout(() => {
-      const adminNote = `📋 *${orderId}* — Quick Reply\n` +
-        `👤 ${checkout.customerName} | 📞 ${checkout.phone}\n` +
-        `🕐 Order: ${orderTime} | ⚠️ Cancel limit: 30 min\n\n` +
-        `━━━ Tap to reply ━━━\n\n` +
-        `✅ Confirm → ${confirmLink}\n\n` +
-        `📦 Shipped → ${shippedLink}\n\n` +
-        `🚫 Cancel → ${cancelLink}\n\n` +
-        `❌ Reject → ${rejectLink}`
-      window.open(`https://wa.me/919081668490?text=${encodeURIComponent(adminNote)}`, '_blank')
-    }, 2000)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoHome = () => {
