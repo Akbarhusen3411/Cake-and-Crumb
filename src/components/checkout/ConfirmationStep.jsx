@@ -65,6 +65,7 @@ export default function ConfirmationStep({ onClose }) {
     const shippedMsg = `📦 Hi ${checkout.customerName}! Your order *${orderId}* has been *SHIPPED*! 🚗\n\nIt's on the way to: ${checkout.fullAddress}\nExpected: ${formatDate(checkout.selectedDate)} (${timeLabel})\n\nEnjoy your treats! — Cake & Crumb 🎂`
     const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
 
+    // Message sent BY customer TO admin (customer can see this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*📋 Items:*\n${itemsList}\n\n` +
@@ -72,19 +73,27 @@ export default function ConfirmationStep({ onClose }) {
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
       `*💰 Total: ₹${total}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*👤 Customer:* ${checkout.customerName}\n` +
-      `*📞 Phone:* ${checkout.phone}\n` +
-      `*📍 Address:* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
-      `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
-      `*💳 Payment:* ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*👇 ADMIN ACTIONS — Tap to reply:*\n\n` +
-      `✅ *Confirm Order:*\n${confirmLink}\n\n` +
-      `📦 *Mark Shipped:*\n${shippedLink}\n\n` +
-      `❌ *Reject Order:*\n${rejectLink}\n` +
-      `━━━━━━━━━━━━━━━━━━━━`
+      `*👤* ${checkout.customerName}\n` +
+      `*📞* ${checkout.phone}\n` +
+      `*📍* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
+      `*📅* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
+      `*💳* ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}\n\n` +
+      `Please confirm my order. Thank you! 🙏`
 
+    // Admin-only message (sent to admin's self-chat with action links)
+    const adminMsg = `🔔 *ORDER ACTIONS — ${orderId}*\n` +
+      `Customer: ${checkout.customerName} (${checkout.phone})\n\n` +
+      `✅ *Confirm:*\n${confirmLink}\n\n` +
+      `📦 *Shipped:*\n${shippedLink}\n\n` +
+      `❌ *Reject:*\n${rejectLink}`
+
+    // Open customer → admin chat
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
+
+    // After a short delay, open admin self-chat with action links
+    setTimeout(() => {
+      window.open(`https://wa.me/919081668490?text=${encodeURIComponent(adminMsg)}`, '_blank')
+    }, 2000)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoHome = () => {

@@ -399,6 +399,7 @@ export default function ChatBot() {
     const rejectMsg = `Hi ${orderInfo.name}, sorry but we cannot fulfill order *${orderId}* right now. Please contact us for alternatives. — Cake & Crumb`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
+    // Clean order message (customer can see this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*📋 Items:*\n${orderLines}\n\n` +
@@ -410,14 +411,21 @@ export default function ChatBot() {
       `*📞* ${orderInfo.phone}\n` +
       `*📍* ${orderInfo.address}\n` +
       `*📅* ${orderInfo.date}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*👇 TAP TO REPLY TO CUSTOMER:*\n\n` +
+      `Please confirm my order. Thank you! 🙏`
+
+    // Admin-only actions (sent separately)
+    const adminMsg = `🔔 *ORDER ACTIONS — ${orderId}*\n` +
+      `Customer: ${orderInfo.name} (${orderInfo.phone})\n\n` +
       `✅ *Confirm:*\n${confirmLink}\n\n` +
       `📦 *Shipped:*\n${shippedLink}\n\n` +
-      `❌ *Reject:*\n${rejectLink}\n` +
-      `━━━━━━━━━━━━━━━━━━━━`
+      `❌ *Reject:*\n${rejectLink}`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+
+    // Send admin actions as separate message after delay
+    setTimeout(() => {
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(adminMsg)}`, '_blank')
+    }, 2000)
   }
 
   const handleAction = async (action, label) => {
