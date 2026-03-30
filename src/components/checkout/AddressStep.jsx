@@ -1,12 +1,62 @@
 import { useState, useEffect } from 'react'
-import { MapPin } from 'lucide-react'
+import { MapPin, ChevronDown } from 'lucide-react'
 import useCheckoutStore from '../../store/useCheckoutStore'
-import useLocationStore from '../../store/useLocationStore'
-import { deliveryAreas } from '../../data/products'
+import { getDistricts, getTalukas, getCities } from '../../data/gujaratLocations'
+
+// FloatingInput defined OUTSIDE component to prevent remount on every render
+function FloatingInput({ field, label, type = 'text', value, onChange, error, focusedField, setFocusedField }) {
+  return (
+    <div className="relative">
+      <label className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${
+        focusedField === field || value
+          ? 'top-1.5 text-[10px] text-berry font-medium'
+          : 'top-3 text-sm text-chocolate-light/35'
+      }`}>
+        {label}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onFocus={() => setFocusedField(field)}
+        onBlur={() => setFocusedField(null)}
+        onChange={(e) => onChange(field, e.target.value)}
+        className={`w-full bg-cream/50 border rounded-xl px-4 pt-5 pb-2 text-chocolate text-sm focus:outline-none focus:border-berry/30 focus:bg-cream/80 focus:ring-2 focus:ring-berry/10 transition-all duration-300 ${
+          error ? 'border-berry/40' : 'border-chocolate/8'
+        }`}
+      />
+      {error && <p className="text-[11px] text-berry mt-1 ml-1">{error}</p>}
+    </div>
+  )
+}
+
+function SelectField({ label, value, onChange, options, error, placeholder }) {
+  return (
+    <div className="relative">
+      <label className="block text-[10px] text-chocolate-light/50 font-medium uppercase tracking-wider mb-1 ml-1">
+        {label}
+      </label>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`w-full bg-cream/50 border rounded-xl px-4 py-3 text-sm text-chocolate focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all appearance-none pr-10 ${
+            error ? 'border-berry/40' : 'border-chocolate/8'
+          } ${!value ? 'text-chocolate-light/40' : ''}`}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+        <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-chocolate-light/30 pointer-events-none" />
+      </div>
+      {error && <p className="text-[11px] text-berry mt-1 ml-1">{error}</p>}
+    </div>
+  )
+}
 
 export default function AddressStep({ onNext }) {
   const checkout = useCheckoutStore()
-  const location = useLocationStore()
   const [focusedField, setFocusedField] = useState(null)
   const [errors, setErrors] = useState({})
 
@@ -14,19 +64,25 @@ export default function AddressStep({ onNext }) {
     customerName: checkout.customerName || '',
     phone: checkout.phone || '',
     email: checkout.email || '',
-    deliveryArea: checkout.deliveryArea || location.area || '',
-    fullAddress: checkout.fullAddress || location.address || '',
-    pincode: checkout.pincode || location.pincode || '',
+    district: checkout.district || '',
+    taluka: checkout.taluka || '',
+    city: checkout.city || '',
+    fullAddress: checkout.fullAddress || '',
+    pincode: checkout.pincode || '',
   })
 
-  useEffect(() => {
-    if (!form.deliveryArea && location.area) {
-      setForm((f) => ({ ...f, deliveryArea: location.area }))
-    }
-  }, [location.area, form.deliveryArea])
+  const districts = getDistricts()
+  const talukas = getTalukas(form.district)
+  const cities = getCities(form.district, form.taluka)
 
   const update = (field, value) => {
-    setForm((f) => ({ ...f, [field]: value }))
+    setForm((f) => {
+      const updated = { ...f, [field]: value }
+      // Reset dependent fields
+      if (field === 'district') { updated.taluka = ''; updated.city = '' }
+      if (field === 'taluka') { updated.city = '' }
+      return updated
+    })
     if (errors[field]) setErrors((e) => ({ ...e, [field]: '' }))
   }
 
@@ -34,12 +90,14 @@ export default function AddressStep({ onNext }) {
     const errs = {}
     if (!form.customerName.trim()) errs.customerName = 'Name is required'
     if (!form.phone.trim()) errs.phone = 'Phone is required'
-    else if (!/^[6-9]\d{9}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = 'Enter a valid 10-digit Indian number'
+    else if (!/^[6-9]\d{9}$/.test(form.phone.replace(/\s/g, ''))) errs.phone = 'Enter a valid 10-digit number'
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Enter a valid email'
-    if (!form.deliveryArea) errs.deliveryArea = 'Select your area'
+    if (!form.district) errs.district = 'Select district'
+    if (!form.taluka) errs.taluka = 'Select taluka'
+    if (!form.city) errs.city = 'Select city/town'
     if (!form.fullAddress.trim()) errs.fullAddress = 'Address is required'
     if (!form.pincode.trim()) errs.pincode = 'Pincode is required'
-    else if (!/^\d{6}$/.test(form.pincode)) errs.pincode = 'Enter a valid 6-digit pincode'
+    else if (!/^\d{6}$/.test(form.pincode)) errs.pincode = 'Enter valid 6-digit pincode'
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -47,32 +105,16 @@ export default function AddressStep({ onNext }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!validate()) return
-    checkout.setAddress(form)
+    checkout.setAddress({
+      customerName: form.customerName,
+      phone: form.phone,
+      email: form.email,
+      deliveryArea: `${form.city}, ${form.taluka}, ${form.district}`,
+      fullAddress: form.fullAddress,
+      pincode: form.pincode,
+    })
     onNext()
   }
-
-  const FloatingInput = ({ field, label, type = 'text', required = false }) => (
-    <div className="relative">
-      <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
-        focusedField === field || form[field]
-          ? 'top-1.5 text-[10px] text-berry font-medium'
-          : 'top-3 text-sm text-chocolate-light/35'
-      }`}>
-        {label}{required && ' *'}
-      </label>
-      <input
-        type={type}
-        value={form[field]}
-        onFocus={() => setFocusedField(field)}
-        onBlur={() => setFocusedField(null)}
-        onChange={(e) => update(field, e.target.value)}
-        className={`w-full bg-cream/50 border rounded-xl px-4 pt-5 pb-2 text-chocolate text-sm focus:outline-none focus:border-berry/30 focus:bg-cream/80 focus:ring-2 focus:ring-berry/10 transition-all duration-300 ${
-          errors[field] ? 'border-berry/40' : 'border-chocolate/8'
-        }`}
-      />
-      {errors[field] && <p className="text-[11px] text-berry mt-1 ml-1">{errors[field]}</p>}
-    </div>
-  )
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,36 +123,74 @@ export default function AddressStep({ onNext }) {
         <h3 className="font-heading text-base font-semibold text-chocolate">Delivery Address</h3>
       </div>
 
+      {/* Name & Phone */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <FloatingInput field="customerName" label="Full Name" required />
-        <FloatingInput field="phone" label="Phone Number" type="tel" required />
+        <FloatingInput
+          field="customerName" label="Full Name *" value={form.customerName}
+          onChange={update} error={errors.customerName}
+          focusedField={focusedField} setFocusedField={setFocusedField}
+        />
+        <FloatingInput
+          field="phone" label="Phone Number *" type="tel" value={form.phone}
+          onChange={update} error={errors.phone}
+          focusedField={focusedField} setFocusedField={setFocusedField}
+        />
       </div>
 
-      <FloatingInput field="email" label="Email (for order confirmation)" type="email" />
+      {/* Email */}
+      <FloatingInput
+        field="email" label="Email (optional)" type="email" value={form.email}
+        onChange={update} error={errors.email}
+        focusedField={focusedField} setFocusedField={setFocusedField}
+      />
 
-      <div className="relative">
-        <select
-          value={form.deliveryArea}
-          onChange={(e) => update('deliveryArea', e.target.value)}
-          className={`w-full bg-cream/50 border rounded-xl px-4 py-3 text-sm text-chocolate focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all appearance-none ${
-            errors.deliveryArea ? 'border-berry/40' : 'border-chocolate/8'
-          }`}
-        >
-          <option value="">Select Delivery Area *</option>
-          {deliveryAreas.map((a) => (
-            <option key={a} value={a}>{a}</option>
-          ))}
-        </select>
-        {errors.deliveryArea && <p className="text-[11px] text-berry mt-1 ml-1">{errors.deliveryArea}</p>}
+      {/* Location: District → Taluka → City */}
+      <div className="bg-cream/30 rounded-2xl p-4 space-y-3 border border-chocolate/5">
+        <p className="text-[11px] font-medium text-chocolate-light/50 uppercase tracking-wider flex items-center gap-1.5">
+          <MapPin size={12} />
+          Delivery Location
+        </p>
+
+        <SelectField
+          label="District"
+          value={form.district}
+          onChange={(v) => update('district', v)}
+          options={districts}
+          error={errors.district}
+          placeholder="Select District"
+        />
+
+        {form.district && (
+          <SelectField
+            label="Taluka"
+            value={form.taluka}
+            onChange={(v) => update('taluka', v)}
+            options={talukas}
+            error={errors.taluka}
+            placeholder="Select Taluka"
+          />
+        )}
+
+        {form.taluka && (
+          <SelectField
+            label="City / Town / Area"
+            value={form.city}
+            onChange={(v) => update('city', v)}
+            options={cities}
+            error={errors.city}
+            placeholder="Select City / Town"
+          />
+        )}
       </div>
 
+      {/* Full Address */}
       <div className="relative">
-        <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+        <label className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${
           focusedField === 'fullAddress' || form.fullAddress
             ? 'top-1.5 text-[10px] text-berry font-medium'
             : 'top-3 text-sm text-chocolate-light/35'
         }`}>
-          Full Address *
+          Full Address (House/Flat, Street, Landmark) *
         </label>
         <textarea
           rows={3}
@@ -125,8 +205,13 @@ export default function AddressStep({ onNext }) {
         {errors.fullAddress && <p className="text-[11px] text-berry mt-1 ml-1">{errors.fullAddress}</p>}
       </div>
 
+      {/* Pincode */}
       <div className="w-1/2">
-        <FloatingInput field="pincode" label="Pincode" required />
+        <FloatingInput
+          field="pincode" label="Pincode *" value={form.pincode}
+          onChange={update} error={errors.pincode}
+          focusedField={focusedField} setFocusedField={setFocusedField}
+        />
       </div>
 
       <button
