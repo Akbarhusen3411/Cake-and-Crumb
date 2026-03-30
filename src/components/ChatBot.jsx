@@ -425,6 +425,8 @@ export default function ChatBot() {
       `*📍 Delivery to:*\n${orderInfo.address}\n\n` +
       `*📅 Delivery:* ${orderInfo.date}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
+      `⚠️ *Cancellation Policy:*\n` +
+      `Order cancel karva mate *30 minute* ni ander ama j WhatsApp par message karo. 30 minute pachi cancellation available nahi hoy.\n\n` +
       `We're preparing your order! Thank you for choosing Cake & Crumb 🙏❤️`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
 
@@ -445,7 +447,15 @@ export default function ChatBot() {
       `Please contact us to discuss alternatives:\n📞 +91 90816 68490\n\nSorry for the inconvenience. — Cake & Crumb 🙏`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
-    // Clean order message (customer can see this)
+    const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
+      `Hi *${orderInfo.name}*, tamari order *${orderId}* successfully cancel thai gai che.\n\n` +
+      `*Refund:* ${total >= 499 ? 'No delivery charge refund needed (was free)' : '₹49 delivery charge will not be charged'}\n\n` +
+      `Fari thi order karva mate visit karo:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
+
+    const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+
+    // Order message (customer can see this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
       `*📋 Order Items:*${orderLines}\n` +
@@ -457,17 +467,21 @@ export default function ChatBot() {
       `*👤* ${orderInfo.name}\n` +
       `*📞* ${orderInfo.phone}\n` +
       `*📍* ${orderInfo.address}\n` +
-      `*📅* ${orderInfo.date}\n\n` +
+      `*📅* ${orderInfo.date}\n` +
+      `*🕐 Order Time:* ${orderTime}\n\n` +
+      `⚠️ *Cancellation:* 30 min ni ander cancel kari shakay che.\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
 
     setTimeout(() => {
       const adminNote = `📋 *${orderId}* — Quick Reply\n` +
-        `👤 ${orderInfo.name}\n📞 ${orderInfo.phone}\n\n` +
-        `━━━ Tap below to reply ━━━\n\n` +
+        `👤 ${orderInfo.name} | 📞 ${orderInfo.phone}\n` +
+        `🕐 Order: ${orderTime} | ⚠️ Cancel deadline: 30 min\n\n` +
+        `━━━ Tap to reply ━━━\n\n` +
         `✅ Confirm → ${confirmLink}\n\n` +
         `📦 Shipped → ${shippedLink}\n\n` +
+        `🚫 Cancel → ${cancelLink}\n\n` +
         `❌ Reject → ${rejectLink}`
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(adminNote)}`, '_blank')
     }, 2000)

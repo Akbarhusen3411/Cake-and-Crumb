@@ -68,6 +68,8 @@ export default function ConfirmationStep({ onClose }) {
       `*📍 Delivery Address:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
       `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
+      `⚠️ *Cancellation Policy:*\n` +
+      `Order cancel karva mate *30 minute* ni ander ama j WhatsApp par message karo. 30 min pachi cancel nahi thay.\n\n` +
       `Ame tamari order prepare kari rahya che! Thank you! 🙏❤️\n` +
       `— *Cake & Crumb*`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
@@ -89,7 +91,14 @@ export default function ConfirmationStep({ onClose }) {
       `Alternatives mate contact karo:\n📞 +91 90816 68490\n\n— Cake & Crumb 🙏`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
-    // Message sent BY customer TO admin (customer can see this)
+    const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
+      `Hi *${checkout.customerName}*, tamari order *${orderId}* cancel thai gai che.\n\n` +
+      `Fari thi order karva mate visit karo:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
+
+    const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+
+    // Message sent BY customer TO admin
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*📋 Items:*\n${itemsList}\n\n` +
@@ -101,18 +110,21 @@ export default function ConfirmationStep({ onClose }) {
       `*📞* ${checkout.phone}\n` +
       `*📍* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
       `*📅* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
-      `*💳* ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}\n\n` +
+      `*💳* ${payLabel}\n` +
+      `*🕐 Order Time:* ${orderTime}\n\n` +
+      `⚠️ *Cancel:* 30 min ni ander j cancel thay.\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
 
-    // After delay, open admin self-note with reply shortcuts
     setTimeout(() => {
       const adminNote = `📋 *${orderId}* — Quick Reply\n` +
-        `👤 ${checkout.customerName}\n📞 ${checkout.phone}\n\n` +
-        `━━━ Tap below to reply ━━━\n\n` +
+        `👤 ${checkout.customerName} | 📞 ${checkout.phone}\n` +
+        `🕐 Order: ${orderTime} | ⚠️ Cancel limit: 30 min\n\n` +
+        `━━━ Tap to reply ━━━\n\n` +
         `✅ Confirm → ${confirmLink}\n\n` +
         `📦 Shipped → ${shippedLink}\n\n` +
+        `🚫 Cancel → ${cancelLink}\n\n` +
         `❌ Reject → ${rejectLink}`
       window.open(`https://wa.me/919081668490?text=${encodeURIComponent(adminNote)}`, '_blank')
     }, 2000)
