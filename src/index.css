@@ -104,10 +104,17 @@ body {
 
 /* ===== Navbar ===== */
 .navbar-scrolled {
-  background-color: rgba(255, 249, 242, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 30px rgba(62, 39, 35, 0.06);
+  background-color: rgba(255, 249, 242, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(62, 39, 35, 0.08);
+}
+
+/* ===== Mobile Drawer GPU acceleration ===== */
+@media (max-width: 1023px) {
+  .drawer-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* ===== Floating Animation ===== */

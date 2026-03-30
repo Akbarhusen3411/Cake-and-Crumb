@@ -43,9 +43,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 rounded-full bg-chocolate flex items-center justify-center shadow-md">
-                <span className="font-heading text-cream text-sm font-bold">C&C</span>
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="Cake & Crumb"
+                className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-gold/20"
+              />
               <div>
                 <span className="font-script text-2xl text-chocolate block">
                   Cake <span className="text-berry">&</span> Crumb
