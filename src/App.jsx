@@ -1,9 +1,8 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import ChatBot from './components/ChatBot'
 import LocationDialog from './components/LocationDialog'
 import CartDrawer from './components/cart/CartDrawer'
 import CheckoutPage from './components/checkout/CheckoutPage'
@@ -11,11 +10,14 @@ import Toast from './components/ui/Toast'
 import ScrollToTop from './components/ScrollToTop'
 import PageTransition from './components/PageTransition'
 
-import HomePage from './pages/HomePage'
-import MenuPage from './pages/MenuPage'
-import AboutPage from './pages/AboutPage'
-import ReviewsPage from './pages/ReviewsPage'
-import ContactPage from './pages/ContactPage'
+const ChatBot = lazy(() => import('./components/ChatBot'))
+
+const HomePage = lazy(() => import('./pages/HomePage'))
+const MenuPage = lazy(() => import('./pages/MenuPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 
 function AppContent() {
@@ -30,19 +32,24 @@ function AppContent() {
       <Navbar onCartClick={() => setCartOpen(true)} />
 
       <main className="flex-1">
-        <PageTransition>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/menu" element={<MenuPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Routes>
-        </PageTransition>
+        <Suspense fallback={<div className="min-h-[60vh]" />}>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/menu" element={<MenuPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </PageTransition>
+        </Suspense>
       </main>
 
       <Footer />
-      <ChatBot />
+      <Suspense fallback={null}>
+        <ChatBot />
+      </Suspense>
 
       <LocationDialog />
       <CartDrawer

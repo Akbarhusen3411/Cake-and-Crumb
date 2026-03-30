@@ -41,8 +41,14 @@ export default function AddressStep({ onNext }) {
     setPincodeStatus('loading')
     setPincodeInfo(null)
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
+
     try {
-      const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
       const data = await res.json()
 
       if (data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
