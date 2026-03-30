@@ -279,6 +279,8 @@ export default function ChatBot() {
   const [orderCart, setOrderCart] = useState({}) // { itemName: { qty, price } }
   const [activeOrderCat, setActiveOrderCat] = useState(null) // which category selector is open
   const [orderStep, setOrderStep] = useState(null) // 'name', 'phone', 'address', 'date'
+  const [lastOrderId, setLastOrderId] = useState(null)
+  const [lastOrderTime, setLastOrderTime] = useState(null)
   const [orderInfo, setOrderInfo] = useState({ name: '', phone: '', address: '', date: '' })
   const scrollRef = useRef(null)
 
@@ -392,6 +394,8 @@ export default function ChatBot() {
     const deliveryFee = total >= 499 ? 0 : 49
     const grandTotal = total + deliveryFee
     const orderId = `CC-${Date.now().toString(36).toUpperCase()}`
+    setLastOrderId(orderId)
+    setLastOrderTime(Date.now())
 
     const phone = orderInfo.phone.replace(/\s/g, '')
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
@@ -559,12 +563,32 @@ export default function ChatBot() {
       case 'confirm_send':
         setOptions([])
         sendOrderToWhatsApp()
-        await addBotMessage("✅ *Order sent to WhatsApp!*\n\nOur team will confirm your order and share payment details within minutes.\n\nThank you for ordering from *Cake & Crumb*! 🎂❤️")
+        await addBotMessage("✅ *Order sent to WhatsApp!*\n\nOur team will confirm your order within minutes.\n\n⚠️ *Cancellation:* 30 minute ni ander cancel kari shakay cho. Pachi cancel nahi thay.")
         setOrderCart({})
         setOrderStep(null)
-        setOrderInfo({ name: '', phone: '', address: '', date: '' })
-        setOptions([{ label: '🏠 Main Menu', action: 'home' }])
+        setOptions([
+          { label: '🚫 Cancel My Order', action: 'user_cancel' },
+          { label: '🏠 Main Menu', action: 'home' },
+        ])
         break
+      case 'user_cancel': {
+        setOptions([])
+        // Check if within 30 minutes
+        if (lastOrderTime && (Date.now() - lastOrderTime) > 30 * 60 * 1000) {
+          await addBotMessage("⏰ Sorry! 30 minute thi vadhare time thai gayo che. Hua order cancel nahi thai shake.\n\nHelp mate contact karo: +91 90816 68490")
+          setOptions([{ label: '🏠 Main Menu', action: 'home' }])
+        } else {
+          const cancelRequest = `🚫 *CANCEL REQUEST*\n\n` +
+            `Order ID: *${lastOrderId || 'Recent Order'}*\n` +
+            `Customer: ${orderInfo.name || 'Customer'}\n` +
+            `Phone: ${orderInfo.phone || ''}\n\n` +
+            `Mane mari order cancel karavi che. Please confirm cancellation.`
+          window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(cancelRequest)}`, '_blank')
+          await addBotMessage("🚫 *Cancel request mokli didho!*\n\nAdmin tamne WhatsApp par confirm karse ke order cancel thayo che.\n\nNote: Cancel tyare j thay jyare admin confirm kare.")
+          setOptions([{ label: '🏠 Main Menu', action: 'home' }])
+        }
+        break
+      }
       case 'whatsapp': {
         setOptions([])
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Cake & Crumb! I'd like to place an order.")}`, '_blank')

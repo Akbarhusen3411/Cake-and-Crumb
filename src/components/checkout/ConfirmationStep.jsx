@@ -23,6 +23,7 @@ export default function ConfirmationStep({ onClose }) {
   const hasSent = useRef(false)
 
   const orderId = checkout.orderId || generateOrderId()
+  const [orderTimestamp] = useState(Date.now())
 
   useEffect(() => {
     if (hasSent.current) return
@@ -178,14 +179,36 @@ export default function ConfirmationStep({ onClose }) {
         Order details have been sent to WhatsApp. We'll confirm your order shortly!
       </p>
 
+      {/* Cancellation notice */}
+      <div className="bg-gold/5 border border-gold/15 rounded-xl px-4 py-3 max-w-xs mx-auto text-left">
+        <p className="text-xs font-semibold text-chocolate mb-1">⚠️ Cancellation Policy</p>
+        <p className="text-[11px] text-chocolate-light/60 leading-relaxed">
+          30 minute ni ander cancel kari shakay cho. Pachi cancellation available nahi hoy.
+        </p>
+      </div>
+
       {/* Actions */}
-      <div className="space-y-3 pt-2">
+      <div className="space-y-3 pt-2 max-w-xs mx-auto">
         <button
           onClick={handleGoHome}
-          className="btn-shimmer w-full max-w-xs mx-auto bg-chocolate text-cream py-3.5 rounded-xl font-medium text-sm hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-2"
+          className="btn-shimmer w-full bg-chocolate text-cream py-3.5 rounded-xl font-medium text-sm hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-2"
         >
           <Home size={16} />
           Back to Home
+        </button>
+        <button
+          onClick={() => {
+            const elapsed = Date.now() - orderTimestamp
+            if (elapsed > 30 * 60 * 1000) {
+              alert('30 minute thi vadhare time thai gayo. Order cancel nahi thai shake.')
+              return
+            }
+            const cancelReq = `🚫 *CANCEL REQUEST*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nMane mari order cancel karavi che. Please confirm.`
+            window.open(`https://wa.me/919081668490?text=${encodeURIComponent(cancelReq)}`, '_blank')
+          }}
+          className="w-full border border-berry/20 text-berry py-3 rounded-xl font-medium text-sm hover:bg-berry/5 transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          🚫 Cancel Order (30 min ni ander)
         </button>
       </div>
     </div>
