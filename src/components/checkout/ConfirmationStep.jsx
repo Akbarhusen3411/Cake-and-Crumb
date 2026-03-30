@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CheckCircle, Home, MessageCircle } from 'lucide-react'
-import useCartStore, { getCartItems, getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
+import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
 
@@ -19,8 +19,8 @@ export default function ConfirmationStep({ onClose }) {
   const items = useCartStore((s) => s.items)
   const cartItems = getCartItems(items)
   const subtotal = getSubtotal(items)
-  const deliveryFee = getDeliveryFee(items)
-  const total = getTotal(items)
+  const deliveryFee = checkout.deliveryFee || 0
+  const total = subtotal + deliveryFee
   const clearCart = useCartStore((s) => s.clearCart)
   const hasSent = useRef(false)
 

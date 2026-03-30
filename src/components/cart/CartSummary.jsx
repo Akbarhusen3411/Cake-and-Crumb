@@ -1,11 +1,18 @@
 import { Truck } from 'lucide-react'
-import useCartStore, { getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
+import useCartStore, { getSubtotal } from '../../store/useCartStore'
+import useCheckoutStore from '../../store/useCheckoutStore'
+import { FREE_RADIUS_KM, RATE_PER_KM } from '../../utils/deliveryCalculator'
 
 export default function CartSummary() {
   const items = useCartStore((s) => s.items)
   const subtotal = getSubtotal(items)
-  const deliveryFee = getDeliveryFee(items)
-  const total = getTotal(items)
+  const checkoutFee = useCheckoutStore((s) => s.deliveryFee)
+  const distanceKm = useCheckoutStore((s) => s.deliveryDistanceKm)
+
+  // If checkout has calculated a fee, use it. Otherwise show info message.
+  const hasDeliveryInfo = distanceKm > 0
+  const deliveryFee = hasDeliveryInfo ? checkoutFee : null
+  const total = subtotal + (deliveryFee || 0)
 
   return (
     <div className="bg-cream/60 rounded-xl p-4 space-y-3">
@@ -18,15 +25,24 @@ export default function CartSummary() {
           <Truck size={14} />
           Delivery
         </span>
-        {deliveryFee === 0 ? (
-          <span className="font-medium text-green-600">FREE</span>
+        {deliveryFee !== null ? (
+          deliveryFee === 0 ? (
+            <span className="font-medium text-green-600">FREE</span>
+          ) : (
+            <span className="font-medium text-chocolate">₹{deliveryFee}</span>
+          )
         ) : (
-          <span className="font-medium text-chocolate">₹{deliveryFee}</span>
+          <span className="text-xs text-chocolate-light/40 italic">Calculated at checkout</span>
         )}
       </div>
-      {deliveryFee > 0 && (
+      {deliveryFee !== null && deliveryFee > 0 && distanceKm > 0 && (
         <p className="text-[11px] text-chocolate-light/40 text-center">
-          Free delivery on orders above ₹499
+          {distanceKm} km from Vaso • ₹{RATE_PER_KM}/km
+        </p>
+      )}
+      {deliveryFee === null && (
+        <p className="text-[11px] text-chocolate-light/40 text-center">
+          Free within {FREE_RADIUS_KM} km • ₹{RATE_PER_KM}/km after
         </p>
       )}
       <div className="border-t border-chocolate/8 pt-3 flex justify-between">

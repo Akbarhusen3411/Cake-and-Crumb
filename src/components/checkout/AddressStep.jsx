@@ -1,22 +1,14 @@
 import { useState } from 'react'
-import { MapPin, Loader2, CheckCircle, XCircle } from 'lucide-react'
+import { MapPin, Loader2, CheckCircle, XCircle, Truck } from 'lucide-react'
 import useCheckoutStore from '../../store/useCheckoutStore'
-
-// Gujarat pincodes — delivery available in Gujarat only
-const GUJARAT_PINCODE_RANGES = [
-  [360001, 396599], // Main Gujarat range
-]
-
-function isGujaratPincode(pin) {
-  const num = parseInt(pin, 10)
-  return GUJARAT_PINCODE_RANGES.some(([min, max]) => num >= min && num <= max)
-}
+import { getCoordinatesFromPincode, calculateDistance, calculateDeliveryFee, getDeliveryInfo, BAKERY_LOCATION, FREE_RADIUS_KM, RATE_PER_KM } from '../../utils/deliveryCalculator'
 
 export default function AddressStep({ onNext }) {
   const checkout = useCheckoutStore()
   const [errors, setErrors] = useState({})
-  const [pincodeStatus, setPincodeStatus] = useState(null) // null | 'loading' | 'found' | 'not_found' | 'not_available'
-  const [pincodeInfo, setPincodeInfo] = useState(null) // { district, state, area }
+  const [pincodeStatus, setPincodeStatus] = useState(null)
+  const [pincodeInfo, setPincodeInfo] = useState(null)
+  const [deliveryCalc, setDeliveryCalc] = useState(null) // { distanceKm, fee, text }
 
   const [form, setForm] = useState({
     customerName: checkout.customerName || '',
@@ -34,12 +26,12 @@ export default function AddressStep({ onNext }) {
     if (errors[field]) setErrors((e) => ({ ...e, [field]: '' }))
   }
 
-  // Fetch address from pincode using India Post API
   const lookupPincode = async (pincode) => {
     if (!/^\d{6}$/.test(pincode)) return
 
     setPincodeStatus('loading')
     setPincodeInfo(null)
+    setDeliveryCalc(null)
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000)
@@ -67,10 +59,19 @@ export default function AddressStep({ onNext }) {
         setPincodeStatus('found')
         setPincodeInfo({ district, state, areas })
         setForm((f) => ({ ...f, district, state, area: areas[0] || '' }))
+
+        // Calculate delivery distance & fee
+        const coords = await getCoordinatesFromPincode(pincode)
+        if (coords) {
+          const distanceKm = calculateDistance(coords.lat, coords.lng)
+          const info = getDeliveryInfo(distanceKm)
+          setDeliveryCalc({ distanceKm, fee: info.fee, text: info.text })
+        }
       } else {
         setPincodeStatus('not_found')
       }
     } catch {
+      clearTimeout(timeoutId)
       setPincodeStatus('not_found')
     }
   }
@@ -83,6 +84,7 @@ export default function AddressStep({ onNext }) {
     } else {
       setPincodeStatus(null)
       setPincodeInfo(null)
+      setDeliveryCalc(null)
     }
   }
 
@@ -112,6 +114,11 @@ export default function AddressStep({ onNext }) {
       fullAddress: form.fullAddress,
       pincode: form.pincode,
     })
+    // Save delivery distance and fee
+    checkout.setDelivery(
+      deliveryCalc?.distanceKm || 0,
+      deliveryCalc?.fee || 0
+    )
     onNext()
   }
 
@@ -161,7 +168,7 @@ export default function AddressStep({ onNext }) {
         {errors.email && <p className="text-[11px] text-berry mt-1 ml-1">{errors.email}</p>}
       </div>
 
-      {/* Pincode — enters first, auto-detects location */}
+      {/* Pincode */}
       <div className="bg-cream/30 rounded-2xl p-4 space-y-3 border border-chocolate/5">
         <p className="text-[11px] font-medium text-chocolate-light/50 uppercase tracking-wider flex items-center gap-1.5">
           <MapPin size={12} />
@@ -189,9 +196,9 @@ export default function AddressStep({ onNext }) {
           {errors.pincode && <p className="text-[11px] text-berry mt-1 ml-1">{errors.pincode}</p>}
         </div>
 
-        {/* Auto-detected location info */}
+        {/* Location + Delivery Fee */}
         {pincodeStatus === 'found' && pincodeInfo && (
-          <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 space-y-2" style={{ animation: 'chat-msg-in 0.3s ease-out' }}>
+          <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 space-y-3" style={{ animation: 'chat-msg-in 0.3s ease-out' }}>
             <div className="flex items-center gap-2">
               <CheckCircle size={14} className="text-green-600 shrink-0" />
               <p className="text-sm font-semibold text-green-800">Delivery Available!</p>
@@ -220,6 +227,31 @@ export default function AddressStep({ onNext }) {
                 </select>
               </div>
             )}
+
+            {/* Delivery Fee Card */}
+            {deliveryCalc && (
+              <div className={`rounded-lg px-3 py-2.5 flex items-center gap-3 ${deliveryCalc.fee === 0 ? 'bg-green-100' : 'bg-amber-50 border border-amber-200'}`}>
+                <Truck size={18} className={deliveryCalc.fee === 0 ? 'text-green-600' : 'text-amber-600'} />
+                <div className="flex-1">
+                  <p className={`text-sm font-bold ${deliveryCalc.fee === 0 ? 'text-green-700' : 'text-amber-800'}`}>
+                    {deliveryCalc.fee === 0 ? 'FREE Delivery!' : `₹${deliveryCalc.fee} Delivery`}
+                  </p>
+                  <p className="text-[11px] text-green-600/70">
+                    {deliveryCalc.distanceKm} km from {BAKERY_LOCATION}
+                    {deliveryCalc.fee > 0 && ` • ₹${RATE_PER_KM}/km`}
+                  </p>
+                </div>
+                {deliveryCalc.fee === 0 && (
+                  <span className="text-xs font-bold text-green-600 bg-green-200 px-2 py-0.5 rounded-full">FREE</span>
+                )}
+              </div>
+            )}
+            {!deliveryCalc && pincodeStatus === 'found' && (
+              <div className="flex items-center gap-2 text-xs text-green-600/60">
+                <Loader2 size={12} className="animate-spin" />
+                Calculating delivery distance...
+              </div>
+            )}
           </div>
         )}
 
@@ -233,7 +265,7 @@ export default function AddressStep({ onNext }) {
               This pincode is in {pincodeInfo.district}, {pincodeInfo.state}. We currently deliver only within Gujarat.
             </p>
             <a
-              href="https://wa.me/919081668490?text=Hi!%20I%27m%20outside%20Gujarat.%20Can%20you%20deliver%20to%20my%20area?"
+              href="https://wa.me/919081668490?text=Hi!%20I'm%20outside%20Gujarat.%20Can%20you%20deliver%20to%20my%20area?"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-2 text-xs font-medium text-red-700 underline"
@@ -251,6 +283,12 @@ export default function AddressStep({ onNext }) {
             </p>
           </div>
         )}
+
+        {/* Delivery pricing info */}
+        <div className="text-[10px] text-chocolate-light/40 leading-relaxed">
+          <p>📍 Bakery: {BAKERY_LOCATION}</p>
+          <p>🆓 Free delivery within {FREE_RADIUS_KM} km • ₹{RATE_PER_KM}/km after that</p>
+        </div>
       </div>
 
       {/* Full Address */}

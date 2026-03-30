@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2 } from 'lucide-react'
-import useCartStore, { getCartItems, getItemCount, getSubtotal, getTotal, getDeliveryFee } from '../../store/useCartStore'
+import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
+import useCheckoutStore from '../../store/useCheckoutStore'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const items = useCartStore((s) => s.items)
@@ -9,8 +10,9 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const cartItems = useMemo(() => getCartItems(items), [items])
   const itemCount = getItemCount(items)
   const subtotal = getSubtotal(items)
-  const deliveryFee = getDeliveryFee(items)
-  const total = getTotal(items)
+  const checkoutFee = useCheckoutStore((s) => s.deliveryFee)
+  const deliveryFee = checkoutFee || 0
+  const total = subtotal + deliveryFee
 
   const handleWhatsAppOrder = () => {
     const itemLines = cartItems.map((item) =>

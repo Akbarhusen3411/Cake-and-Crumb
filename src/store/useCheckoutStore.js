@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 const useCheckoutStore = create((set) => ({
-  step: 1, // 1: Address, 2: Schedule, 3: Payment, 4: Confirmation
+  step: 1,
   isOpen: false,
 
   // Address
@@ -12,13 +12,17 @@ const useCheckoutStore = create((set) => ({
   fullAddress: '',
   pincode: '',
 
+  // Delivery distance
+  deliveryDistanceKm: 0,
+  deliveryFee: 0,
+
   // Schedule
   selectedDate: '',
   selectedSlot: '',
 
   // Payment
-  paymentMethod: '', // 'online' or 'cod'
-  paymentStatus: '', // 'pending', 'success', 'failed'
+  paymentMethod: '',
+  paymentStatus: '',
   razorpayOrderId: '',
 
   // Order
@@ -31,6 +35,7 @@ const useCheckoutStore = create((set) => ({
   prevStep: () => set((s) => ({ step: Math.max(s.step - 1, 1) })),
 
   setAddress: (data) => set(data),
+  setDelivery: (distanceKm, fee) => set({ deliveryDistanceKm: distanceKm, deliveryFee: fee }),
   setSchedule: (date, slot) => set({ selectedDate: date, selectedSlot: slot }),
   setPayment: (method, status, razorpayId) => set({
     paymentMethod: method,
@@ -48,6 +53,8 @@ const useCheckoutStore = create((set) => ({
     deliveryArea: '',
     fullAddress: '',
     pincode: '',
+    deliveryDistanceKm: 0,
+    deliveryFee: 0,
     selectedDate: '',
     selectedSlot: '',
     paymentMethod: '',

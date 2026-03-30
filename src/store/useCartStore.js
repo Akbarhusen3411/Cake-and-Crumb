@@ -2,9 +2,6 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { getProductById } from '../data/products'
 
-const DELIVERY_FEE = 49
-const FREE_DELIVERY_ABOVE = 499
-
 const useCartStore = create(
   persist(
     (set, get) => ({
@@ -32,11 +29,6 @@ const useCartStore = create(
         set({ items: get().items.map((i) => i.productId === productId ? { ...i, quantity } : i) })
       },
 
-      getItemQuantity: (productId) => {
-        const item = get().items.find((i) => i.productId === productId)
-        return item ? item.quantity : 0
-      },
-
       clearCart: () => set({ items: [] }),
     }),
     {
@@ -45,7 +37,7 @@ const useCartStore = create(
   )
 )
 
-// Computed helpers (call outside of selectors to avoid infinite re-renders)
+// Computed helpers
 export function getCartItems(items) {
   return items.map((item) => {
     const product = getProductById(item.productId)
@@ -61,13 +53,15 @@ export function getItemCount(items) {
   return items.reduce((sum, i) => sum + i.quantity, 0)
 }
 
-export function getDeliveryFee(items) {
-  const subtotal = getSubtotal(items)
-  return subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE
+// Delivery fee now comes from checkout store (distance-based)
+// These are fallback for cart preview before checkout
+export function getDeliveryFee(items, checkoutFee) {
+  if (typeof checkoutFee === 'number') return checkoutFee
+  return 0 // Will be calculated during checkout
 }
 
-export function getTotal(items) {
-  return getSubtotal(items) + getDeliveryFee(items)
+export function getTotal(items, checkoutFee) {
+  return getSubtotal(items) + getDeliveryFee(items, checkoutFee)
 }
 
 export default useCartStore
