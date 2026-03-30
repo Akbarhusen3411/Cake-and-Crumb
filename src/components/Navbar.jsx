@@ -31,10 +31,8 @@ export default function Navbar({ onCartClick }) {
 
   const openDrawer = useCallback(() => {
     setMobileOpen(true)
+    setDrawerVisible(true)
     document.body.style.overflow = 'hidden'
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => setDrawerVisible(true))
-    })
   }, [])
 
   const closeDrawer = useCallback(() => {

@@ -63,9 +63,9 @@ function ProductCard({ product }) {
   }
 
   return (
-    <div className={`product-card bg-white rounded-xl overflow-hidden border border-chocolate/5 relative ${!product.inStock ? 'opacity-50' : ''}`}>
+    <div className={`product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative ${!product.inStock ? 'opacity-50' : ''}`}>
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-cream group">
         <img
           src={product.image}
           alt={product.name}
@@ -163,7 +163,7 @@ function CategoryContent({ category }) {
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {categoryProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

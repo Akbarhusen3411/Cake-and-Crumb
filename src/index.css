@@ -531,14 +531,24 @@ body {
 
 /* ===== Enhanced Mobile Touch Feedback ===== */
 @media (max-width: 1023px) {
+  .product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
   .product-card:active {
     transform: scale(0.97);
-    transition: transform 0.1s;
   }
 
   .btn-touch:active {
     transform: scale(0.95);
     transition: transform 0.1s;
+  }
+}
+
+/* ===== Mobile Product Card Image ===== */
+@media (max-width: 639px) {
+  .product-card img {
+    transition: transform 0.5s ease-out;
   }
 }
 
