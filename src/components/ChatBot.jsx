@@ -1,8 +1,46 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, ArrowLeft, ChevronRight } from 'lucide-react'
+import { MessageCircle, X, Send, ChevronRight } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 
 const WHATSAPP_NUMBER = '919081668490'
+
+// ─── Category images ───
+const CAT_IMAGES = {
+  cheesecake: [
+    { src: '/images/real-strawberry-cheesecake.jpg', label: 'Strawberry' },
+    { src: '/images/blueberry-cheesecake.jpg', label: 'Blueberry' },
+    { src: '/images/chocolate-cake-rich.jpg', label: 'Chocolate' },
+    { src: '/images/biscoff-cake.jpg', label: 'Biscoff' },
+    { src: '/images/pistachio-dessert.jpg', label: 'Pistachio' },
+    { src: '/images/caramel-dessert.jpg', label: 'Caramel' },
+  ],
+  cookies: [
+    { src: '/images/real-triple-choc-cookies.jpg', label: 'Triple Choc' },
+    { src: '/images/red-velvet-cookie.jpg', label: 'Red Velvet' },
+    { src: '/images/real-pistachio-biscuits.jpg', label: 'Pistachio Rose' },
+    { src: '/images/almond-cookie.jpg', label: 'Almond' },
+  ],
+  cakes: [
+    { src: '/images/real-cupcakes-pink.jpg', label: 'Cupcakes' },
+    { src: '/images/rose-cake.jpg', label: 'Rose Milk Cake' },
+    { src: '/images/real-brownies.jpg', label: 'Brownies' },
+    { src: '/images/real-cakesicles.jpg', label: 'Cakesicles' },
+    { src: '/images/cake-pop.jpg', label: 'Cake Pops' },
+  ],
+  desserts: [
+    { src: '/images/real-biscoff-cups.jpg', label: 'Cheesecake Cup' },
+    { src: '/images/custard-cup.jpg', label: 'Custard Cup' },
+    { src: '/images/trifle-cup.jpg', label: 'Trifle Cup' },
+    { src: '/images/jelly-cup.jpg', label: 'Jelly Cup' },
+  ],
+  drinks: [
+    { src: '/images/mojito-drink.jpg', label: 'Mojito' },
+    { src: '/images/blue-lagoon.jpg', label: 'Blue Lagoon' },
+    { src: '/images/milkshake-drink.jpg', label: 'Milkshake' },
+    { src: '/images/iced-coffee.jpg', label: 'Iced Coffee' },
+    { src: '/images/hot-coffee.jpg', label: 'Hot Coffee' },
+  ],
+}
 
 // ─── Chat Flow Data ───
 const MENU_DATA = {
@@ -114,16 +152,8 @@ const MENU_DATA = {
 }
 
 const INITIAL_MESSAGES = [
-  {
-    from: 'bot',
-    text: "Hello! Welcome to *Cake & Crumb* — The Gourmet Chocolate & Berry Boutique! 🎂",
-    delay: 0,
-  },
-  {
-    from: 'bot',
-    text: "I'm here to help you explore our menu, check prices, or place an order. How can I help you today?",
-    delay: 600,
-  },
+  { from: 'bot', text: "Hello! Welcome to *Cake & Crumb* — The Gourmet Chocolate & Berry Boutique! 🎂", delay: 0 },
+  { from: 'bot', text: "I'm here to help you explore our menu, check prices, or place an order. How can I help you today?", delay: 600 },
 ]
 
 const MAIN_OPTIONS = [
@@ -157,7 +187,6 @@ export default function ChatBot() {
   const [typing, setTyping] = useState(false)
   const [initialized, setInitialized] = useState(false)
   const scrollRef = useRef(null)
-  const inputRef = useRef(null)
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -165,17 +194,17 @@ export default function ChatBot() {
     }, 50)
   }
 
-  const addBotMessage = (text, delay = 0) => {
+  const addBotMessage = (text, delay = 0, images = null) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         setTyping(true)
         scrollToBottom()
         setTimeout(() => {
           setTyping(false)
-          setMessages((prev) => [...prev, { from: 'bot', text }])
+          setMessages((prev) => [...prev, { from: 'bot', text, images }])
           scrollToBottom()
           resolve()
-        }, 400 + text.length * 5)
+        }, 300 + Math.min(text.length * 3, 600))
       }, delay)
     })
   }
@@ -200,9 +229,15 @@ export default function ChatBot() {
   const showCategoryPrices = async (catKey) => {
     setOptions([])
     const cat = MENU_DATA[catKey]
+    const images = CAT_IMAGES[catKey]
     if (!cat) return
 
-    let priceText = `*${cat.title}*\n${cat.subtitle}\n\n`
+    // Show images first
+    if (images) {
+      await addBotMessage(`Here's our *${cat.title}* collection! 😍`, 0, images)
+    }
+
+    let priceText = `*${cat.title} — Price List*\n${cat.subtitle}\n\n`
 
     if (cat.groups) {
       cat.groups.forEach((g) => {
@@ -238,11 +273,9 @@ export default function ChatBot() {
       case 'home':
         await showMainMenu()
         break
-
       case 'menu':
         await showCategoryMenu()
         break
-
       case 'cat_cheesecake':
       case 'cat_cookies':
       case 'cat_cakes':
@@ -250,11 +283,10 @@ export default function ChatBot() {
       case 'cat_drinks':
         await showCategoryPrices(action.replace('cat_', ''))
         break
-
       case 'order': {
         setOptions([])
         await addBotMessage("To place an order, I'll redirect you to WhatsApp where our team will assist you personally! 💬")
-        await addBotMessage("You can tell them:\n• What you'd like to order\n• Delivery date & time\n• Your address in Ahmedabad")
+        await addBotMessage("You can tell them:\n• What you'd like to order\n• Delivery date & time\n• Your address in Gujarat")
         setOptions([
           { label: '💬 Open WhatsApp', action: 'whatsapp' },
           { label: '📋 View Menu First', action: 'menu' },
@@ -262,7 +294,6 @@ export default function ChatBot() {
         ])
         break
       }
-
       case 'whatsapp': {
         setOptions([])
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Cake & Crumb! I'd like to place an order.")}`, '_blank')
@@ -270,27 +301,24 @@ export default function ChatBot() {
         setOptions([{ label: '🏠 Main Menu', action: 'home' }])
         break
       }
-
       case 'delivery': {
         setOptions([])
-        await addBotMessage("*Delivery Information*\n\n📍 *Area:* Ahmedabad, Gujarat\n⏰ *Notice:* Please order 24 hours in advance\n🚗 *Delivery:* Free on orders above ₹499\n💰 *Delivery fee:* ₹49 (under ₹499)\n📦 *Packaging:* Included in price")
+        await addBotMessage("*Delivery Information*\n\n📍 *Area:* All Gujarat districts\n⏰ *Notice:* Please order 24 hours in advance\n🚗 *Delivery:* Free on orders above ₹499\n💰 *Delivery fee:* ₹49 (under ₹499)\n📦 *Packaging:* Included in price")
         setOptions([
           { label: '🛒 Place Order', action: 'order' },
           { label: '🏠 Main Menu', action: 'home' },
         ])
         break
       }
-
       case 'location': {
         setOptions([])
-        await addBotMessage("*Our Location*\n\n📍 Ahmedabad, Gujarat, India\n🏠 Home bakery — we deliver across Ahmedabad!\n\n*Delivery Areas:* Satellite, Prahlad Nagar, Vastrapur, Bodakdev, Thaltej, S.G. Highway, Bopal, and many more!")
+        await addBotMessage("*Our Location*\n\n📍 Ahmedabad, Gujarat, India\n🏠 Home bakery — we deliver across Gujarat!\n\n*Major Areas:* Ahmedabad, Gandhinagar, Surat, Vadodara, Rajkot & more!")
         setOptions([
           { label: '🛒 Place Order', action: 'order' },
           { label: '🏠 Main Menu', action: 'home' },
         ])
         break
       }
-
       case 'contact': {
         setOptions([])
         await addBotMessage("*Contact Us*\n\n📱 *WhatsApp (India):* +91 90816 68490\n📱 *WhatsApp (UK):* +44 7862 154461\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake_and_crumb_1\n\nWe reply within minutes! 💨")
@@ -300,7 +328,6 @@ export default function ChatBot() {
         ])
         break
       }
-
       default:
         break
     }
@@ -343,7 +370,6 @@ export default function ChatBot() {
     }
   }
 
-  // Initialize chat on first open
   useEffect(() => {
     if (open && !initialized) {
       setInitialized(true)
@@ -364,7 +390,7 @@ export default function ChatBot() {
         onClick={() => setOpen(!open)}
         className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
           open
-            ? 'bg-chocolate text-cream rotate-0'
+            ? 'bg-chocolate text-cream'
             : 'bg-[#25D366] text-white hover:shadow-2xl hover:shadow-green-500/30'
         }`}
         style={{ boxShadow: open ? undefined : '0 0 20px rgba(37, 211, 102, 0.4)' }}
@@ -377,7 +403,7 @@ export default function ChatBot() {
         className={`fixed z-[90] transition-all duration-300 ease-out
           bottom-0 right-0 left-0 sm:bottom-24 sm:right-6 sm:left-auto
           ${open
-            ? 'opacity-100 translate-y-0 sm:translate-y-0 pointer-events-auto'
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 translate-y-8 sm:translate-y-4 pointer-events-none'
           }`}
       >
@@ -411,16 +437,36 @@ export default function ChatBot() {
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line shadow-sm ${
+                  className={`max-w-[85%] shadow-sm overflow-hidden ${
                     msg.from === 'user'
-                      ? 'bg-[#DCF8C6] rounded-2xl rounded-tr-sm text-gray-800'
-                      : 'bg-white rounded-2xl rounded-tl-sm text-gray-800'
+                      ? 'bg-[#DCF8C6] rounded-2xl rounded-tr-sm'
+                      : 'bg-white rounded-2xl rounded-tl-sm'
                   }`}
-                  style={{
-                    animation: 'chat-msg-in 0.25s ease-out',
-                  }}
+                  style={{ animation: 'chat-msg-in 0.25s ease-out' }}
                 >
-                  {formatBold(msg.text)}
+                  {/* Image gallery */}
+                  {msg.images && (
+                    <div className="flex overflow-x-auto gap-1 p-1 scrollbar-hide">
+                      {msg.images.map((img, j) => (
+                        <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative">
+                          <img
+                            src={assetUrl(img.src)}
+                            alt={img.label}
+                            className="w-28 h-28 object-cover"
+                            loading="lazy"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                            <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Text */}
+                  <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line text-gray-800">
+                    {formatBold(msg.text)}
+                  </div>
                 </div>
               </div>
             ))}
@@ -456,7 +502,6 @@ export default function ChatBot() {
           {/* Input */}
           <div className="px-3 py-2 bg-[#F0F0F0] flex items-center gap-2 shrink-0">
             <input
-              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
