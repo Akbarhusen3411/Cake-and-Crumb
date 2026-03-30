@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { CheckCircle, Home, MessageCircle } from 'lucide-react'
-import useCartStore from '../../store/useCartStore'
+import useCartStore, { getCartItems, getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
 
@@ -14,10 +14,11 @@ const TIME_SLOT_LABELS = {
 
 export default function ConfirmationStep({ onClose }) {
   const checkout = useCheckoutStore()
-  const cartItems = useCartStore((s) => s.getCartItems())
-  const subtotal = useCartStore((s) => s.getSubtotal())
-  const deliveryFee = useCartStore((s) => s.getDeliveryFee())
-  const total = useCartStore((s) => s.getTotal())
+  const items = useCartStore((s) => s.items)
+  const cartItems = getCartItems(items)
+  const subtotal = getSubtotal(items)
+  const deliveryFee = getDeliveryFee(items)
+  const total = getTotal(items)
   const clearCart = useCartStore((s) => s.clearCart)
   const hasSent = useRef(false)
 

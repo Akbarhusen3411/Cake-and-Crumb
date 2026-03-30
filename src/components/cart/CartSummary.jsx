@@ -1,10 +1,11 @@
 import { Truck } from 'lucide-react'
-import useCartStore from '../../store/useCartStore'
+import useCartStore, { getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
 
 export default function CartSummary() {
-  const subtotal = useCartStore((s) => s.getSubtotal())
-  const deliveryFee = useCartStore((s) => s.getDeliveryFee())
-  const total = useCartStore((s) => s.getTotal())
+  const items = useCartStore((s) => s.items)
+  const subtotal = getSubtotal(items)
+  const deliveryFee = getDeliveryFee(items)
+  const total = getTotal(items)
 
   return (
     <div className="bg-cream/60 rounded-xl p-4 space-y-3">

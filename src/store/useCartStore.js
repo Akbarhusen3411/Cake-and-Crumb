@@ -37,30 +37,6 @@ const useCartStore = create(
         return item ? item.quantity : 0
       },
 
-      getCartItems: () => {
-        return get().items.map((item) => {
-          const product = getProductById(item.productId)
-          return product ? { ...product, quantity: item.quantity } : null
-        }).filter(Boolean)
-      },
-
-      getItemCount: () => {
-        return get().items.reduce((sum, i) => sum + i.quantity, 0)
-      },
-
-      getSubtotal: () => {
-        return get().getCartItems().reduce((sum, item) => sum + item.price * item.quantity, 0)
-      },
-
-      getDeliveryFee: () => {
-        const subtotal = get().getSubtotal()
-        return subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE
-      },
-
-      getTotal: () => {
-        return get().getSubtotal() + get().getDeliveryFee()
-      },
-
       clearCart: () => set({ items: [] }),
     }),
     {
@@ -68,5 +44,30 @@ const useCartStore = create(
     }
   )
 )
+
+// Computed helpers (call outside of selectors to avoid infinite re-renders)
+export function getCartItems(items) {
+  return items.map((item) => {
+    const product = getProductById(item.productId)
+    return product ? { ...product, quantity: item.quantity } : null
+  }).filter(Boolean)
+}
+
+export function getSubtotal(items) {
+  return getCartItems(items).reduce((sum, item) => sum + item.price * item.quantity, 0)
+}
+
+export function getItemCount(items) {
+  return items.reduce((sum, i) => sum + i.quantity, 0)
+}
+
+export function getDeliveryFee(items) {
+  const subtotal = getSubtotal(items)
+  return subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE
+}
+
+export function getTotal(items) {
+  return getSubtotal(items) + getDeliveryFee(items)
+}
 
 export default useCartStore

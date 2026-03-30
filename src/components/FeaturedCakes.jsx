@@ -51,7 +51,10 @@ function FeaturedCard({ item, index }) {
 function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
-  const quantity = useCartStore((s) => s.getItemQuantity(product.id))
+  const quantity = useCartStore((s) => {
+    const item = s.items.find((i) => i.productId === product.id)
+    return item ? item.quantity : 0
+  })
   const addToast = useToastStore((s) => s.addToast)
 
   const handleAdd = () => {

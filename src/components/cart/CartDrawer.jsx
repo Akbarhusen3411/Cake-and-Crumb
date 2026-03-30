@@ -1,14 +1,14 @@
+import { useMemo } from 'react'
 import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle } from 'lucide-react'
-import useCartStore from '../../store/useCartStore'
+import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import CartItem from './CartItem'
 import CartSummary from './CartSummary'
 
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
-
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
-  const cartItems = useCartStore((s) => s.getCartItems())
-  const itemCount = useCartStore((s) => s.getItemCount())
-  const subtotal = useCartStore((s) => s.getSubtotal())
+  const items = useCartStore((s) => s.items)
+  const cartItems = useMemo(() => getCartItems(items), [items])
+  const itemCount = getItemCount(items)
+  const subtotal = getSubtotal(items)
 
   const handleWhatsAppOrder = () => {
     const itemLines = cartItems.map((item) =>

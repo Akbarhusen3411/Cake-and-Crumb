@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { CreditCard, Banknote, ShieldCheck, AlertCircle } from 'lucide-react'
-import useCartStore from '../../store/useCartStore'
+import useCartStore, { getCartItems, getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { openRazorpay } from '../../config/razorpay'
 
 export default function PaymentStep({ onNext, onBack }) {
   const checkout = useCheckoutStore()
-  const cartItems = useCartStore((s) => s.getCartItems())
-  const subtotal = useCartStore((s) => s.getSubtotal())
-  const deliveryFee = useCartStore((s) => s.getDeliveryFee())
-  const total = useCartStore((s) => s.getTotal())
+  const items = useCartStore((s) => s.items)
+  const cartItems = getCartItems(items)
+  const subtotal = getSubtotal(items)
+  const deliveryFee = getDeliveryFee(items)
+  const total = getTotal(items)
 
   const [selectedMethod, setSelectedMethod] = useState(checkout.paymentMethod || '')
   const [error, setError] = useState('')

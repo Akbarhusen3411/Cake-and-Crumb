@@ -16,7 +16,8 @@ export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const itemCount = useCartStore((s) => s.getItemCount())
+  const items = useCartStore((s) => s.items)
+  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
