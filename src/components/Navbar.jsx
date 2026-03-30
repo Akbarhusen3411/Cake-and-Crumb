@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram, MessageCircle, Phone, MapPin, ArrowRight, Home, Cake, Heart, Star, Send, ShoppingBag } from 'lucide-react'
+import { Instagram, MessageCircle, Phone, MapPin, Home, Cake, Heart, Star, Send, ShoppingBag, X } from 'lucide-react'
 import useCartStore from '../store/useCartStore'
 import { assetUrl } from '../utils/assetPath'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
+const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
 
 const navLinks = [
   { label: 'Home', to: '/', icon: Home },
@@ -41,7 +42,7 @@ export default function Navbar({ onCartClick }) {
     setTimeout(() => {
       setMobileOpen(false)
       document.body.style.overflow = ''
-    }, 350)
+    }, 400)
   }, [])
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function Navbar({ onCartClick }) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo — always show title */}
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group relative z-50">
           <img
             src={assetUrl('/images/logo.png')}
@@ -95,7 +96,7 @@ export default function Navbar({ onCartClick }) {
             )
           })}
           <a
-            href="https://instagram.com/cake_and_crumb_1"
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="w-9 h-9 rounded-full border border-chocolate/15 flex items-center justify-center text-chocolate-light hover:bg-berry hover:border-berry hover:text-white transition-all duration-300"
@@ -146,126 +147,149 @@ export default function Navbar({ onCartClick }) {
             aria-label="Toggle menu"
           >
             <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ease-out ${
-              drawerVisible ? 'bg-cream rotate-45 translate-y-[7px]' : 'bg-chocolate'
+              drawerVisible ? 'bg-chocolate rotate-45 translate-y-[7px]' : 'bg-chocolate'
             }`} />
             <span className={`block w-6 h-[2px] rounded-full transition-all duration-200 ${
-              drawerVisible ? 'bg-cream opacity-0 scale-x-0' : 'bg-chocolate opacity-100'
+              drawerVisible ? 'bg-chocolate opacity-0 scale-x-0' : 'bg-chocolate opacity-100'
             }`} />
             <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ease-out ${
-              drawerVisible ? 'bg-cream -rotate-45 -translate-y-[7px]' : 'bg-chocolate'
+              drawerVisible ? 'bg-chocolate -rotate-45 -translate-y-[7px]' : 'bg-chocolate'
             }`} />
           </button>
         </div>
       </div>
 
-      {/* =========== Mobile Drawer =========== */}
-      {mobileOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className={`lg:hidden fixed inset-0 z-40 transition-all duration-300 ${
-              drawerVisible
-                ? 'bg-black/50 backdrop-blur-sm'
-                : 'bg-black/0'
-            }`}
-            onClick={closeDrawer}
-          />
+      {/* =========== Full-Screen Mobile Menu =========== */}
+      <div
+        className="lg:hidden fixed inset-0 z-[100] pointer-events-none"
+        style={{
+          visibility: mobileOpen ? 'visible' : 'hidden',
+        }}
+      >
+        {/* Solid background — fully covers page */}
+        <div
+          className="absolute inset-0 bg-cream-light pointer-events-auto"
+          style={{
+            opacity: drawerVisible ? 1 : 0,
+            transition: 'opacity 300ms ease',
+          }}
+        />
 
-          {/* Drawer Panel */}
+        {/* Decorative blurs */}
+        <div className="absolute top-[-10%] right-[-10%] w-72 h-72 bg-soft-pink/50 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[-5%] left-[-10%] w-64 h-64 bg-gold/15 rounded-full blur-[80px] pointer-events-none" />
+
+        {/* Close button */}
+        <button
+          onClick={closeDrawer}
+          className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10 pointer-events-auto"
+          style={{
+            opacity: drawerVisible ? 1 : 0,
+            transform: drawerVisible ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(-90deg)',
+            transition: 'all 300ms ease',
+            transitionDelay: drawerVisible ? '150ms' : '0ms',
+          }}
+        >
+          <X size={20} />
+        </button>
+
+        {/* Content */}
+        <div className="relative h-full flex flex-col items-center justify-center px-8 pointer-events-auto">
+
+          {/* Nav Links — centered */}
+          <nav className="flex flex-col items-center gap-2 mb-8">
+            {navLinks.map((link, i) => {
+              const isActive = location.pathname === link.to
+              const LinkIcon = link.icon
+              return (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className={`flex items-center gap-4 px-8 py-3.5 rounded-2xl transition-all duration-300 w-64 ${
+                    isActive
+                      ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
+                      : 'text-chocolate active:bg-chocolate/5'
+                  }`}
+                  style={{
+                    opacity: drawerVisible ? 1 : 0,
+                    transform: drawerVisible ? 'translateY(0)' : 'translateY(24px)',
+                    transition: 'opacity 350ms ease, transform 350ms ease',
+                    transitionDelay: drawerVisible ? `${80 + i * 60}ms` : '0ms',
+                  }}
+                >
+                  <LinkIcon size={20} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
+                  <span className="font-heading text-lg font-semibold">{link.label}</span>
+                  {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* CTA Buttons */}
           <div
-            className="lg:hidden fixed top-0 right-0 bottom-0 w-[82%] max-w-sm z-40 will-change-transform"
+            className="flex flex-col gap-3 w-64"
             style={{
-              transform: drawerVisible ? 'translateX(0)' : 'translateX(100%)',
-              transition: 'transform 350ms cubic-bezier(0.32, 0.72, 0, 1)',
+              opacity: drawerVisible ? 1 : 0,
+              transform: drawerVisible ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'all 350ms ease',
+              transitionDelay: drawerVisible ? '420ms' : '0ms',
             }}
           >
-            {/* Drawer background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-chocolate via-[#3a2118] to-[#2C1810] shadow-2xl" />
-            <div className="absolute top-0 left-0 w-64 h-64 bg-berry/8 rounded-full blur-[80px]" />
-            <div className="absolute bottom-0 right-0 w-48 h-48 bg-gold/8 rounded-full blur-[60px]" />
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
+            >
+              <MessageCircle size={18} />
+              Order on WhatsApp
+            </a>
+            <button
+              onClick={() => { closeDrawer(); setTimeout(onCartClick, 420) }}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
+            >
+              <ShoppingBag size={18} />
+              View Cart
+              {itemCount > 0 && (
+                <span className="ml-1 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+          </div>
 
-            {/* Drawer content */}
-            <div className="relative h-full flex flex-col pt-20 pb-8 px-6 overflow-y-auto drawer-scroll">
-
-
-              {/* Nav Links */}
-              <div className="space-y-1 mb-10">
-                {navLinks.map((link, i) => {
-                  const isActive = location.pathname === link.to
-                  const LinkIcon = link.icon
-                  return (
-                    <Link
-                      key={link.label}
-                      to={link.to}
-                      className={`group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 ${isActive ? 'bg-white/10' : 'active:bg-white/5'}`}
-                      style={{
-                        opacity: drawerVisible ? 1 : 0,
-                        transform: drawerVisible ? 'translateX(0)' : 'translateX(24px)',
-                        transitionDelay: drawerVisible ? `${150 + i * 50}ms` : '0ms',
-                      }}
-                    >
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 ${
-                        isActive ? 'bg-gold/20' : 'bg-white/5'
-                      }`}>
-                        <LinkIcon size={17} className={isActive ? 'text-gold' : 'text-cream/50'} />
-                      </div>
-                      <span className={`font-heading text-base font-semibold ${isActive ? 'text-gold' : 'text-cream/80'}`}>
-                        {link.label}
-                      </span>
-                      {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-gold" />}
-                      <ArrowRight size={14} className="ml-auto text-cream/15" />
-                    </Link>
-                  )
-                })}
+          {/* Bottom — Social + Contact */}
+          <div
+            className="absolute bottom-10 left-0 right-0 px-8"
+            style={{
+              opacity: drawerVisible ? 1 : 0,
+              transition: 'opacity 350ms ease',
+              transitionDelay: drawerVisible ? '500ms' : '0ms',
+            }}
+          >
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light">
+                <Instagram size={18} />
+              </a>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light">
+                <MessageCircle size={18} />
+              </a>
+              <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light">
+                <Phone size={18} />
+              </a>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
+                <MapPin size={11} />
+                <span className="text-[11px]">Ahmedabad, Gujarat</span>
               </div>
-
-              {/* WhatsApp CTA */}
-              <div
-                className="mb-8 transition-all duration-500"
-                style={{
-                  opacity: drawerVisible ? 1 : 0,
-                  transform: drawerVisible ? 'translateY(0)' : 'translateY(16px)',
-                  transitionDelay: drawerVisible ? '450ms' : '0ms',
-                }}
-              >
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#25D366] text-white font-medium text-sm active:scale-95 transition-transform"
-                >
-                  <MessageCircle size={16} />
-                  Order on WhatsApp
-                </a>
-              </div>
-
-              {/* Bottom Info */}
-              <div
-                className="mt-auto space-y-3 transition-all duration-500"
-                style={{
-                  opacity: drawerVisible ? 1 : 0,
-                  transform: drawerVisible ? 'translateY(0)' : 'translateY(16px)',
-                  transitionDelay: drawerVisible ? '500ms' : '0ms',
-                }}
-              >
-                <a href="tel:+919081668490" className="flex items-center gap-3 text-cream/40 active:text-cream/70 transition-colors">
-                  <Phone size={14} />
-                  <span className="text-xs">+91 90816 68490</span>
-                </a>
-                <div className="flex items-center gap-3 text-cream/40">
-                  <MapPin size={14} />
-                  <span className="text-xs">Ahmedabad, Gujarat</span>
-                </div>
-                <div className="pt-4 border-t border-white/5">
-                  <p className="text-[10px] text-cream/20 tracking-wider">
-                    THE GOURMET CHOCOLATE & BERRY BOUTIQUE
-                  </p>
-                </div>
-              </div>
+              <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">
+                The Gourmet Chocolate & Berry Boutique
+              </p>
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </nav>
   )
 }
