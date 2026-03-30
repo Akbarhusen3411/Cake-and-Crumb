@@ -559,6 +559,42 @@ body {
   }
 }
 
+/* ===== Mobile Menu Animations ===== */
+@keyframes menu-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes menu-overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes menu-item-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-overlay-open {
+  animation: menu-overlay-in 0.3s ease-out forwards;
+}
+
+.menu-overlay-close {
+  animation: menu-overlay-out 0.25s ease-in forwards;
+}
+
+.menu-item-in {
+  opacity: 0;
+  animation: menu-item-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--menu-delay, 0ms);
+}
+
 /* ===== Chat Message Animation ===== */
 @keyframes chat-msg-in {
   from { opacity: 0; transform: translateY(8px) scale(0.95); }
