@@ -60,22 +60,23 @@ function ProductCard({ product }) {
   }
 
   return (
-    <div className={`bg-white rounded-xl overflow-hidden border border-chocolate/5 transition-all duration-300 hover:shadow-md relative ${!product.inStock ? 'opacity-50' : ''}`}>
+    <div className={`product-card bg-white rounded-xl overflow-hidden border border-chocolate/5 relative ${!product.inStock ? 'opacity-50' : ''}`}>
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cream">
+      <div className="relative aspect-square overflow-hidden bg-cream group">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
             <Star size={9} fill="currentColor" /> Best
           </span>
         )}
         {!product.inStock && (
-          <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[2px]">
             <span className="text-xs font-semibold text-chocolate-light bg-cream px-3 py-1 rounded-full">Out of Stock</span>
           </div>
         )}
@@ -84,7 +85,10 @@ function ProductCard({ product }) {
       {/* Info */}
       <div className="p-3">
         <h4 className="text-sm font-semibold text-chocolate truncate">{product.shortName}</h4>
-        <p className="text-xs text-chocolate-light/50 mt-0.5">₹{product.price} / {product.unit}</p>
+        <p className="text-xs text-chocolate-light/50 mt-0.5 flex items-center gap-1">
+          <span className="text-berry font-semibold">₹{product.price}</span>
+          <span>/ {product.unit}</span>
+        </p>
 
         {/* Add / Quantity */}
         <div className="mt-2.5">
@@ -95,13 +99,13 @@ function ProductCard({ product }) {
           ) : quantity === 0 ? (
             <button
               onClick={handleAdd}
-              className="w-full py-1.5 rounded-lg bg-chocolate text-cream text-xs font-medium hover:bg-chocolate-light transition-colors flex items-center justify-center gap-1"
+              className="btn-ripple btn-touch w-full py-2 rounded-lg bg-chocolate text-cream text-xs font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-1.5 hover:shadow-lg active:scale-95"
             >
               <Plus size={13} />
-              Add
+              Add to Cart
             </button>
           ) : (
-            <div className="flex justify-center">
+            <div className="flex justify-center count-animate">
               <QuantitySelector
                 quantity={quantity}
                 onIncrease={() => updateQuantity(product.id, quantity + 1)}
@@ -234,7 +238,7 @@ export default function FeaturedCakes() {
             </span>
           </div>
           <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            Handcrafted with Love
+            <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Handcrafted</span> with Love
           </h2>
           <p className="fade-up text-chocolate-light/60 max-w-2xl mx-auto leading-relaxed">
             From 21 cheesecake flavours to fresh-baked cookies, creamy dessert cups and refreshing drinks —

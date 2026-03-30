@@ -27,7 +27,7 @@ export default function Testimonials() {
             </span>
           </div>
           <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            What Our Customers Say
+            What Our <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Customers</span> Say
           </h2>
           <p className="fade-up text-chocolate-light/60 max-w-xl mx-auto leading-relaxed">
             Real stories from real people who've tasted the Cake & Crumb difference.

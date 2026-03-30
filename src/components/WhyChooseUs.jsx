@@ -25,7 +25,7 @@ export default function WhyChooseUs() {
             </span>
           </div>
           <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            Why Choose Cake & Crumb
+            Why Choose <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Cake & Crumb</span>
           </h2>
           <p className="fade-up text-chocolate-light/60 max-w-xl mx-auto leading-relaxed">
             We believe every celebration deserves something extraordinary — made with heart, not shortcuts.

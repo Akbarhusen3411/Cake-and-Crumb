@@ -45,7 +45,7 @@ export default function Hero() {
             <h1
               className={`font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-chocolate leading-[1.15] mb-4 transition-all duration-1000 delay-200 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
             >
-              Cake <span className="text-gradient">&</span> Crumb
+              <span className="font-script text-4xl sm:text-5xl lg:text-6xl">Cake</span> <span className="text-gradient">&</span> <span className="font-script text-4xl sm:text-5xl lg:text-6xl">Crumb</span>
             </h1>
 
             <p
@@ -158,7 +158,7 @@ export default function Hero() {
 
               {/* Price badge */}
               <div className="absolute -top-3 right-8 sm:right-16 bg-berry text-white px-4 py-2 rounded-full shadow-xl animate-float-reverse badge-glow">
-                <p className="text-xs font-semibold">From ₹49</p>
+                <p className="text-xs font-semibold">From ₹55</p>
               </div>
 
               {/* Rating badge */}

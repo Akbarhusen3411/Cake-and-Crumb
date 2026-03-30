@@ -60,7 +60,7 @@ export default function Navbar({ onCartClick }) {
             <span className="font-heading text-cream text-sm font-bold">C&C</span>
           </div>
           <div className="leading-tight">
-            <span className={`font-heading text-lg sm:text-xl font-bold tracking-wide block transition-colors duration-500 ${mobileOpen ? 'text-cream' : 'text-chocolate'}`}>
+            <span className={`font-script text-2xl sm:text-2xl tracking-wide block transition-colors duration-500 ${mobileOpen ? 'text-cream' : 'text-chocolate'}`}>
               Cake <span className={mobileOpen ? 'text-berry-light' : 'text-berry'}>&</span> Crumb
             </span>
             <span className="font-heading text-[10px] sm:text-xs text-chocolate-light/60 italic tracking-wider hidden sm:block">

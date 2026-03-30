@@ -46,7 +46,7 @@ export default function Footer() {
                 <span className="font-heading text-cream text-sm font-bold">C&C</span>
               </div>
               <div>
-                <span className="font-heading text-lg font-bold text-chocolate block">
+                <span className="font-script text-2xl text-chocolate block">
                   Cake <span className="text-berry">&</span> Crumb
                 </span>
               </div>

@@ -14,6 +14,7 @@
 
   --font-heading: 'Poppins', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --font-script: 'Great Vibes', cursive;
 }
 
 /* ===== Base ===== */
@@ -402,4 +403,153 @@ body {
   will-change: opacity, transform;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+}
+
+/* ===== Bakery Script Font ===== */
+.font-script {
+  font-family: var(--font-script);
+}
+
+/* ===== Enhanced Button Animations ===== */
+@keyframes btn-ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.6s, opacity 0.6s;
+}
+
+.btn-ripple:active::before {
+  animation: btn-ripple 0.6s ease-out;
+}
+
+/* ===== Order Button Pulse ===== */
+@keyframes order-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2); }
+  50% { transform: scale(1.03); box-shadow: 0 6px 25px rgba(62, 39, 35, 0.35); }
+}
+
+.btn-order-pulse:hover {
+  animation: order-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== Cart Item Enter ===== */
+@keyframes cart-item-enter {
+  from { opacity: 0; transform: translateX(20px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.cart-item-enter {
+  animation: cart-item-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== Add to Cart Success ===== */
+@keyframes add-success {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.92); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.add-success {
+  animation: add-success 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== Product Card Hover Lift ===== */
+.product-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(62, 39, 35, 0.1);
+}
+
+/* ===== Category Tab Slide ===== */
+@keyframes tab-slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.tab-slide-in {
+  animation: tab-slide-in 0.3s ease-out;
+}
+
+/* ===== Decorative Ornament ===== */
+.ornament-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ornament-line::before,
+.ornament-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+/* ===== Floating Price Tag ===== */
+@keyframes price-bounce {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+
+.price-tag-float {
+  animation: price-bounce 3s ease-in-out infinite;
+}
+
+/* ===== Smooth Counter Animation ===== */
+@keyframes count-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.count-animate {
+  animation: count-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== Enhanced Mobile Touch Feedback ===== */
+@media (max-width: 1023px) {
+  .product-card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s;
+  }
+
+  .btn-touch:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+  }
+}
+
+/* ===== Tablet Optimizations ===== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tablet-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ===== Skeleton Loading ===== */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, var(--color-cream) 0%, var(--color-cream-dark) 50%, var(--color-cream) 100%);
+  background-size: 200% 100%;
 }

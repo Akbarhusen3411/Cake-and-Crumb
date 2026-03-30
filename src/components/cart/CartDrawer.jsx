@@ -1,11 +1,22 @@
-import { ShoppingBag, X, ArrowRight } from 'lucide-react'
+import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle } from 'lucide-react'
 import useCartStore from '../../store/useCartStore'
 import CartItem from './CartItem'
 import CartSummary from './CartSummary'
 
+const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
+
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const cartItems = useCartStore((s) => s.getCartItems())
   const itemCount = useCartStore((s) => s.getItemCount())
+  const subtotal = useCartStore((s) => s.getSubtotal())
+
+  const handleWhatsAppOrder = () => {
+    const itemLines = cartItems.map((item) =>
+      `- ${item.shortName} x${item.quantity} = ₹${item.price * item.quantity}`
+    ).join('%0A')
+    const msg = `Hi Cake %26 Crumb!%0A%0AI'd like to order:%0A${itemLines}%0A%0ATotal: ₹${subtotal}%0A%0APlease confirm availability!`
+    window.open(`https://wa.me/919081668490?text=${msg}`, '_blank')
+  }
 
   return (
     <>
@@ -25,19 +36,21 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
       >
         <div className="h-full bg-white flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-5 border-b border-chocolate/5">
+          <div className="flex items-center justify-between p-5 border-b border-chocolate/5 bg-gradient-to-r from-cream-light to-white">
             <div className="flex items-center gap-3">
-              <ShoppingBag size={20} className="text-chocolate" />
-              <h2 className="font-heading text-lg font-bold text-chocolate">Your Cart</h2>
-              {itemCount > 0 && (
-                <span className="bg-berry text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                  {itemCount}
-                </span>
-              )}
+              <div className="w-9 h-9 rounded-full bg-chocolate flex items-center justify-center">
+                <ShoppingBag size={16} className="text-cream" />
+              </div>
+              <div>
+                <h2 className="font-heading text-lg font-bold text-chocolate">Your Cart</h2>
+                {itemCount > 0 && (
+                  <p className="text-[11px] text-chocolate-light/50">{itemCount} {itemCount === 1 ? 'item' : 'items'}</p>
+                )}
+              </div>
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center transition-colors"
+              className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center transition-all duration-300 hover:rotate-90"
             >
               <X size={18} className="text-chocolate-light" />
             </button>
@@ -46,40 +59,57 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
           {/* Items */}
           {cartItems.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-cream flex items-center justify-center mb-5">
-                <ShoppingBag size={32} className="text-chocolate-light/30" />
+              <div className="w-24 h-24 rounded-full bg-cream flex items-center justify-center mb-5 animate-float-slow">
+                <ShoppingBag size={36} className="text-chocolate-light/30" />
               </div>
-              <h3 className="font-heading text-base font-semibold text-chocolate mb-2">
+              <h3 className="font-heading text-lg font-semibold text-chocolate mb-2">
                 Your cart is empty
               </h3>
-              <p className="text-sm text-chocolate-light/50 max-w-[240px]">
-                Browse our menu and add something delicious!
+              <p className="text-sm text-chocolate-light/50 max-w-[260px] leading-relaxed">
+                Browse our handcrafted menu and add something delicious!
               </p>
               <button
                 onClick={onClose}
-                className="mt-6 text-sm font-medium text-berry hover:text-berry-light transition-colors"
+                className="btn-touch mt-6 text-sm font-medium text-berry hover:text-berry-light transition-colors px-5 py-2 rounded-full border border-berry/20 hover:bg-berry/5"
               >
-                Continue Shopping
+                Explore Menu
               </button>
             </div>
           ) : (
             <>
               <div className="flex-1 overflow-y-auto px-5">
-                {cartItems.map((item) => (
-                  <CartItem key={item.id} item={item} />
+                {cartItems.map((item, i) => (
+                  <div key={item.id} className="cart-item-enter" style={{ animationDelay: `${i * 50}ms` }}>
+                    <CartItem item={item} />
+                  </div>
                 ))}
               </div>
 
               {/* Summary + CTA */}
-              <div className="p-5 border-t border-chocolate/5 space-y-4">
+              <div className="p-5 border-t border-chocolate/5 space-y-3 bg-gradient-to-t from-cream-light/50 to-white">
                 <CartSummary />
+
+                {/* Quick WhatsApp Order */}
+                <button
+                  onClick={handleWhatsAppOrder}
+                  className="btn-touch w-full bg-[#25D366] text-white py-3 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 hover:bg-[#1FB855] hover:shadow-lg active:scale-[0.98]"
+                >
+                  <MessageCircle size={16} />
+                  Quick Order via WhatsApp
+                </button>
+
                 <button
                   onClick={() => { onClose(); onCheckout() }}
-                  className="btn-shimmer w-full bg-chocolate text-cream py-3.5 rounded-xl font-medium text-sm hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-2"
+                  className="btn-shimmer btn-touch btn-order-pulse w-full bg-chocolate text-cream py-3.5 rounded-xl font-medium text-sm hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98]"
                 >
+                  <Sparkles size={14} />
                   Proceed to Checkout
-                  <ArrowRight size={16} />
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
+
+                <p className="text-center text-[10px] text-chocolate-light/40 pt-1">
+                  Free delivery on orders above ₹499
+                </p>
               </div>
             </>
           )}
