@@ -413,18 +413,16 @@ export default function ChatBot() {
       `*📅* ${orderInfo.date}\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
-    // Admin-only actions (sent separately)
-    const adminMsg = `🔔 *ORDER ACTIONS — ${orderId}*\n` +
-      `Customer: ${orderInfo.name} (${orderInfo.phone})\n\n` +
-      `✅ *Confirm:*\n${confirmLink}\n\n` +
-      `📦 *Shipped:*\n${shippedLink}\n\n` +
-      `❌ *Reject:*\n${rejectLink}`
-
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
 
-    // Send admin actions as separate message after delay
     setTimeout(() => {
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(adminMsg)}`, '_blank')
+      const adminNote = `📋 *${orderId}* — Quick Reply\n` +
+        `👤 ${orderInfo.name}\n📞 ${orderInfo.phone}\n\n` +
+        `━━━ Tap below to reply ━━━\n\n` +
+        `✅ Confirm → ${confirmLink}\n\n` +
+        `📦 Shipped → ${shippedLink}\n\n` +
+        `❌ Reject → ${rejectLink}`
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(adminNote)}`, '_blank')
     }, 2000)
   }
 

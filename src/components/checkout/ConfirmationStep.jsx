@@ -80,19 +80,17 @@ export default function ConfirmationStep({ onClose }) {
       `*💳* ${checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
-    // Admin-only message (sent to admin's self-chat with action links)
-    const adminMsg = `🔔 *ORDER ACTIONS — ${orderId}*\n` +
-      `Customer: ${checkout.customerName} (${checkout.phone})\n\n` +
-      `✅ *Confirm:*\n${confirmLink}\n\n` +
-      `📦 *Shipped:*\n${shippedLink}\n\n` +
-      `❌ *Reject:*\n${rejectLink}`
-
-    // Open customer → admin chat
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
 
-    // After a short delay, open admin self-chat with action links
+    // After delay, open admin self-note with reply shortcuts
     setTimeout(() => {
-      window.open(`https://wa.me/919081668490?text=${encodeURIComponent(adminMsg)}`, '_blank')
+      const adminNote = `📋 *${orderId}* — Quick Reply\n` +
+        `👤 ${checkout.customerName}\n📞 ${checkout.phone}\n\n` +
+        `━━━ Tap below to reply ━━━\n\n` +
+        `✅ Confirm → ${confirmLink}\n\n` +
+        `📦 Shipped → ${shippedLink}\n\n` +
+        `❌ Reject → ${rejectLink}`
+      window.open(`https://wa.me/919081668490?text=${encodeURIComponent(adminNote)}`, '_blank')
     }, 2000)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
