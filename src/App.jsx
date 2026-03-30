@@ -3,7 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import WhatsAppButton from './components/WhatsAppButton'
+import ChatBot from './components/ChatBot'
 import LocationDialog from './components/LocationDialog'
 import CartDrawer from './components/cart/CartDrawer'
 import CheckoutPage from './components/checkout/CheckoutPage'
@@ -42,7 +42,7 @@ function AppContent() {
       </main>
 
       <Footer />
-      <WhatsAppButton />
+      <ChatBot />
 
       <LocationDialog />
       <CartDrawer
