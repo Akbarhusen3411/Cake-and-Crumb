@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, ChevronRight } from 'lucide-react'
+import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 
 const WHATSAPP_NUMBER = '919081668490'
@@ -42,118 +42,138 @@ const CAT_IMAGES = {
   ],
 }
 
-// ─── Chat Flow Data ───
+// ─── Orderable items with prices ───
+const ORDER_ITEMS = {
+  cheesecake_slice: [
+    { name: 'Strawberry Slice', price: 90 },
+    { name: 'Blueberry Slice', price: 90 },
+    { name: 'Raspberry Slice', price: 90 },
+    { name: 'Mango Slice', price: 100 },
+    { name: 'Passion Fruit Slice', price: 100 },
+    { name: 'Chocolate Slice', price: 115 },
+    { name: 'Nutella Slice', price: 120 },
+    { name: 'Biscoff Slice', price: 120 },
+    { name: 'Cookies & Cream Slice', price: 125 },
+    { name: 'Caramel Slice', price: 125 },
+    { name: 'Coffee Slice', price: 125 },
+    { name: 'Pistachio Slice', price: 140 },
+  ],
+  cheesecake_whole: [
+    { name: 'Strawberry Whole', price: 700 },
+    { name: 'Blueberry Whole', price: 700 },
+    { name: 'Mango Whole', price: 800 },
+    { name: 'Chocolate Whole', price: 900 },
+    { name: 'Nutella Whole', price: 950 },
+    { name: 'Biscoff Whole', price: 950 },
+    { name: 'Cookies & Cream Whole', price: 1000 },
+    { name: 'Pistachio Whole', price: 1100 },
+  ],
+  cookies: [
+    { name: 'Triple Choc Cookie', price: 65 },
+    { name: 'Classic Cookie', price: 55 },
+    { name: 'Red Velvet Cookie', price: 70 },
+    { name: 'Pistachio Rose Cookie', price: 90 },
+    { name: 'Almond Cookie', price: 70 },
+    { name: 'Cookie Box (6)', price: 360 },
+    { name: 'Cookie Box (12)', price: 680 },
+  ],
+  cakes: [
+    { name: 'Choc Cupcake', price: 100 },
+    { name: 'Vanilla Cupcake', price: 100 },
+    { name: 'Brownie', price: 80 },
+    { name: 'Blondie', price: 80 },
+    { name: 'Cakesicle', price: 120 },
+    { name: 'Cake Pop', price: 90 },
+    { name: 'Biscoff Milk Cake (Whole)', price: 800 },
+    { name: 'Rose Milk Cake (Whole)', price: 800 },
+    { name: 'Pistachio Milk Cake (Whole)', price: 950 },
+  ],
+  desserts: [
+    { name: 'Custard Cup', price: 90 },
+    { name: 'Cheesecake Cup', price: 150 },
+    { name: 'Trifle Cup', price: 100 },
+    { name: 'Jelly Cup', price: 80 },
+  ],
+  drinks: [
+    { name: 'Virgin Mojito', price: 120 },
+    { name: 'Blue Lagoon', price: 120 },
+    { name: 'Strawberry Mojito', price: 120 },
+    { name: 'Biscoff Milkshake', price: 180 },
+    { name: 'Nutella Milkshake', price: 180 },
+    { name: 'Iced Coffee', price: 100 },
+    { name: 'Hot Coffee', price: 90 },
+  ],
+}
+
+// ─── Menu price display data ───
 const MENU_DATA = {
   cheesecake: {
-    title: 'Cheesecake',
-    subtitle: '6" cake · 8 slices',
+    title: 'Cheesecake', subtitle: '6" cake · 8 slices',
     groups: [
       { name: 'Classic', items: [
-        { n: 'Strawberry', s: '₹90', w: '₹700' },
-        { n: 'Blueberry', s: '₹90', w: '₹700' },
-        { n: 'Raspberry', s: '₹90', w: '₹700' },
-        { n: 'Cherry', s: '₹90', w: '₹700' },
-        { n: 'Lemon', s: '₹90', w: '₹700' },
+        { n: 'Strawberry', s: '₹90', w: '₹700' }, { n: 'Blueberry', s: '₹90', w: '₹700' },
+        { n: 'Raspberry', s: '₹90', w: '₹700' }, { n: 'Cherry', s: '₹90', w: '₹700' }, { n: 'Lemon', s: '₹90', w: '₹700' },
       ]},
       { name: 'Exotic', items: [
-        { n: 'Mango', s: '₹100', w: '₹800' },
-        { n: 'Passion Fruit', s: '₹100', w: '₹800' },
-        { n: 'Coconut', s: '₹100', w: '₹800' },
-        { n: 'Guava', s: '₹100', w: '₹800' },
+        { n: 'Mango', s: '₹100', w: '₹800' }, { n: 'Passion Fruit', s: '₹100', w: '₹800' },
+        { n: 'Coconut', s: '₹100', w: '₹800' }, { n: 'Guava', s: '₹100', w: '₹800' },
       ]},
       { name: 'Chocolate', items: [
-        { n: 'Chocolate Orange', s: '₹115', w: '₹900' },
-        { n: 'Black Forest', s: '₹115', w: '₹900' },
-        { n: 'Nutella', s: '₹120', w: '₹950' },
-        { n: 'Biscoff', s: '₹120', w: '₹950' },
+        { n: 'Chocolate Orange', s: '₹115', w: '₹900' }, { n: 'Black Forest', s: '₹115', w: '₹900' },
+        { n: 'Nutella', s: '₹120', w: '₹950' }, { n: 'Biscoff', s: '₹120', w: '₹950' },
       ]},
       { name: 'Premium', items: [
-        { n: 'Cookies & Cream', s: '₹125', w: '₹1,000' },
-        { n: 'Caramel', s: '₹125', w: '₹1,000' },
-        { n: 'Coffee', s: '₹125', w: '₹1,000' },
-        { n: 'Pistachio', s: '₹140', w: '₹1,100' },
+        { n: 'Cookies & Cream', s: '₹125', w: '₹1,000' }, { n: 'Caramel', s: '₹125', w: '₹1,000' },
+        { n: 'Coffee', s: '₹125', w: '₹1,000' }, { n: 'Pistachio', s: '₹140', w: '₹1,100' },
       ]},
     ],
   },
   cookies: {
-    title: 'Cookies',
-    subtitle: 'Per piece',
+    title: 'Cookies', subtitle: 'Per piece',
     items: [
-      { n: 'Triple Chocolate', p: '₹65' },
-      { n: 'White Chocolate', p: '₹65' },
-      { n: 'Classic Choc Chip', p: '₹55' },
-      { n: 'Red Velvet', p: '₹70' },
-      { n: 'Almond', p: '₹70' },
-      { n: 'Coconut', p: '₹65' },
-      { n: 'Pistachio & Rose', p: '₹90' },
-      { n: 'Box of 6', p: '₹360' },
-      { n: 'Box of 12', p: '₹680' },
+      { n: 'Triple Chocolate', p: '₹65' }, { n: 'Classic Choc Chip', p: '₹55' }, { n: 'Red Velvet', p: '₹70' },
+      { n: 'Pistachio & Rose', p: '₹90' }, { n: 'Almond', p: '₹70' }, { n: 'Coconut', p: '₹65' },
+      { n: 'Box of 6', p: '₹360' }, { n: 'Box of 12', p: '₹680' },
     ],
   },
   cakes: {
-    title: 'Cakes & Treats',
-    subtitle: 'Per piece / whole',
+    title: 'Cakes & Treats', subtitle: 'Per piece / whole',
     groups: [
-      { name: 'Cupcakes', items: [
-        { n: 'Chocolate', p: '₹100' },
-        { n: 'Vanilla', p: '₹100' },
-      ]},
+      { name: 'Cupcakes', items: [{ n: 'Chocolate', p: '₹100' }, { n: 'Vanilla', p: '₹100' }] },
       { name: 'Bakes', items: [
-        { n: 'Brownie', p: '₹80' },
-        { n: 'Blondie', p: '₹80' },
-        { n: 'Cakesicle', p: '₹120' },
-        { n: 'Cake Pop', p: '₹90' },
-        { n: 'Choc Strawberry', p: '₹70' },
+        { n: 'Brownie', p: '₹80' }, { n: 'Blondie', p: '₹80' }, { n: 'Cakesicle', p: '₹120' },
+        { n: 'Cake Pop', p: '₹90' }, { n: 'Choc Strawberry', p: '₹70' },
       ]},
       { name: 'Milk Cake 6"', items: [
-        { n: 'Biscoff', s: '₹100', w: '₹800' },
-        { n: 'Tres Leches', s: '₹100', w: '₹800' },
-        { n: 'Rose', s: '₹100', w: '₹800' },
-        { n: 'Turkish', s: '₹110', w: '₹850' },
-        { n: 'Chocolate', s: '₹110', w: '₹850' },
-        { n: 'Raspberry', s: '₹115', w: '₹900' },
-        { n: 'Pistachio', s: '₹120', w: '₹950' },
+        { n: 'Biscoff', s: '₹100', w: '₹800' }, { n: 'Rose', s: '₹100', w: '₹800' },
+        { n: 'Chocolate', s: '₹110', w: '₹850' }, { n: 'Pistachio', s: '₹120', w: '₹950' },
       ]},
     ],
   },
   desserts: {
-    title: 'Dessert Cups',
-    subtitle: 'Per cup',
+    title: 'Dessert Cups', subtitle: 'Per cup',
     items: [
-      { n: 'Custard Cup', p: '₹90' },
-      { n: 'Cheesecake Cup', p: '₹150' },
-      { n: 'Trifle Cup', p: '₹100' },
-      { n: 'Jelly Cup', p: '₹80' },
-      { n: 'Grass Cup', p: '₹90' },
+      { n: 'Custard Cup', p: '₹90' }, { n: 'Cheesecake Cup', p: '₹150' },
+      { n: 'Trifle Cup', p: '₹100' }, { n: 'Jelly Cup', p: '₹80' }, { n: 'Grass Cup', p: '₹90' },
     ],
   },
   drinks: {
-    title: 'Drinks',
-    subtitle: 'Per glass / cup',
+    title: 'Drinks', subtitle: 'Per glass / cup',
     groups: [
       { name: 'Mojitos', items: [
-        { n: 'Virgin Mojito', p: '₹120' },
-        { n: 'Blue Lagoon', p: '₹120' },
-        { n: 'Strawberry', p: '₹120' },
-        { n: 'Any Fruit', p: '₹130' },
+        { n: 'Virgin Mojito', p: '₹120' }, { n: 'Blue Lagoon', p: '₹120' }, { n: 'Strawberry', p: '₹120' },
       ]},
       { name: 'Milkshakes', items: [
-        { n: 'Fruit Flavour', p: '₹160' },
-        { n: 'Biscoff', p: '₹180' },
-        { n: 'Nutella', p: '₹180' },
-        { n: 'Oreo', p: '₹180' },
+        { n: 'Biscoff', p: '₹180' }, { n: 'Nutella', p: '₹180' }, { n: 'Oreo', p: '₹180' },
       ]},
-      { name: 'Coffee', items: [
-        { n: 'Iced Coffee', p: '₹100' },
-        { n: 'Hot Coffee', p: '₹90' },
-      ]},
+      { name: 'Coffee', items: [{ n: 'Iced Coffee', p: '₹100' }, { n: 'Hot Coffee', p: '₹90' }] },
     ],
   },
 }
 
 const INITIAL_MESSAGES = [
   { from: 'bot', text: "Hello! Welcome to *Cake & Crumb* — The Gourmet Chocolate & Berry Boutique! 🎂", delay: 0 },
-  { from: 'bot', text: "I'm here to help you explore our menu, check prices, or place an order. How can I help you today?", delay: 600 },
+  { from: 'bot', text: "I'm here to help you explore our menu, check prices, or place an order. How can I help?", delay: 600 },
 ]
 
 const MAIN_OPTIONS = [
@@ -173,9 +193,70 @@ const MENU_CATEGORIES = [
   { label: '◀️ Back to Main', action: 'home' },
 ]
 
+const ORDER_CATEGORIES = [
+  { label: '🍰 Cheesecake Slices', action: 'ord_cheesecake_slice' },
+  { label: '🎂 Cheesecake Whole', action: 'ord_cheesecake_whole' },
+  { label: '🍪 Cookies', action: 'ord_cookies' },
+  { label: '🧁 Cakes & Treats', action: 'ord_cakes' },
+  { label: '🍮 Dessert Cups', action: 'ord_desserts' },
+  { label: '🥤 Drinks', action: 'ord_drinks' },
+  { label: '✅ Review My Order', action: 'review_order' },
+  { label: '🏠 Main Menu', action: 'home' },
+]
+
 function formatBold(text) {
   return text.split('*').map((part, i) =>
     i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+  )
+}
+
+// ─── Order Item Selector Component ───
+function OrderItemSelector({ items, cart, onUpdate, onDone }) {
+  return (
+    <div className="bg-white rounded-2xl rounded-tl-sm shadow-sm overflow-hidden max-w-[90%]" style={{ animation: 'chat-msg-in 0.25s ease-out' }}>
+      <div className="px-3 py-2 bg-[#075E54]/5 border-b border-gray-100">
+        <p className="text-[11px] font-semibold text-[#075E54]">Tap + to add items</p>
+      </div>
+      <div className="max-h-[250px] overflow-y-auto">
+        {items.map((item) => {
+          const qty = cart[item.name] || 0
+          return (
+            <div key={item.name} className="flex items-center justify-between px-3 py-2 border-b border-gray-50 last:border-0">
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-medium text-gray-800 truncate">{item.name}</p>
+                <p className="text-[11px] text-[#25D366] font-semibold">₹{item.price}</p>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {qty > 0 && (
+                  <>
+                    <button
+                      onClick={() => onUpdate(item.name, item.price, qty - 1)}
+                      className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 active:scale-90"
+                    >
+                      <Minus size={11} />
+                    </button>
+                    <span className="w-5 text-center text-[12px] font-bold text-gray-800">{qty}</span>
+                  </>
+                )}
+                <button
+                  onClick={() => onUpdate(item.name, item.price, qty + 1)}
+                  className="w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white active:scale-90"
+                >
+                  <Plus size={11} />
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <button
+        onClick={onDone}
+        className="w-full py-2.5 bg-[#075E54] text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 active:bg-[#064e47]"
+      >
+        <ShoppingBag size={13} />
+        Done — Add More or Review Order
+      </button>
+    </div>
   )
 }
 
@@ -186,6 +267,10 @@ export default function ChatBot() {
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
   const [initialized, setInitialized] = useState(false)
+  const [orderCart, setOrderCart] = useState({}) // { itemName: { qty, price } }
+  const [activeOrderCat, setActiveOrderCat] = useState(null) // which category selector is open
+  const [orderStep, setOrderStep] = useState(null) // 'name', 'phone', 'address', 'date'
+  const [orderInfo, setOrderInfo] = useState({ name: '', phone: '', address: '', date: '' })
   const scrollRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -204,7 +289,7 @@ export default function ChatBot() {
           setMessages((prev) => [...prev, { from: 'bot', text, images }])
           scrollToBottom()
           resolve()
-        }, 300 + Math.min(text.length * 3, 600))
+        }, 250 + Math.min(text.length * 2, 500))
       }, delay)
     })
   }
@@ -214,8 +299,32 @@ export default function ChatBot() {
     scrollToBottom()
   }
 
+  const getCartTotal = () => {
+    return Object.values(orderCart).reduce((sum, item) => sum + item.price * item.qty, 0)
+  }
+
+  const getCartSummary = () => {
+    const items = Object.entries(orderCart).filter(([, v]) => v.qty > 0)
+    if (items.length === 0) return 'No items yet'
+    return items.map(([name, { qty, price }]) => `• ${name} x${qty} = ₹${price * qty}`).join('\n')
+  }
+
+  const updateCartItem = (name, price, qty) => {
+    setOrderCart((prev) => {
+      const updated = { ...prev }
+      if (qty <= 0) {
+        delete updated[name]
+      } else {
+        updated[name] = { qty, price }
+      }
+      return updated
+    })
+  }
+
   const showMainMenu = async () => {
     setOptions([])
+    setActiveOrderCat(null)
+    setOrderStep(null)
     await addBotMessage("What would you like to do?")
     setOptions(MAIN_OPTIONS)
   }
@@ -232,29 +341,19 @@ export default function ChatBot() {
     const images = CAT_IMAGES[catKey]
     if (!cat) return
 
-    // Show images first
-    if (images) {
-      await addBotMessage(`Here's our *${cat.title}* collection! 😍`, 0, images)
-    }
+    if (images) await addBotMessage(`Here's our *${cat.title}* collection! 😍`, 0, images)
 
     let priceText = `*${cat.title} — Price List*\n${cat.subtitle}\n\n`
-
     if (cat.groups) {
       cat.groups.forEach((g) => {
         priceText += `*${g.name}*\n`
         g.items.forEach((item) => {
-          if (item.s && item.w) {
-            priceText += `  ${item.n} — ${item.s}/slice · ${item.w}/whole\n`
-          } else {
-            priceText += `  ${item.n} — ${item.p}\n`
-          }
+          priceText += item.s ? `  ${item.n} — ${item.s}/slice · ${item.w}/whole\n` : `  ${item.n} — ${item.p}\n`
         })
         priceText += '\n'
       })
     } else {
-      cat.items.forEach((item) => {
-        priceText += `  ${item.n} — ${item.p}\n`
-      })
+      cat.items.forEach((item) => { priceText += `  ${item.n} — ${item.p}\n` })
     }
 
     await addBotMessage(priceText.trim())
@@ -266,34 +365,122 @@ export default function ChatBot() {
     ])
   }
 
+  const showOrderCategories = async () => {
+    setOptions([])
+    setActiveOrderCat(null)
+    const total = getCartTotal()
+    if (total > 0) {
+      await addBotMessage(`*Your cart so far:* ₹${total}\n\nSelect a category to add items, or review your order:`)
+    } else {
+      await addBotMessage("Select a category to start adding items to your order:")
+    }
+    setOptions(ORDER_CATEGORIES)
+  }
+
+  const sendOrderToWhatsApp = () => {
+    const items = Object.entries(orderCart).filter(([, v]) => v.qty > 0)
+    const total = getCartTotal()
+    const deliveryFee = total >= 499 ? 0 : 49
+    const grandTotal = total + deliveryFee
+
+    const orderLines = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
+
+    const msg = `🎂 *NEW ORDER — Cake & Crumb*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*📋 Order Items:*\n${orderLines}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*Subtotal:* ₹${total}\n` +
+      `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
+      `*💰 Grand Total: ₹${grandTotal}*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*👤 Customer:* ${orderInfo.name}\n` +
+      `*📞 Phone:* ${orderInfo.phone}\n` +
+      `*📍 Address:* ${orderInfo.address}\n` +
+      `*📅 Delivery:* ${orderInfo.date}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `Please confirm & share payment details. Thank you! 🙏`
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+  }
+
   const handleAction = async (action, label) => {
     if (label) addUserMessage(label.replace(/^[^\s]+ /, ''))
 
+    // Order category selection
+    if (action.startsWith('ord_')) {
+      const catKey = action.replace('ord_', '')
+      const items = ORDER_ITEMS[catKey]
+      if (items) {
+        setOptions([])
+        await addBotMessage(`Tap *+* to add items. Tap *Done* when finished.`)
+        setActiveOrderCat(catKey)
+        scrollToBottom()
+      }
+      return
+    }
+
     switch (action) {
       case 'home':
+        setOrderCart({})
+        setOrderStep(null)
+        setOrderInfo({ name: '', phone: '', address: '', date: '' })
         await showMainMenu()
         break
       case 'menu':
         await showCategoryMenu()
         break
-      case 'cat_cheesecake':
-      case 'cat_cookies':
-      case 'cat_cakes':
-      case 'cat_desserts':
-      case 'cat_drinks':
+      case 'cat_cheesecake': case 'cat_cookies': case 'cat_cakes': case 'cat_desserts': case 'cat_drinks':
         await showCategoryPrices(action.replace('cat_', ''))
         break
-      case 'order': {
+      case 'order':
         setOptions([])
-        await addBotMessage("To place an order, I'll redirect you to WhatsApp where our team will assist you personally! 💬")
-        await addBotMessage("You can tell them:\n• What you'd like to order\n• Delivery date & time\n• Your address in Gujarat")
+        await addBotMessage("Let's build your order! 🛒\n\nSelect a category, add items with quantities, then review & checkout.")
+        await showOrderCategories()
+        break
+      case 'review_order': {
+        setOptions([])
+        const items = Object.entries(orderCart).filter(([, v]) => v.qty > 0)
+        if (items.length === 0) {
+          await addBotMessage("Your cart is empty! Please add some items first. 🛒")
+          await showOrderCategories()
+          return
+        }
+        const total = getCartTotal()
+        const fee = total >= 499 ? 0 : 49
+        let summary = `*🛒 Your Order:*\n\n`
+        summary += getCartSummary()
+        summary += `\n\n*Subtotal:* ₹${total}\n*Delivery:* ${fee === 0 ? 'FREE ✅' : '₹' + fee}\n*Total: ₹${total + fee}*`
+        await addBotMessage(summary)
+        await addBotMessage("Looks good? Let's proceed with your details, or go back to add more items.")
         setOptions([
-          { label: '💬 Open WhatsApp', action: 'whatsapp' },
-          { label: '📋 View Menu First', action: 'menu' },
-          { label: '🏠 Main Menu', action: 'home' },
+          { label: '✅ Confirm & Enter Details', action: 'collect_info' },
+          { label: '➕ Add More Items', action: 'order' },
+          { label: '🗑️ Clear Cart', action: 'clear_cart' },
+          { label: '🏠 Cancel', action: 'home' },
         ])
         break
       }
+      case 'clear_cart':
+        setOrderCart({})
+        setOptions([])
+        await addBotMessage("Cart cleared! 🗑️")
+        await showOrderCategories()
+        break
+      case 'collect_info':
+        setOptions([])
+        setActiveOrderCat(null)
+        await addBotMessage("Great! I need a few details for delivery.\n\nPlease type your *full name*:")
+        setOrderStep('name')
+        break
+      case 'confirm_send':
+        setOptions([])
+        sendOrderToWhatsApp()
+        await addBotMessage("✅ *Order sent to WhatsApp!*\n\nOur team will confirm your order and share payment details within minutes.\n\nThank you for ordering from *Cake & Crumb*! 🎂❤️")
+        setOrderCart({})
+        setOrderStep(null)
+        setOrderInfo({ name: '', phone: '', address: '', date: '' })
+        setOptions([{ label: '🏠 Main Menu', action: 'home' }])
+        break
       case 'whatsapp': {
         setOptions([])
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Cake & Crumb! I'd like to place an order.")}`, '_blank')
@@ -303,33 +490,23 @@ export default function ChatBot() {
       }
       case 'delivery': {
         setOptions([])
-        await addBotMessage("*Delivery Information*\n\n📍 *Area:* All Gujarat districts\n⏰ *Notice:* Please order 24 hours in advance\n🚗 *Delivery:* Free on orders above ₹499\n💰 *Delivery fee:* ₹49 (under ₹499)\n📦 *Packaging:* Included in price")
-        setOptions([
-          { label: '🛒 Place Order', action: 'order' },
-          { label: '🏠 Main Menu', action: 'home' },
-        ])
+        await addBotMessage("*Delivery Information*\n\n📍 *Area:* All Gujarat districts\n⏰ *Notice:* Please order 24 hours in advance\n🚗 *Free delivery* on orders above ₹499\n💰 *Delivery fee:* ₹49 (under ₹499)\n📦 *Packaging:* Included in price")
+        setOptions([{ label: '🛒 Place Order', action: 'order' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }
       case 'location': {
         setOptions([])
-        await addBotMessage("*Our Location*\n\n📍 Ahmedabad, Gujarat, India\n🏠 Home bakery — we deliver across Gujarat!\n\n*Major Areas:* Ahmedabad, Gandhinagar, Surat, Vadodara, Rajkot & more!")
-        setOptions([
-          { label: '🛒 Place Order', action: 'order' },
-          { label: '🏠 Main Menu', action: 'home' },
-        ])
+        await addBotMessage("*Our Location*\n\n📍 Ahmedabad, Gujarat, India\n🏠 Home bakery — we deliver across Gujarat!")
+        setOptions([{ label: '🛒 Place Order', action: 'order' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }
       case 'contact': {
         setOptions([])
-        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp (India):* +91 90816 68490\n📱 *WhatsApp (UK):* +44 7862 154461\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake_and_crumb_1\n\nWe reply within minutes! 💨")
-        setOptions([
-          { label: '💬 Open WhatsApp', action: 'whatsapp' },
-          { label: '🏠 Main Menu', action: 'home' },
-        ])
+        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp (IN):* +91 90816 68490\n📱 *WhatsApp (UK):* +44 7862 154461\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake_and_crumb_1")
+        setOptions([{ label: '💬 Open WhatsApp', action: 'whatsapp' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }
-      default:
-        break
+      default: break
     }
   }
 
@@ -338,7 +515,52 @@ export default function ChatBot() {
     addUserMessage(text)
     setInput('')
 
-    if (['hi', 'hello', 'hey', 'hii', 'hiii'].some((w) => lower.includes(w))) {
+    // Handle order info collection steps
+    if (orderStep === 'name') {
+      setOrderInfo((prev) => ({ ...prev, name: text }))
+      setOrderStep('phone')
+      await addBotMessage(`Thanks *${text}*! Now enter your *phone number*:`)
+      return
+    }
+    if (orderStep === 'phone') {
+      if (!/^[6-9]\d{9}$/.test(text.replace(/\s/g, ''))) {
+        await addBotMessage("Please enter a valid 10-digit Indian phone number:")
+        return
+      }
+      setOrderInfo((prev) => ({ ...prev, phone: text }))
+      setOrderStep('address')
+      await addBotMessage("Enter your *full delivery address*\n(House/Flat, Street, Area, City, Pincode):")
+      return
+    }
+    if (orderStep === 'address') {
+      setOrderInfo((prev) => ({ ...prev, address: text }))
+      setOrderStep('date')
+      await addBotMessage("When would you like it delivered?\n(e.g., *Tomorrow 4 PM*, *31 March Evening*):")
+      return
+    }
+    if (orderStep === 'date') {
+      setOrderInfo((prev) => ({ ...prev, date: text }))
+      setOrderStep(null)
+
+      const total = getCartTotal()
+      const fee = total >= 499 ? 0 : 49
+      let finalSummary = `*📋 Order Summary*\n\n`
+      finalSummary += getCartSummary()
+      finalSummary += `\n\n*Subtotal:* ₹${total}\n*Delivery:* ${fee === 0 ? 'FREE ✅' : '₹' + fee}\n*💰 Total: ₹${total + fee}*`
+      finalSummary += `\n\n*👤* ${orderInfo.name}\n*📞* ${orderInfo.phone}\n*📍* ${text}\n*📅* ${text}`
+
+      await addBotMessage(finalSummary)
+      await addBotMessage("Ready to send this order to our bakery on WhatsApp? 🎂")
+      setOptions([
+        { label: '✅ Send Order via WhatsApp', action: 'confirm_send' },
+        { label: '✏️ Edit Details', action: 'collect_info' },
+        { label: '🏠 Cancel', action: 'home' },
+      ])
+      return
+    }
+
+    // Normal text handling
+    if (['hi', 'hello', 'hey', 'hii'].some((w) => lower.includes(w))) {
       await addBotMessage("Hi there! Welcome to *Cake & Crumb*! 😊")
       await showMainMenu()
     } else if (['menu', 'price', 'rate', 'list'].some((w) => lower.includes(w))) {
@@ -351,21 +573,19 @@ export default function ChatBot() {
       await showCategoryPrices('cookies')
     } else if (['cake', 'brownie', 'cupcake'].some((w) => lower.includes(w))) {
       await showCategoryPrices('cakes')
-    } else if (['dessert', 'cup', 'custard', 'trifle'].some((w) => lower.includes(w))) {
+    } else if (['dessert', 'cup', 'custard'].some((w) => lower.includes(w))) {
       await showCategoryPrices('desserts')
-    } else if (['drink', 'mojito', 'shake', 'coffee', 'milkshake'].some((w) => lower.includes(w))) {
+    } else if (['drink', 'mojito', 'shake', 'coffee'].some((w) => lower.includes(w))) {
       await showCategoryPrices('drinks')
-    } else if (['delivery', 'deliver', 'area', 'time'].some((w) => lower.includes(w))) {
+    } else if (['delivery', 'deliver'].some((w) => lower.includes(w))) {
       await handleAction('delivery')
-    } else if (['contact', 'phone', 'number', 'call', 'whatsapp'].some((w) => lower.includes(w))) {
+    } else if (['contact', 'phone', 'whatsapp'].some((w) => lower.includes(w))) {
       await handleAction('contact')
-    } else if (['location', 'address', 'where'].some((w) => lower.includes(w))) {
-      await handleAction('location')
     } else if (['thank', 'thanks', 'bye'].some((w) => lower.includes(w))) {
-      await addBotMessage("Thank you for visiting *Cake & Crumb*! We hope to serve you soon. Have a sweet day! 🎂❤️")
+      await addBotMessage("Thank you! Have a sweet day! 🎂❤️")
       setOptions([{ label: '🏠 Main Menu', action: 'home' }])
     } else {
-      await addBotMessage("I'm not sure I understood that. Let me show you the main menu! 😊")
+      await addBotMessage("I didn't understand that. Let me show you the menu! 😊")
       await showMainMenu()
     }
   }
@@ -374,9 +594,7 @@ export default function ChatBot() {
     if (open && !initialized) {
       setInitialized(true)
       const init = async () => {
-        for (const msg of INITIAL_MESSAGES) {
-          await addBotMessage(msg.text, msg.delay)
-        }
+        for (const msg of INITIAL_MESSAGES) await addBotMessage(msg.text, msg.delay)
         setOptions(MAIN_OPTIONS)
       }
       init()
@@ -385,13 +603,11 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Chat Toggle Button */}
+      {/* Toggle Button */}
       <button
         onClick={() => setOpen(!open)}
         className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
-          open
-            ? 'bg-chocolate text-cream'
-            : 'bg-[#25D366] text-white hover:shadow-2xl hover:shadow-green-500/30'
+          open ? 'bg-chocolate text-cream' : 'bg-[#25D366] text-white'
         }`}
         style={{ boxShadow: open ? undefined : '0 0 20px rgba(37, 211, 102, 0.4)' }}
       >
@@ -402,20 +618,13 @@ export default function ChatBot() {
       <div
         className={`fixed z-[90] transition-all duration-300 ease-out
           bottom-0 right-0 left-0 sm:bottom-24 sm:right-6 sm:left-auto
-          ${open
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-8 sm:translate-y-4 pointer-events-none'
-          }`}
+          ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}
       >
         <div className="bg-white sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] sm:h-[520px] sm:w-[380px] border border-chocolate/5">
 
           {/* Header */}
           <div className="bg-[#075E54] px-4 py-3 flex items-center gap-3 shrink-0">
-            <img
-              src={assetUrl('/images/logo.png')}
-              alt="Cake & Crumb"
-              className="w-10 h-10 rounded-full object-cover border-2 border-white/20"
-            />
+            <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 rounded-full object-cover border-2 border-white/20" />
             <div className="flex-1">
               <h3 className="text-white text-sm font-semibold">Cake & Crumb</h3>
               <p className="text-[11px] text-green-200 flex items-center gap-1">
@@ -423,6 +632,13 @@ export default function ChatBot() {
                 Online · Replies instantly
               </p>
             </div>
+            {/* Cart badge */}
+            {Object.keys(orderCart).length > 0 && (
+              <div className="bg-white/20 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                <ShoppingBag size={11} />
+                ₹{getCartTotal()}
+              </div>
+            )}
             <button onClick={() => setOpen(false)} className="text-white/60 hover:text-white sm:hidden">
               <X size={20} />
             </button>
@@ -444,17 +660,11 @@ export default function ChatBot() {
                   }`}
                   style={{ animation: 'chat-msg-in 0.25s ease-out' }}
                 >
-                  {/* Image gallery */}
                   {msg.images && (
                     <div className="flex overflow-x-auto gap-1 p-1 scrollbar-hide">
                       {msg.images.map((img, j) => (
                         <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative">
-                          <img
-                            src={assetUrl(img.src)}
-                            alt={img.label}
-                            className="w-28 h-28 object-cover"
-                            loading="lazy"
-                          />
+                          <img src={assetUrl(img.src)} alt={img.label} className="w-28 h-28 object-cover" loading="lazy" />
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
                             <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
                           </div>
@@ -462,8 +672,6 @@ export default function ChatBot() {
                       ))}
                     </div>
                   )}
-
-                  {/* Text */}
                   <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line text-gray-800">
                     {formatBold(msg.text)}
                   </div>
@@ -471,7 +679,25 @@ export default function ChatBot() {
               </div>
             ))}
 
-            {/* Typing indicator */}
+            {/* Active order item selector */}
+            {activeOrderCat && ORDER_ITEMS[activeOrderCat] && (
+              <div className="flex justify-start">
+                <OrderItemSelector
+                  items={ORDER_ITEMS[activeOrderCat]}
+                  cart={Object.fromEntries(Object.entries(orderCart).map(([k, v]) => [k, v.qty]))}
+                  onUpdate={updateCartItem}
+                  onDone={async () => {
+                    setActiveOrderCat(null)
+                    const total = getCartTotal()
+                    if (total > 0) {
+                      await addBotMessage(`*Cart updated!* 🛒\nTotal so far: *₹${total}*`)
+                    }
+                    await showOrderCategories()
+                  }}
+                />
+              </div>
+            )}
+
             {typing && (
               <div className="flex justify-start">
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm flex gap-1">
@@ -482,8 +708,7 @@ export default function ChatBot() {
               </div>
             )}
 
-            {/* Quick Reply Options */}
-            {options.length > 0 && !typing && (
+            {options.length > 0 && !typing && !activeOrderCat && (
               <div className="flex flex-wrap gap-1.5 pt-2" style={{ animation: 'chat-msg-in 0.3s ease-out' }}>
                 {options.map((opt) => (
                   <button
@@ -505,10 +730,8 @@ export default function ChatBot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && input.trim()) handleTextInput(input)
-              }}
-              placeholder="Type a message..."
+              onKeyDown={(e) => { if (e.key === 'Enter' && input.trim()) handleTextInput(input) }}
+              placeholder={orderStep ? 'Type here...' : 'Type a message...'}
               className="flex-1 bg-white rounded-full px-4 py-2.5 text-sm text-gray-800 outline-none border border-gray-200 focus:border-[#25D366]/50 transition-colors"
             />
             <button
