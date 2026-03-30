@@ -235,7 +235,6 @@ const RATE_PER_KM = 7         // Rs. per km after free radius
 
 - **Bakery Location:** Vaso, Kheda, Gujarat, India
 - **WhatsApp (India):** +91 90816 68490
-- **WhatsApp (UK):** +44 7862 154461
 - **Instagram:** [@cake_and_crumb_1](https://instagram.com/cake_and_crumb_1)
 - **Ordering:** Website checkout + WhatsApp chatbot + Instagram DM
 
