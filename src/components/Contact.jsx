@@ -108,6 +108,7 @@ export default function Contact() {
                   { icon: MapPin, label: 'Delivery Area', value: 'Ahmedabad, Gujarat, India', color: 'text-berry' },
                   { icon: Clock, label: 'Order Notice', value: 'Please order 24 hours in advance', color: 'text-gold' },
                   { icon: Heart, label: 'Custom Cakes', value: "DM us your vision — we'll bring it to life", color: 'text-pink-500' },
+                  { icon: MessageCircle, label: 'WhatsApp (India)', value: '+91 90816 68490', color: 'text-green-500' },
                   { icon: MessageCircle, label: 'WhatsApp (UK)', value: '+44 7862 154461', color: 'text-green-500' },
                 ].map((item, i) => {
                   const Icon = item.icon
