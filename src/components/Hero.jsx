@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowRight, ShoppingBag, Sparkles, Star } from 'lucide-react'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
@@ -78,13 +79,13 @@ export default function Hero() {
                 Order Now
                 <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-500" />
               </a>
-              <a
-                href="#cakes"
+              <Link
+                to="/menu"
                 className="group inline-flex items-center justify-center gap-2 border-2 border-chocolate/15 text-chocolate px-7 py-3 rounded-full font-medium text-sm hover:border-berry/40 hover:text-berry hover:bg-berry/5 transition-all duration-500"
               >
-                View Cakes
+                View Menu
                 <Star size={14} className="opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </a>
+              </Link>
             </div>
 
             {/* Trust Badges */}

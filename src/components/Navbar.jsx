@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, Instagram, MessageCircle, Phone, MapPin, ArrowRight, Sparkles, Home, Cake, Heart, Star, Send, ShoppingBag } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
+import { Instagram, MessageCircle, Phone, MapPin, ArrowRight, Home, Cake, Heart, Star, Send, ShoppingBag } from 'lucide-react'
 import useCartStore from '../store/useCartStore'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
 
 const navLinks = [
-  { label: 'Home', href: '#home', icon: Home },
-  { label: 'Cakes', href: '#cakes', icon: Cake },
-  { label: 'About', href: '#about', icon: Heart },
-  { label: 'Reviews', href: '#testimonials', icon: Star },
-  { label: 'Contact', href: '#contact', icon: Send },
+  { label: 'Home', to: '/', icon: Home },
+  { label: 'Menu', to: '/menu', icon: Cake },
+  { label: 'About', to: '/about', icon: Heart },
+  { label: 'Reviews', to: '/reviews', icon: Star },
+  { label: 'Contact', to: '/contact', icon: Send },
 ]
 
 export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
+  const location = useLocation()
   const items = useCartStore((s) => s.items)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
 
@@ -25,28 +26,15 @@ export default function Navbar({ onCartClick }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Track which section is in view
-  useEffect(() => {
-    const sectionIds = ['home', 'cakes', 'about', 'testimonials', 'contact']
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id)
-        })
-      },
-      { threshold: 0.3 }
-    )
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
-    return () => observer.disconnect()
-  }, [])
-
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
 
   return (
     <nav
@@ -56,7 +44,7 @@ export default function Navbar({ onCartClick }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo + Slogan */}
-        <a href="#home" className="flex items-center gap-3 group relative z-50">
+        <Link to="/" className="flex items-center gap-3 group relative z-50">
           <div className="w-11 h-11 rounded-full bg-chocolate flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-lg">
             <span className="font-heading text-cream text-sm font-bold">C&C</span>
           </div>
@@ -68,16 +56,16 @@ export default function Navbar({ onCartClick }) {
               The Gourmet Chocolate & Berry Boutique
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-7">
           {navLinks.map((link) => {
-            const isActive = `#${activeSection}` === link.href
+            const isActive = location.pathname === link.to
             return (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
+                to={link.to}
                 className={`text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-berry after:transition-all after:duration-500 ${
                   isActive
                     ? 'text-berry after:w-full'
@@ -85,7 +73,7 @@ export default function Navbar({ onCartClick }) {
                 }`}
               >
                 {link.label}
-              </a>
+              </Link>
             )
           })}
           <a
@@ -134,21 +122,21 @@ export default function Navbar({ onCartClick }) {
               </span>
             )}
           </button>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
-          aria-label="Toggle menu"
-        >
-          <span className={`block w-6 h-[2px] rounded-full transition-all duration-500 ease-out ${
-            mobileOpen ? 'bg-cream rotate-45 translate-y-[7px]' : 'bg-chocolate'
-          }`} />
-          <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ${
-            mobileOpen ? 'bg-cream opacity-0 scale-x-0' : 'bg-chocolate opacity-100'
-          }`} />
-          <span className={`block w-6 h-[2px] rounded-full transition-all duration-500 ease-out ${
-            mobileOpen ? 'bg-cream -rotate-45 -translate-y-[7px]' : 'bg-chocolate'
-          }`} />
-        </button>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-500 ease-out ${
+              mobileOpen ? 'bg-cream rotate-45 translate-y-[7px]' : 'bg-chocolate'
+            }`} />
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ${
+              mobileOpen ? 'bg-cream opacity-0 scale-x-0' : 'bg-chocolate opacity-100'
+            }`} />
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-500 ease-out ${
+              mobileOpen ? 'bg-cream -rotate-45 -translate-y-[7px]' : 'bg-chocolate'
+            }`} />
+          </button>
         </div>
       </div>
 
@@ -187,13 +175,12 @@ export default function Navbar({ onCartClick }) {
           {/* Nav Links */}
           <div className="space-y-1 mb-10">
             {navLinks.map((link, i) => {
-              const isActive = `#${activeSection}` === link.href
+              const isActive = location.pathname === link.to
               const LinkIcon = link.icon
               return (
-                <a
+                <Link
                   key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  to={link.to}
                   className={`group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-500 ${
                     mobileOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
                   } ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}`}
@@ -215,7 +202,7 @@ export default function Navbar({ onCartClick }) {
                     <div className="ml-auto w-1.5 h-1.5 rounded-full bg-gold" />
                   )}
                   <ArrowRight size={14} className="ml-auto text-cream/20 group-hover:text-cream/50 group-hover:translate-x-1 transition-all duration-300" />
-                </a>
+                </Link>
               )
             })}
           </div>

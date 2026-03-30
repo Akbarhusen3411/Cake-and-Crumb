@@ -1,36 +1,46 @@
 import { useState } from 'react'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import { useScrollAnimation } from './hooks/useScrollAnimation'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import FeaturedCakes from './components/FeaturedCakes'
-import WhyChooseUs from './components/WhyChooseUs'
-import AboutUs from './components/AboutUs'
-import InstagramSection from './components/InstagramSection'
-import Testimonials from './components/Testimonials'
-import Contact from './components/Contact'
 import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
 import LocationDialog from './components/LocationDialog'
 import CartDrawer from './components/cart/CartDrawer'
 import CheckoutPage from './components/checkout/CheckoutPage'
 import Toast from './components/ui/Toast'
+import ScrollToTop from './components/ScrollToTop'
+import PageTransition from './components/PageTransition'
 
-export default function App() {
+import HomePage from './pages/HomePage'
+import MenuPage from './pages/MenuPage'
+import AboutPage from './pages/AboutPage'
+import ReviewsPage from './pages/ReviewsPage'
+import ContactPage from './pages/ContactPage'
+
+
+function AppContent() {
   useScrollAnimation()
 
   const [cartOpen, setCartOpen] = useState(false)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       <Navbar onCartClick={() => setCartOpen(true)} />
-      <Hero />
-      <FeaturedCakes />
-      <WhyChooseUs />
-      <AboutUs />
-      <InstagramSection />
-      <Testimonials />
-      <Contact />
+
+      <main className="flex-1">
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Routes>
+        </PageTransition>
+      </main>
+
       <Footer />
       <WhatsAppButton />
 
@@ -46,5 +56,13 @@ export default function App() {
       />
       <Toast />
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   )
 }

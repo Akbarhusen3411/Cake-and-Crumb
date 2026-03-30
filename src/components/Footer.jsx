@@ -1,14 +1,15 @@
+import { Link } from 'react-router-dom'
 import { Instagram, Phone, MessageCircle, Heart, ArrowUp } from 'lucide-react'
 
 const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
 const WHATSAPP_URL = 'https://wa.me/919081668490'
 
 const quickLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'Our Cakes', href: '#cakes' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Reviews', href: '#testimonials' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', to: '/' },
+  { label: 'Our Menu', to: '/menu' },
+  { label: 'About Us', to: '/about' },
+  { label: 'Reviews', to: '/reviews' },
+  { label: 'Contact', to: '/contact' },
 ]
 
 export default function Footer() {
@@ -65,12 +66,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     className="text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
