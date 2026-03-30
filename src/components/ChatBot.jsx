@@ -418,44 +418,11 @@ export default function ChatBot() {
     // Simple order list for user message
     const userItemsList = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
 
-    // Pre-built reply links for admin → sends to USER's WhatsApp
-    const confirmMsg = `✅ *ORDER CONFIRMED — Cake & Crumb* 🎂\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${orderInfo.name}*! Your order is confirmed.\n\n` +
-      `*🆔 Order ID:* ${orderId}\n\n` +
-      `*📋 Your Items:*\n${userItemsList}\n\n` +
-      `*💰 Total:* ₹${grandTotal} ${total >= 499 ? '(Free Delivery)' : '(incl. ₹49 delivery)'}\n` +
-      `*💳 Payment:* Cash on Delivery\n\n` +
-      `*📍 Delivery to:*\n${orderInfo.address}\n\n` +
-      `*📅 Delivery:* ${orderInfo.date}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `⚠️ *Cancellation Policy:*\n` +
-      `⏰ You can cancel this order within *30 minutes* by messaging us on this WhatsApp chat. After 30 minutes, cancellation is not available.\n\n` +
-      `We're preparing your order! Thank you for choosing Cake & Crumb 🙏❤️`
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
-
-    const shippedMsg = `📦 *ORDER SHIPPED — Cake & Crumb* 🚗\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${orderInfo.name}*! Great news — your order *${orderId}* is on its way!\n\n` +
-      `*📋 Items:*\n${userItemsList}\n\n` +
-      `*💰 Total:* ₹${grandTotal} (COD — please keep ready)\n\n` +
-      `*📍 Delivering to:*\n${orderInfo.address}\n\n` +
-      `*⏰ Expected:* ${orderInfo.date}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `Enjoy your treats! — Cake & Crumb 🎂❤️`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
-
-    const rejectMsg = `Hi *${orderInfo.name}*,\n\n` +
-      `We're sorry but we cannot fulfill your order *${orderId}* at this time.\n\n` +
-      `*Reason:* [Admin will type reason]\n\n` +
-      `Please contact us to discuss alternatives:\n📞 +91 90816 68490\n\nSorry for the inconvenience. — Cake & Crumb 🙏`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
-
-    const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
-      `Hi *${orderInfo.name}*, your order *${orderId}* has been successfully *cancelled*.\n\n` +
-      `*Refund:* ${total >= 499 ? 'No delivery charge (was free)' : '₹49 delivery charge will not be charged'}\n\n` +
-      `To place a new order:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
+    // Short admin→customer reply links (keep short to avoid WhatsApp URL truncation)
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Order *${orderId}* CONFIRMED! Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. Thank you! — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* SHIPPED! On the way. Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* cancelled. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 

@@ -84,42 +84,11 @@ export default function ConfirmationStep({ onClose }) {
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
 
-    const confirmMsg = `✅ *ORDER CONFIRMED — Cake & Crumb* 🎂\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${checkout.customerName}*! Your order has been confirmed.\n\n` +
-      `*🆔 Order ID:* ${orderId}\n\n` +
-      `*📋 Your Items:*\n${itemsList}\n\n` +
-      `*💰 Total:* ₹${total} ${deliveryFee === 0 ? '(Free Delivery)' : `(incl. ₹${deliveryFee} delivery)`}\n` +
-      `*💳 Payment:* ${payLabel}\n\n` +
-      `*📍 Delivery Address:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
-      `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `⏰ You can cancel within *30 minutes* of ordering. After that, cancellation is not available.\n\n` +
-      `We're preparing your order! Thank you! 🙏❤️\n` +
-      `— *Cake & Crumb*`
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
-
-    const shippedMsg = `📦 *ORDER SHIPPED — Cake & Crumb* 🚗\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${checkout.customerName}*! Your order *${orderId}* has been shipped!\n\n` +
-      `*📋 Items:*\n${itemsList}\n\n` +
-      `*💰 Total:* ₹${total} (${payLabel} — ${checkout.paymentMethod === 'cod' ? 'please keep ready' : 'already paid'})\n\n` +
-      `*📍 Delivering to:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
-      `*⏰ Expected:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `Enjoy! — *Cake & Crumb* 🎂❤️`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
-
-    const rejectMsg = `Hi *${checkout.customerName}*,\n\n` +
-      `We're sorry but we are unable to fulfill your order *${orderId}* at this time.\n\n` +
-      `*Reason:* [Admin will type reason]\n\n` +
-      `For alternatives, please contact us:\n📞 +91 90816 68490\n\n— Cake & Crumb 🙏`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
-
-    const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
-      `Hi *${checkout.customerName}*, your order *${orderId}* has been successfully *cancelled*.\n\n` +
-      `To place a new order:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
+    // Short admin→customer reply messages (keep under 200 chars each to avoid WhatsApp truncation)
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Order *${orderId}* CONFIRMED! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. Thank you! — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* SHIPPED! On the way to you. Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been cancelled. Contact us to reorder: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}* right now. Please contact: +91 90816 68490 — Cake & Crumb`)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
