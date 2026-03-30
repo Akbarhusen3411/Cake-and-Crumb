@@ -430,7 +430,7 @@ export default function ChatBot() {
       `*📅 Delivery:* ${orderInfo.date}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
       `⚠️ *Cancellation Policy:*\n` +
-      `Order cancel karva mate *30 minute* ni ander ama j WhatsApp par message karo. 30 minute pachi cancellation available nahi hoy.\n\n` +
+      `⏰ You can cancel this order within *30 minutes* by messaging us on this WhatsApp chat. After 30 minutes, cancellation is not available.\n\n` +
       `We're preparing your order! Thank you for choosing Cake & Crumb 🙏❤️`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
 
@@ -452,9 +452,9 @@ export default function ChatBot() {
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
     const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
-      `Hi *${orderInfo.name}*, tamari order *${orderId}* successfully cancel thai gai che.\n\n` +
-      `*Refund:* ${total >= 499 ? 'No delivery charge refund needed (was free)' : '₹49 delivery charge will not be charged'}\n\n` +
-      `Fari thi order karva mate visit karo:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
+      `Hi *${orderInfo.name}*, your order *${orderId}* has been successfully *cancelled*.\n\n` +
+      `*Refund:* ${total >= 499 ? 'No delivery charge (was free)' : '₹49 delivery charge will not be charged'}\n\n` +
+      `To place a new order:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
     const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
@@ -473,7 +473,7 @@ export default function ChatBot() {
       `*📍* ${orderInfo.address}\n` +
       `*📅* ${orderInfo.date}\n` +
       `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancellation:* 30 min ni ander cancel kari shakay che.\n\n` +
+      `⚠️ *Cancellation:* You can cancel within 30 minutes.\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
@@ -563,7 +563,7 @@ export default function ChatBot() {
       case 'confirm_send':
         setOptions([])
         sendOrderToWhatsApp()
-        await addBotMessage("✅ *Order sent to WhatsApp!*\n\nOur team will confirm your order within minutes.\n\n⚠️ *Cancellation:* 30 minute ni ander cancel kari shakay cho. Pachi cancel nahi thay.")
+        await addBotMessage("✅ *Order sent to WhatsApp!*\n\nOur team will confirm your order within minutes.\n\n⚠️ *Cancellation:* You can cancel within 30 minutes. After that, cancellation is not available.")
         setOrderCart({})
         setOrderStep(null)
         setOptions([
@@ -575,16 +575,16 @@ export default function ChatBot() {
         setOptions([])
         // Check if within 30 minutes
         if (lastOrderTime && (Date.now() - lastOrderTime) > 30 * 60 * 1000) {
-          await addBotMessage("⏰ Sorry! 30 minute thi vadhare time thai gayo che. Hua order cancel nahi thai shake.\n\nHelp mate contact karo: +91 90816 68490")
+          await addBotMessage("⏰ Sorry! The 30-minute cancellation window has expired. This order can no longer be cancelled.\n\nFor help, contact: +91 90816 68490")
           setOptions([{ label: '🏠 Main Menu', action: 'home' }])
         } else {
           const cancelRequest = `🚫 *CANCEL REQUEST*\n\n` +
             `Order ID: *${lastOrderId || 'Recent Order'}*\n` +
             `Customer: ${orderInfo.name || 'Customer'}\n` +
             `Phone: ${orderInfo.phone || ''}\n\n` +
-            `Mane mari order cancel karavi che. Please confirm cancellation.`
+            `I would like to cancel my order. Please confirm cancellation.`
           window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(cancelRequest)}`, '_blank')
-          await addBotMessage("🚫 *Cancel request mokli didho!*\n\nAdmin tamne WhatsApp par confirm karse ke order cancel thayo che.\n\nNote: Cancel tyare j thay jyare admin confirm kare.")
+          await addBotMessage("🚫 *Cancel request sent!*\n\nOur team will confirm the cancellation on WhatsApp shortly.\n\nNote: Cancellation is final only after admin confirms it.")
           setOptions([{ label: '🏠 Main Menu', action: 'home' }])
         }
         break

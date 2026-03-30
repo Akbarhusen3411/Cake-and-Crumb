@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CheckCircle, Home, MessageCircle } from 'lucide-react'
 import useCartStore, { getCartItems, getSubtotal, getDeliveryFee, getTotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
@@ -12,6 +12,8 @@ const TIME_SLOT_LABELS = {
   '18-20': '6 PM – 8 PM',
 }
 
+const CANCEL_WINDOW_MS = 30 * 60 * 1000 // 30 minutes
+
 export default function ConfirmationStep({ onClose }) {
   const checkout = useCheckoutStore()
   const items = useCartStore((s) => s.items)
@@ -24,6 +26,30 @@ export default function ConfirmationStep({ onClose }) {
 
   const orderId = checkout.orderId || generateOrderId()
   const [orderTimestamp] = useState(Date.now())
+  const [cancelExpired, setCancelExpired] = useState(false)
+  const [remainingTime, setRemainingTime] = useState(CANCEL_WINDOW_MS)
+
+  // Countdown timer for cancel button
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - orderTimestamp
+      const remaining = CANCEL_WINDOW_MS - elapsed
+      if (remaining <= 0) {
+        setCancelExpired(true)
+        setRemainingTime(0)
+        clearInterval(interval)
+      } else {
+        setRemainingTime(remaining)
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [orderTimestamp])
+
+  const formatRemaining = () => {
+    const mins = Math.floor(remainingTime / 60000)
+    const secs = Math.floor((remainingTime % 60000) / 1000)
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   useEffect(() => {
     if (hasSent.current) return
@@ -56,28 +82,26 @@ export default function ConfirmationStep({ onClose }) {
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
-
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
 
     const confirmMsg = `✅ *ORDER CONFIRMED — Cake & Crumb* 🎂\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${checkout.customerName}*! Tamari order confirm thai gai che.\n\n` +
+      `Hi *${checkout.customerName}*! Your order has been confirmed.\n\n` +
       `*🆔 Order ID:* ${orderId}\n\n` +
-      `*📋 Tamara Items:*\n${itemsList}\n\n` +
+      `*📋 Your Items:*\n${itemsList}\n\n` +
       `*💰 Total:* ₹${total} ${deliveryFee === 0 ? '(Free Delivery)' : `(incl. ₹${deliveryFee} delivery)`}\n` +
       `*💳 Payment:* ${payLabel}\n\n` +
       `*📍 Delivery Address:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
       `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
-      `⚠️ *Cancellation Policy:*\n` +
-      `Order cancel karva mate *30 minute* ni ander ama j WhatsApp par message karo. 30 min pachi cancel nahi thay.\n\n` +
-      `Ame tamari order prepare kari rahya che! Thank you! 🙏❤️\n` +
+      `⏰ You can cancel within *30 minutes* of ordering. After that, cancellation is not available.\n\n` +
+      `We're preparing your order! Thank you! 🙏❤️\n` +
       `— *Cake & Crumb*`
     const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(confirmMsg)}`
 
     const shippedMsg = `📦 *ORDER SHIPPED — Cake & Crumb* 🚗\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Hi *${checkout.customerName}*! Tamari order *${orderId}* ship thai gai che!\n\n` +
+      `Hi *${checkout.customerName}*! Your order *${orderId}* has been shipped!\n\n` +
       `*📋 Items:*\n${itemsList}\n\n` +
       `*💰 Total:* ₹${total} (${payLabel} — ${checkout.paymentMethod === 'cod' ? 'please keep ready' : 'already paid'})\n\n` +
       `*📍 Delivering to:*\n${checkout.fullAddress}, ${checkout.deliveryArea}\n\n` +
@@ -87,19 +111,19 @@ export default function ConfirmationStep({ onClose }) {
     const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(shippedMsg)}`
 
     const rejectMsg = `Hi *${checkout.customerName}*,\n\n` +
-      `Maaf karo pan tamari order *${orderId}* ame atyare fulfill nahi kari shakiye.\n\n` +
+      `We're sorry but we are unable to fulfill your order *${orderId}* at this time.\n\n` +
       `*Reason:* [Admin will type reason]\n\n` +
-      `Alternatives mate contact karo:\n📞 +91 90816 68490\n\n— Cake & Crumb 🙏`
+      `For alternatives, please contact us:\n📞 +91 90816 68490\n\n— Cake & Crumb 🙏`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(rejectMsg)}`
 
     const cancelMsg = `🚫 *ORDER CANCELLED — Cake & Crumb*\n\n` +
-      `Hi *${checkout.customerName}*, tamari order *${orderId}* cancel thai gai che.\n\n` +
-      `Fari thi order karva mate visit karo:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
+      `Hi *${checkout.customerName}*, your order *${orderId}* has been successfully *cancelled*.\n\n` +
+      `To place a new order:\nhttps://akbarhusen3411.github.io/Cake-and-Crumb/\n\n— Cake & Crumb 🙏`
     const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(cancelMsg)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Message sent BY customer TO admin
+    // Order message (customer sees this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*📋 Items:*\n${itemsList}\n\n` +
@@ -113,7 +137,7 @@ export default function ConfirmationStep({ onClose }) {
       `*📅* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
       `*💳* ${payLabel}\n` +
       `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancel:* 30 min ni ander j cancel thay.\n\n` +
+      `⚠️ *Cancel window:* 30 minutes from order time.\n\n` +
       `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
@@ -138,6 +162,12 @@ export default function ConfirmationStep({ onClose }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleCancel = () => {
+    if (cancelExpired) return
+    const cancelReq = `🚫 *CANCEL REQUEST*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nI would like to cancel my order. Please confirm cancellation.`
+    window.open(`https://wa.me/919081668490?text=${encodeURIComponent(cancelReq)}`, '_blank')
+  }
+
   return (
     <div className="text-center space-y-6 py-6">
       {/* Animated checkmark */}
@@ -146,7 +176,7 @@ export default function ConfirmationStep({ onClose }) {
       </div>
 
       <div>
-        <h3 className="font-heading text-xl font-bold text-chocolate mb-2">Order Confirmed!</h3>
+        <h3 className="font-heading text-xl font-bold text-chocolate mb-2">Order Placed!</h3>
         <p className="text-sm text-chocolate-light/60">Thank you for ordering from Cake & Crumb</p>
       </div>
 
@@ -176,14 +206,19 @@ export default function ConfirmationStep({ onClose }) {
       </div>
 
       <p className="text-xs text-chocolate-light/40 max-w-[260px] mx-auto">
-        Order details have been sent to WhatsApp. We'll confirm your order shortly!
+        Order details sent to WhatsApp. We'll confirm shortly!
       </p>
 
-      {/* Cancellation notice */}
-      <div className="bg-gold/5 border border-gold/15 rounded-xl px-4 py-3 max-w-xs mx-auto text-left">
-        <p className="text-xs font-semibold text-chocolate mb-1">⚠️ Cancellation Policy</p>
+      {/* Cancellation notice with countdown */}
+      <div className={`rounded-xl px-4 py-3 max-w-xs mx-auto text-left ${cancelExpired ? 'bg-gray-100 border border-gray-200' : 'bg-gold/5 border border-gold/15'}`}>
+        <p className="text-xs font-semibold text-chocolate mb-1">
+          {cancelExpired ? '🔒 Cancellation Window Closed' : '⚠️ Cancellation Policy'}
+        </p>
         <p className="text-[11px] text-chocolate-light/60 leading-relaxed">
-          30 minute ni ander cancel kari shakay cho. Pachi cancellation available nahi hoy.
+          {cancelExpired
+            ? 'The 30-minute cancellation window has expired. This order can no longer be cancelled.'
+            : `You can cancel within 30 minutes. Time remaining: ${formatRemaining()}`
+          }
         </p>
       </div>
 
@@ -196,20 +231,15 @@ export default function ConfirmationStep({ onClose }) {
           <Home size={16} />
           Back to Home
         </button>
-        <button
-          onClick={() => {
-            const elapsed = Date.now() - orderTimestamp
-            if (elapsed > 30 * 60 * 1000) {
-              alert('30 minute thi vadhare time thai gayo. Order cancel nahi thai shake.')
-              return
-            }
-            const cancelReq = `🚫 *CANCEL REQUEST*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nMane mari order cancel karavi che. Please confirm.`
-            window.open(`https://wa.me/919081668490?text=${encodeURIComponent(cancelReq)}`, '_blank')
-          }}
-          className="w-full border border-berry/20 text-berry py-3 rounded-xl font-medium text-sm hover:bg-berry/5 transition-all duration-300 flex items-center justify-center gap-2"
-        >
-          🚫 Cancel Order (30 min ni ander)
-        </button>
+
+        {!cancelExpired && (
+          <button
+            onClick={handleCancel}
+            className="w-full border border-berry/20 text-berry py-3 rounded-xl font-medium text-sm hover:bg-berry/5 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            🚫 Cancel Order ({formatRemaining()} left)
+          </button>
+        )}
       </div>
     </div>
   )
