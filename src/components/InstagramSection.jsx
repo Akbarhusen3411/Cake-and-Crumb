@@ -1,29 +1,32 @@
 import { Instagram, ExternalLink, Sparkles, Heart } from 'lucide-react'
+import { assetUrl } from '../utils/assetPath'
 
 const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
 
+const img = (p) => assetUrl(p)
+
 // Row 1 — scrolls left
 const row1 = [
-  { src: '/images/real-cupcakes-pink.jpg', alt: 'Pink & Purple Cupcakes' },
-  { src: '/images/real-strawberry-cheesecake.jpg', alt: 'Strawberry Cheesecake' },
-  { src: '/images/real-rose-eclairs.jpg', alt: 'Rose Pistachio Eclairs' },
-  { src: '/images/real-chocolate-cake.jpg', alt: 'Rich Chocolate Cake' },
-  { src: '/images/real-thankyou-cupcakes.jpg', alt: 'Thank You Cupcakes Box' },
-  { src: '/images/real-biscoff-cups.jpg', alt: 'Biscoff Dessert Cups' },
-  { src: '/images/real-lemon-cheesecake.jpg', alt: 'Lemon Drip Cheesecake' },
-  { src: '/images/real-mint-cupcakes.jpg', alt: 'Mint Cupcakes with Gold Leaf' },
+  { src: img('/images/real-cupcakes-pink.jpg'), alt: 'Pink & Purple Cupcakes' },
+  { src: img('/images/real-strawberry-cheesecake.jpg'), alt: 'Strawberry Cheesecake' },
+  { src: img('/images/real-rose-eclairs.jpg'), alt: 'Rose Pistachio Eclairs' },
+  { src: img('/images/real-chocolate-cake.jpg'), alt: 'Rich Chocolate Cake' },
+  { src: img('/images/real-thankyou-cupcakes.jpg'), alt: 'Thank You Cupcakes Box' },
+  { src: img('/images/real-biscoff-cups.jpg'), alt: 'Biscoff Dessert Cups' },
+  { src: img('/images/real-lemon-cheesecake.jpg'), alt: 'Lemon Drip Cheesecake' },
+  { src: img('/images/real-mint-cupcakes.jpg'), alt: 'Mint Cupcakes with Gold Leaf' },
 ]
 
 // Row 2 — scrolls right (reverse)
 const row2 = [
-  { src: '/images/real-cupcakes-rose-box.jpg', alt: 'Rose Cupcakes Gift Box' },
-  { src: '/images/real-triple-choc-cookies.jpg', alt: 'Triple Chocolate Cookies' },
-  { src: '/images/real-crepes.jpg', alt: 'Chocolate Berry Crepes' },
-  { src: '/images/real-pistachio-biscuits.jpg', alt: 'Pistachio Rose Biscuits' },
-  { src: '/images/real-tiramisu.jpg', alt: 'Classic Tiramisu' },
-  { src: '/images/real-brownies.jpg', alt: 'Fudgy Brownies' },
-  { src: '/images/real-cream-horns.jpg', alt: 'Cream Horns' },
-  { src: '/images/real-strawberry-slices.jpg', alt: 'Strawberry Cream Slices' },
+  { src: img('/images/real-cupcakes-rose-box.jpg'), alt: 'Rose Cupcakes Gift Box' },
+  { src: img('/images/real-triple-choc-cookies.jpg'), alt: 'Triple Chocolate Cookies' },
+  { src: img('/images/real-crepes.jpg'), alt: 'Chocolate Berry Crepes' },
+  { src: img('/images/real-pistachio-biscuits.jpg'), alt: 'Pistachio Rose Biscuits' },
+  { src: img('/images/real-tiramisu.jpg'), alt: 'Classic Tiramisu' },
+  { src: img('/images/real-brownies.jpg'), alt: 'Fudgy Brownies' },
+  { src: img('/images/real-cream-horns.jpg'), alt: 'Cream Horns' },
+  { src: img('/images/real-strawberry-slices.jpg'), alt: 'Strawberry Cream Slices' },
 ]
 
 function MarqueeRow({ images, reverse = false }) {

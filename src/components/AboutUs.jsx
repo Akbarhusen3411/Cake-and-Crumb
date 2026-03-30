@@ -1,4 +1,5 @@
 import { Sparkles } from 'lucide-react'
+import { assetUrl } from '../utils/assetPath'
 
 export default function AboutUs() {
   return (
@@ -14,7 +15,7 @@ export default function AboutUs() {
               {/* Main image */}
               <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-[4/5]" data-parallax="0.05">
                 <img
-                  src="/images/real-strawberry-slices.jpg"
+                  src={assetUrl('/images/real-strawberry-slices.jpg')}
                   alt="Strawberry cream slices by Cake & Crumb"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -28,7 +29,7 @@ export default function AboutUs() {
                 data-parallax="-0.08"
               >
                 <img
-                  src="/images/real-cream-horns.jpg"
+                  src={assetUrl('/images/real-cream-horns.jpg')}
                   alt="Cream horns by Cake & Crumb"
                   className="w-full h-full object-cover"
                   loading="lazy"

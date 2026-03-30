@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Instagram, MessageCircle, Phone, MapPin, ArrowRight, Home, Cake, Heart, Star, Send, ShoppingBag } from 'lucide-react'
 import useCartStore from '../store/useCartStore'
+import { assetUrl } from '../utils/assetPath'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
 
@@ -66,7 +67,7 @@ export default function Navbar({ onCartClick }) {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group relative z-50">
           <img
-            src="/images/logo.png"
+            src={assetUrl('/images/logo.png')}
             alt="Cake & Crumb"
             className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform duration-500 border-2 border-gold/30"
           />
@@ -195,7 +196,7 @@ export default function Navbar({ onCartClick }) {
                 drawerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
               }`} style={{ transitionDelay: drawerVisible ? '150ms' : '0ms' }}>
                 <img
-                  src="/images/logo.png"
+                  src={assetUrl('/images/logo.png')}
                   alt="Cake & Crumb"
                   className="w-14 h-14 rounded-full object-cover border-2 border-gold/30 shadow-lg"
                 />

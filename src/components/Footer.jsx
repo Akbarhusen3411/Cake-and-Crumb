@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Phone, MessageCircle, Heart, ArrowUp } from 'lucide-react'
+import { assetUrl } from '../utils/assetPath'
 
 const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
 const WHATSAPP_URL = 'https://wa.me/919081668490'
@@ -44,7 +45,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <img
-                src="/images/logo.png"
+                src={assetUrl('/images/logo.png')}
                 alt="Cake & Crumb"
                 className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-gold/20"
               />

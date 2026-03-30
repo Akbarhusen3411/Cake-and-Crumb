@@ -3,12 +3,15 @@
  * Updated from official 2026 menu
  */
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '')
+const img = (path) => `${BASE}${path}`
+
 // ─── Full Menu Categories ────────────────────────────────
 export const menuCategories = [
   {
     id: 'cheesecake',
     label: 'Cheesecake',
-    image: '/images/real-cheesecake-top.jpg',
+    image: img('/images/real-cheesecake-top.jpg'),
     priceLabel: '₹90 – ₹140 / slice  |  ₹700 – ₹1,100 / whole',
     note: '*Customisable flavours available on request*',
     items: [
@@ -23,7 +26,7 @@ export const menuCategories = [
   {
     id: 'cakes',
     label: 'Cakes',
-    image: '/images/real-chocolate-cake.jpg',
+    image: img('/images/real-chocolate-cake.jpg'),
     priceLabel: '₹70 – ₹950',
     note: null,
     subcategories: [
@@ -52,7 +55,7 @@ export const menuCategories = [
   {
     id: 'cookies',
     label: 'Cookies',
-    image: '/images/real-pistachio-biscuits.jpg',
+    image: img('/images/real-pistachio-biscuits.jpg'),
     priceLabel: '₹55 – ₹90 each  |  ₹360 – ₹680 / box',
     note: '*Mixed or single flavour boxes*',
     items: [
@@ -64,7 +67,7 @@ export const menuCategories = [
   {
     id: 'desserts',
     label: 'Desserts',
-    image: '/images/real-rose-milkcake.jpg',
+    image: img('/images/real-rose-milkcake.jpg'),
     priceLabel: '₹80 – ₹150 each',
     note: null,
     items: [
@@ -75,7 +78,7 @@ export const menuCategories = [
   {
     id: 'drinks',
     label: 'Drinks',
-    image: '/images/real-chocolate-pancakes.jpg',
+    image: img('/images/real-chocolate-pancakes.jpg'),
     priceLabel: '₹90 – ₹180',
     note: null,
     subcategories: [
@@ -99,7 +102,7 @@ export const menuCategories = [
   {
     id: 'coming-soon',
     label: 'Coming Soon',
-    image: '/images/real-cakesicles.jpg',
+    image: img('/images/real-cakesicles.jpg'),
     priceLabel: 'New additions coming soon!',
     note: 'Stay tuned — follow @cake_and_crumb_1 for launch updates!',
     items: [
@@ -119,7 +122,7 @@ export const featuredItems = [
     id: 1,
     name: 'Cheesecake Collection',
     description: '21 handcrafted flavours — from Strawberry to Pistachio. Whole cakes & slices!',
-    image: '/images/real-strawberry-cheesecake.jpg',
+    image: img('/images/real-strawberry-cheesecake.jpg'),
     priceRange: 'From ₹90',
     badge: 'Bestseller',
   },
@@ -127,7 +130,7 @@ export const featuredItems = [
     id: 2,
     name: 'Fresh-Baked Cookies',
     description: 'Warm, gooey cookies in 7 irresistible flavours. Mix & match your box.',
-    image: '/images/real-triple-choc-cookies.jpg',
+    image: img('/images/real-triple-choc-cookies.jpg'),
     priceRange: 'From ₹55',
     badge: 'Popular',
   },
@@ -135,7 +138,7 @@ export const featuredItems = [
     id: 3,
     name: 'Dessert Cups',
     description: 'Layered cups of creamy goodness — custard, cheesecake, trifle & more.',
-    image: '/images/real-biscoff-cups.jpg',
+    image: img('/images/real-biscoff-cups.jpg'),
     priceRange: 'From ₹80',
     badge: 'New',
   },

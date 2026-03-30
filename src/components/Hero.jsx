@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ShoppingBag, Sparkles, Star } from 'lucide-react'
+import { assetUrl } from '../utils/assetPath'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
 
@@ -116,7 +117,7 @@ export default function Hero() {
               {/* Main image */}
               <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-[4/5] group" data-parallax="0.06">
                 <img
-                  src="/images/strawberry-cheesecake.jpg"
+                  src={assetUrl('/images/strawberry-cheesecake.jpg')}
                   alt="Strawberry Cheesecake by Cake & Crumb"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s] ease-out"
                 />
@@ -129,7 +130,7 @@ export default function Hero() {
                 data-parallax="-0.1"
               >
                 <img
-                  src="/images/real-mint-cupcakes.jpg"
+                  src={assetUrl('/images/real-mint-cupcakes.jpg')}
                   alt="Mint cupcakes with gold leaf"
                   className="w-full h-full object-cover"
                 />
@@ -142,7 +143,7 @@ export default function Hero() {
                 data-parallax="-0.08"
               >
                 <img
-                  src="/images/real-biscoff-cups.jpg"
+                  src={assetUrl('/images/real-biscoff-cups.jpg')}
                   alt="Biscoff dessert cups"
                   className="w-full h-full object-cover"
                 />
