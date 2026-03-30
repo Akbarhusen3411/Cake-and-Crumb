@@ -42,67 +42,76 @@ const CAT_IMAGES = {
   ],
 }
 
-// ─── Orderable items with prices ───
+// ─── Orderable items with prices + category labels ───
 const ORDER_ITEMS = {
   cheesecake_slice: [
-    { name: 'Strawberry Slice', price: 90 },
-    { name: 'Blueberry Slice', price: 90 },
-    { name: 'Raspberry Slice', price: 90 },
-    { name: 'Mango Slice', price: 100 },
-    { name: 'Passion Fruit Slice', price: 100 },
-    { name: 'Chocolate Slice', price: 115 },
-    { name: 'Nutella Slice', price: 120 },
-    { name: 'Biscoff Slice', price: 120 },
-    { name: 'Cookies & Cream Slice', price: 125 },
-    { name: 'Caramel Slice', price: 125 },
-    { name: 'Coffee Slice', price: 125 },
-    { name: 'Pistachio Slice', price: 140 },
+    { name: 'Strawberry Slice', price: 90, cat: '🍰 Cheesecake' },
+    { name: 'Blueberry Slice', price: 90, cat: '🍰 Cheesecake' },
+    { name: 'Raspberry Slice', price: 90, cat: '🍰 Cheesecake' },
+    { name: 'Mango Slice', price: 100, cat: '🍰 Cheesecake' },
+    { name: 'Passion Fruit Slice', price: 100, cat: '🍰 Cheesecake' },
+    { name: 'Chocolate Slice', price: 115, cat: '🍰 Cheesecake' },
+    { name: 'Nutella Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Biscoff Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Cookies & Cream Slice', price: 125, cat: '🍰 Cheesecake' },
+    { name: 'Caramel Slice', price: 125, cat: '🍰 Cheesecake' },
+    { name: 'Coffee Slice', price: 125, cat: '🍰 Cheesecake' },
+    { name: 'Pistachio Slice', price: 140, cat: '🍰 Cheesecake' },
   ],
   cheesecake_whole: [
-    { name: 'Strawberry Whole', price: 700 },
-    { name: 'Blueberry Whole', price: 700 },
-    { name: 'Mango Whole', price: 800 },
-    { name: 'Chocolate Whole', price: 900 },
-    { name: 'Nutella Whole', price: 950 },
-    { name: 'Biscoff Whole', price: 950 },
-    { name: 'Cookies & Cream Whole', price: 1000 },
-    { name: 'Pistachio Whole', price: 1100 },
+    { name: 'Strawberry Whole', price: 700, cat: '🍰 Cheesecake' },
+    { name: 'Blueberry Whole', price: 700, cat: '🍰 Cheesecake' },
+    { name: 'Mango Whole', price: 800, cat: '🍰 Cheesecake' },
+    { name: 'Chocolate Whole', price: 900, cat: '🍰 Cheesecake' },
+    { name: 'Nutella Whole', price: 950, cat: '🍰 Cheesecake' },
+    { name: 'Biscoff Whole', price: 950, cat: '🍰 Cheesecake' },
+    { name: 'Cookies & Cream Whole', price: 1000, cat: '🍰 Cheesecake' },
+    { name: 'Pistachio Whole', price: 1100, cat: '🍰 Cheesecake' },
   ],
   cookies: [
-    { name: 'Triple Choc Cookie', price: 65 },
-    { name: 'Classic Cookie', price: 55 },
-    { name: 'Red Velvet Cookie', price: 70 },
-    { name: 'Pistachio Rose Cookie', price: 90 },
-    { name: 'Almond Cookie', price: 70 },
-    { name: 'Cookie Box (6)', price: 360 },
-    { name: 'Cookie Box (12)', price: 680 },
+    { name: 'Triple Choc Cookie', price: 65, cat: '🍪 Cookies' },
+    { name: 'Classic Cookie', price: 55, cat: '🍪 Cookies' },
+    { name: 'Red Velvet Cookie', price: 70, cat: '🍪 Cookies' },
+    { name: 'Pistachio Rose Cookie', price: 90, cat: '🍪 Cookies' },
+    { name: 'Almond Cookie', price: 70, cat: '🍪 Cookies' },
+    { name: 'Cookie Box (6)', price: 360, cat: '🍪 Cookies' },
+    { name: 'Cookie Box (12)', price: 680, cat: '🍪 Cookies' },
   ],
   cakes: [
-    { name: 'Choc Cupcake', price: 100 },
-    { name: 'Vanilla Cupcake', price: 100 },
-    { name: 'Brownie', price: 80 },
-    { name: 'Blondie', price: 80 },
-    { name: 'Cakesicle', price: 120 },
-    { name: 'Cake Pop', price: 90 },
-    { name: 'Biscoff Milk Cake (Whole)', price: 800 },
-    { name: 'Rose Milk Cake (Whole)', price: 800 },
-    { name: 'Pistachio Milk Cake (Whole)', price: 950 },
+    { name: 'Choc Cupcake', price: 100, cat: '🧁 Cupcakes' },
+    { name: 'Vanilla Cupcake', price: 100, cat: '🧁 Cupcakes' },
+    { name: 'Brownie', price: 80, cat: '🎂 Bakes' },
+    { name: 'Blondie', price: 80, cat: '🎂 Bakes' },
+    { name: 'Cakesicle', price: 120, cat: '🎂 Bakes' },
+    { name: 'Cake Pop', price: 90, cat: '🎂 Bakes' },
+    { name: 'Biscoff Milk Cake (Whole)', price: 800, cat: '🥛 Milk Cake' },
+    { name: 'Rose Milk Cake (Whole)', price: 800, cat: '🥛 Milk Cake' },
+    { name: 'Pistachio Milk Cake (Whole)', price: 950, cat: '🥛 Milk Cake' },
   ],
   desserts: [
-    { name: 'Custard Cup', price: 90 },
-    { name: 'Cheesecake Cup', price: 150 },
-    { name: 'Trifle Cup', price: 100 },
-    { name: 'Jelly Cup', price: 80 },
+    { name: 'Custard Cup', price: 90, cat: '🍮 Dessert Cup' },
+    { name: 'Cheesecake Cup', price: 150, cat: '🍮 Dessert Cup' },
+    { name: 'Trifle Cup', price: 100, cat: '🍮 Dessert Cup' },
+    { name: 'Jelly Cup', price: 80, cat: '🍮 Dessert Cup' },
   ],
   drinks: [
-    { name: 'Virgin Mojito', price: 120 },
-    { name: 'Blue Lagoon', price: 120 },
-    { name: 'Strawberry Mojito', price: 120 },
-    { name: 'Biscoff Milkshake', price: 180 },
-    { name: 'Nutella Milkshake', price: 180 },
-    { name: 'Iced Coffee', price: 100 },
-    { name: 'Hot Coffee', price: 90 },
+    { name: 'Virgin Mojito', price: 120, cat: '🍹 Mojito' },
+    { name: 'Blue Lagoon', price: 120, cat: '🍹 Mojito' },
+    { name: 'Strawberry Mojito', price: 120, cat: '🍹 Mojito' },
+    { name: 'Biscoff Milkshake', price: 180, cat: '🥤 Milkshake' },
+    { name: 'Nutella Milkshake', price: 180, cat: '🥤 Milkshake' },
+    { name: 'Iced Coffee', price: 100, cat: '☕ Coffee' },
+    { name: 'Hot Coffee', price: 90, cat: '☕ Coffee' },
   ],
+}
+
+// Find category label for an item name
+function getItemCat(name) {
+  for (const items of Object.values(ORDER_ITEMS)) {
+    const found = items.find((i) => i.name === name)
+    if (found) return found.cat
+  }
+  return ''
 }
 
 // ─── Menu price display data ───
@@ -387,7 +396,20 @@ export default function ChatBot() {
     const phone = orderInfo.phone.replace(/\s/g, '')
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
 
-    const orderLines = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
+    // Group items by category
+    const grouped = {}
+    items.forEach(([name, { qty, price }]) => {
+      const cat = getItemCat(name) || '📦 Other'
+      if (!grouped[cat]) grouped[cat] = []
+      grouped[cat].push({ name, qty, price })
+    })
+    let orderLines = ''
+    Object.entries(grouped).forEach(([cat, catItems]) => {
+      orderLines += `\n*${cat}*\n`
+      catItems.forEach(({ name, qty, price }) => {
+        orderLines += `  • ${name} × ${qty} = ₹${price * qty}\n`
+      })
+    })
 
     // Pre-built reply links for admin
     const confirmMsg = `✅ Hi ${orderInfo.name}! Your Cake & Crumb order *${orderId}* is *CONFIRMED*! 🎂\n\nDelivery: ${orderInfo.date}\nTotal: ₹${grandTotal} (COD)\n\nThank you! 🙏`
@@ -401,8 +423,9 @@ export default function ChatBot() {
 
     // Clean order message (customer can see this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*📋 Items:*\n${orderLines}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*📋 Order Items:*${orderLines}\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
       `*Subtotal:* ₹${total}\n` +
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
       `*💰 Total: ₹${grandTotal}*\n` +

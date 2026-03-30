@@ -158,29 +158,21 @@ export default function Navbar({ onCartClick }) {
       </div>
 
       {/* =========== Full-Screen Mobile Menu =========== */}
+      {mobileOpen && (
       <div
-        className="lg:hidden fixed inset-0 z-[100] pointer-events-none"
-        style={{
-          visibility: mobileOpen ? 'visible' : 'hidden',
-        }}
+        className="lg:hidden fixed inset-0 z-[100] overflow-hidden"
       >
         {/* Solid background — fully covers page */}
-        <div
-          className="absolute inset-0 bg-cream-light pointer-events-auto"
-          style={{
-            opacity: drawerVisible ? 1 : 0,
-            transition: 'opacity 300ms ease',
-          }}
-        />
+        <div className="absolute inset-0 bg-cream-light" />
 
         {/* Decorative blurs */}
-        <div className="absolute top-[-10%] right-[-10%] w-72 h-72 bg-soft-pink/50 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[-5%] left-[-10%] w-64 h-64 bg-gold/15 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute top-[-10%] right-[-10%] w-72 h-72 bg-soft-pink/50 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-5%] left-[-10%] w-64 h-64 bg-gold/15 rounded-full blur-[80px]" />
 
         {/* Close button */}
         <button
           onClick={closeDrawer}
-          className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10 pointer-events-auto"
+          className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10 "
           style={{
             opacity: drawerVisible ? 1 : 0,
             transform: drawerVisible ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(-90deg)',
@@ -192,7 +184,7 @@ export default function Navbar({ onCartClick }) {
         </button>
 
         {/* Content */}
-        <div className="relative h-full flex flex-col items-center justify-center px-8 pointer-events-auto">
+        <div className="relative h-full flex flex-col items-center justify-center px-8 ">
 
           {/* Nav Links — centered */}
           <nav className="flex flex-col items-center gap-2 mb-8">
@@ -288,6 +280,7 @@ export default function Navbar({ onCartClick }) {
           </div>
         </div>
       </div>
+      )}
     </nav>
   )
 }
