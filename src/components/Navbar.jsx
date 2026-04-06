@@ -120,11 +120,11 @@ export default function Navbar({ onCartClick }) {
           <X size={20} />
         </button>
 
-        {/* Content */}
-        <div className="relative h-full flex flex-col items-center justify-center px-8">
+        {/* Content — scrollable on small screens */}
+        <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-y-auto py-20">
 
           {/* Nav Links */}
-          <nav className="flex flex-col items-center gap-1.5 mb-8">
+          <nav className="flex flex-col items-center gap-1 mb-6">
             {navLinks.map((link, i) => {
               const isActive = location.pathname === link.to
               const LinkIcon = link.icon
@@ -132,15 +132,15 @@ export default function Navbar({ onCartClick }) {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className={`flex items-center gap-4 px-8 py-3.5 rounded-2xl w-64 transition-colors duration-200 ${menuOpen ? 'menu-item-in' : ''} ${
+                  className={`flex items-center gap-4 px-8 py-3 rounded-2xl w-64 transition-colors duration-200 ${menuOpen ? 'menu-item-in' : ''} ${
                     isActive
                       ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
                       : 'text-chocolate active:bg-chocolate/5'
                   }`}
                   style={{ '--menu-delay': `${100 + i * 50}ms` }}
                 >
-                  <LinkIcon size={20} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
-                  <span className="font-heading text-lg font-semibold">{link.label}</span>
+                  <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
+                  <span className="font-heading text-base font-semibold">{link.label}</span>
                   {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
                 </Link>
               )
@@ -148,19 +148,19 @@ export default function Navbar({ onCartClick }) {
           </nav>
 
           {/* CTA Buttons */}
-          <div className={`flex flex-col gap-3 w-64 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '380ms' }}>
+          <div className={`flex flex-col gap-2.5 w-64 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '380ms' }}>
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
             >
               <MessageCircle size={18} />
               Order on WhatsApp
             </a>
             <button
               onClick={() => { closeMenu(); setTimeout(onCartClick, 300) }}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
             >
               <ShoppingBag size={18} />
               View Cart
@@ -168,9 +168,9 @@ export default function Navbar({ onCartClick }) {
             </button>
           </div>
 
-          {/* Bottom */}
-          <div className={`absolute bottom-10 left-0 right-0 px-8 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '450ms' }}>
-            <div className="flex items-center justify-center gap-4 mb-4">
+          {/* Bottom Social */}
+          <div className={`mt-6 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '450ms' }}>
+            <div className="flex items-center justify-center gap-4 mb-3">
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Instagram size={18} /></a>
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
               <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
@@ -178,7 +178,7 @@ export default function Navbar({ onCartClick }) {
             <div className="text-center">
               <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
                 <MapPin size={11} />
-                <span className="text-[11px]">Ahmedabad, Gujarat</span>
+                <span className="text-[11px]">Gujarat, India</span>
               </div>
               <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">The Gourmet Chocolate & Berry Boutique</p>
             </div>

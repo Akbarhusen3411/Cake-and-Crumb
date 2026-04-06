@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react'
-import { MapPin, X, Check, MessageCircle } from 'lucide-react'
+import { MapPin, X, Check, MessageCircle, Loader2, Search } from 'lucide-react'
 import useLocationStore from '../store/useLocationStore'
-import { deliveryAreas } from '../data/products'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27m%20outside%20Ahmedabad%20but%20I%27d%20love%20to%20order.'
 
 export default function LocationDialog() {
   const { dialogShown, dialogOpen, area, setArea, setDialogShown, closeDialog, setIsInAhmedabad } = useLocationStore()
   const [notInCity, setNotInCity] = useState(false)
+
+  const [pincode, setPincode] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [areas, setAreas] = useState([])        // list from API
   const [selectedArea, setSelectedArea] = useState(area || '')
+  const [locationInfo, setLocationInfo] = useState(null) // { district, state }
+  const [error, setError] = useState('')
 
   // Auto-popup after 3 seconds (only once)
   useEffect(() => {
@@ -20,8 +25,56 @@ export default function LocationDialog() {
     return () => clearTimeout(timer)
   }, [dialogShown, setDialogShown])
 
+  const lookupPincode = async () => {
+    if (!/^\d{6}$/.test(pincode)) {
+      setError('Enter a valid 6-digit pincode')
+      return
+    }
+    setLoading(true)
+    setError('')
+    setAreas([])
+    setSelectedArea('')
+    setLocationInfo(null)
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+      const data = await res.json()
+
+      if (data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+        const postOffices = data[0].PostOffice
+        const state = postOffices[0].State
+        const district = postOffices[0].District
+        const areaList = postOffices.map((po) => po.Name)
+
+        if (state !== 'Gujarat') {
+          setError('Sorry, we currently deliver only in Gujarat')
+          setLoading(false)
+          return
+        }
+
+        setAreas(areaList)
+        setLocationInfo({ district, state })
+        if (areaList.length === 1) setSelectedArea(areaList[0])
+      } else {
+        setError('Invalid pincode. Please check and try again.')
+      }
+    } catch (e) {
+      setError(e.name === 'AbortError' ? 'Request timed out. Try again.' : 'Could not look up pincode. Try again.')
+    }
+    setLoading(false)
+  }
+
   const handleConfirm = () => {
-    setArea(selectedArea)
+    const fullArea = locationInfo
+      ? `${selectedArea}, ${locationInfo.district}, ${locationInfo.state} - ${pincode}`
+      : selectedArea
+    setArea(fullArea)
     setIsInAhmedabad(true)
     closeDialog()
   }
@@ -57,26 +110,73 @@ export default function LocationDialog() {
             </div>
             <h3 className="font-heading text-lg font-bold">Delivering Fresh!</h3>
           </div>
-          <p className="text-sm text-cream/70">We currently deliver across Ahmedabad</p>
+          <p className="text-sm text-cream/70">Enter your pincode to check delivery</p>
         </div>
 
         {/* Body */}
         <div className="p-5">
           {!notInCity ? (
             <>
-              <p className="text-sm text-chocolate-light/70 mb-4">
-                Select your area for accurate delivery options:
+              <p className="text-sm text-chocolate-light/70 mb-3">
+                Enter your pincode to find your area:
               </p>
-              <select
-                value={selectedArea}
-                onChange={(e) => setSelectedArea(e.target.value)}
-                className="w-full bg-cream/50 border border-chocolate/10 rounded-xl px-4 py-3 text-sm text-chocolate focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all mb-4 appearance-none"
-              >
-                <option value="">Choose your area</option>
-                {deliveryAreas.map((a) => (
-                  <option key={a} value={a}>{a}</option>
-                ))}
-              </select>
+
+              {/* Pincode Input + Search */}
+              <div className="flex gap-2 mb-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={pincode}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, '')
+                    setPincode(v)
+                    setError('')
+                    if (v.length < 6) { setAreas([]); setSelectedArea(''); setLocationInfo(null) }
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && lookupPincode()}
+                  placeholder="Enter 6-digit pincode"
+                  className="flex-1 bg-cream/50 border border-chocolate/10 rounded-xl px-4 py-3 text-sm text-chocolate focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all"
+                />
+                <button
+                  onClick={lookupPincode}
+                  disabled={loading || pincode.length !== 6}
+                  className="px-4 py-3 rounded-xl bg-chocolate text-cream text-sm font-medium hover:bg-chocolate-light transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+                  {loading ? '' : 'Search'}
+                </button>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <p className="text-[12px] text-berry mb-3">{error}</p>
+              )}
+
+              {/* Location Info */}
+              {locationInfo && (
+                <div className="bg-green-50 border border-green-200 rounded-xl px-3 py-2 mb-3">
+                  <p className="text-[12px] text-green-700 font-medium">
+                    {locationInfo.district}, {locationInfo.state} — {pincode}
+                  </p>
+                </div>
+              )}
+
+              {/* Area Selector */}
+              {areas.length > 1 && (
+                <select
+                  value={selectedArea}
+                  onChange={(e) => setSelectedArea(e.target.value)}
+                  className="w-full bg-cream/50 border border-chocolate/10 rounded-xl px-4 py-3 text-sm text-chocolate focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all mb-3 appearance-none"
+                >
+                  <option value="">Select your area</option>
+                  {areas.map((a) => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </select>
+              )}
+
+              {/* Confirm */}
               <button
                 onClick={handleConfirm}
                 disabled={!selectedArea}
@@ -85,12 +185,13 @@ export default function LocationDialog() {
                 <Check size={16} />
                 Confirm Location
               </button>
+
               <div className="flex items-center gap-3 mt-3">
                 <button
                   onClick={handleNotInCity}
                   className="flex-1 text-sm text-chocolate-light/50 hover:text-berry transition-colors"
                 >
-                  Not in Ahmedabad
+                  Not in Gujarat
                 </button>
                 <span className="text-chocolate-light/20">|</span>
                 <button
@@ -110,7 +211,7 @@ export default function LocationDialog() {
                 We're expanding soon!
               </h4>
               <p className="text-sm text-chocolate-light/60 mb-5 leading-relaxed">
-                Currently we deliver only in Ahmedabad. But you can still order via WhatsApp — we'll try our best!
+                Currently we deliver only in Gujarat. But you can still order via WhatsApp — we'll try our best!
               </p>
               <a
                 href={WHATSAPP_URL}
