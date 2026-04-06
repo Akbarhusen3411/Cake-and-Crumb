@@ -41,10 +41,10 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-soft-pink/20 rounded-full blur-[60px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 text-center sm:text-left">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
               <img
                 src={assetUrl('/images/logo.png')}
                 alt="Cake & Crumb"
@@ -72,7 +72,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300 hover:translate-x-1 inline-block"
+                    className="text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -86,19 +86,19 @@ export default function Footer() {
             <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li>
-                <a href="tel:+919081668490" className="flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
+                <a href="tel:+919081668490" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
                   <Phone size={14} />
                   +91 90816 68490
                 </a>
               </li>
               <li>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-green-600 transition-colors duration-300">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-green-600 transition-colors duration-300">
                   <MessageCircle size={14} />
                   WhatsApp Order
                 </a>
               </li>
               <li>
-                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-pink-500 transition-colors duration-300">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-pink-500 transition-colors duration-300">
                   <Instagram size={14} />
                   @cake_and_crumb_1
                 </a>
@@ -109,7 +109,7 @@ export default function Footer() {
           {/* Social */}
           <div>
             <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Follow Us</h4>
-            <div className="flex gap-3 mb-6">
+            <div className="flex justify-center sm:justify-start gap-3 mb-6">
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
