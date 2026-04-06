@@ -5,9 +5,9 @@
  * Above 5 km: ₹7 per km (full distance)
  */
 
-// Vaso, Gujarat coordinates (MQ84+2GQ, Vaso, Gujarat 387380)
-const BAKERY_LAT = 22.6916
-const BAKERY_LNG = 72.9070
+// Husaini Chowk, Vaso, Gujarat 387380 (22°39'54.76"N 72°45'23.64"E)
+const BAKERY_LAT = 22.6652
+const BAKERY_LNG = 72.7566
 const BAKERY_LOCATION = 'Vaso, Kheda, Gujarat'
 
 const FREE_RADIUS_KM = 5

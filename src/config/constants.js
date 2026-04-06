@@ -18,8 +18,8 @@ export const CANCEL_WINDOW_MINUTES = 30       // Cancellation window
 export const ADVANCE_ORDER_DAYS = 1           // Days in advance to order
 
 // ─── Delivery ────────────────────────────────────────────
-export const BAKERY_LAT = 22.6916
-export const BAKERY_LNG = 72.9070
+export const BAKERY_LAT = 22.6652
+export const BAKERY_LNG = 72.7566
 export const FREE_DELIVERY_RADIUS_KM = 5
 export const DELIVERY_RATE_PER_KM = 5         // ₹ per km beyond free radius
 
