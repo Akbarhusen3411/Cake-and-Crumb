@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CheckCircle, Home, MessageCircle } from 'lucide-react'
+import { CheckCircle, Home, MessageCircle, XCircle, Clock } from 'lucide-react'
 import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
@@ -28,6 +28,7 @@ export default function ConfirmationStep({ onClose }) {
   const [orderTimestamp] = useState(Date.now())
   const [cancelExpired, setCancelExpired] = useState(false)
   const [remainingTime, setRemainingTime] = useState(CANCEL_WINDOW_MS)
+  const [orderCancelled, setOrderCancelled] = useState(false)
 
   // Countdown timer for cancel button
   useEffect(() => {
@@ -126,21 +127,35 @@ export default function ConfirmationStep({ onClose }) {
   }
 
   const handleCancel = () => {
-    if (cancelExpired) return
-    const cancelReq = `🚫 *CANCEL REQUEST*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nI would like to cancel my order. Please confirm cancellation.`
+    if (cancelExpired || orderCancelled) return
+    setOrderCancelled(true)
+    const cancelReq = `🚫 *ORDER CANCELLED*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nThis order has been cancelled by the customer within the 30-minute window.\n\n📋 Items were:\n${cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity}`).join('\n')}\n\nTotal was: ₹${total}`
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(cancelReq)}`, '_blank')
   }
 
   return (
     <div className="text-center space-y-6 py-6">
-      {/* Animated checkmark */}
-      <div className="check-animate w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
-        <CheckCircle size={40} className="text-green-500" />
-      </div>
+      {/* Animated checkmark or cancelled icon */}
+      {orderCancelled ? (
+        <div className="w-20 h-20 rounded-full bg-berry/10 flex items-center justify-center mx-auto">
+          <XCircle size={40} className="text-berry" />
+        </div>
+      ) : (
+        <div className="check-animate w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
+          <CheckCircle size={40} className="text-green-500" />
+        </div>
+      )}
 
       <div>
-        <h3 className="font-heading text-xl font-bold text-chocolate mb-2">Order Placed!</h3>
-        <p className="text-sm text-chocolate-light/60">Thank you for ordering from Cake & Crumb</p>
+        <h3 className="font-heading text-xl font-bold text-chocolate mb-2">
+          {orderCancelled ? 'Order Cancelled' : 'Order Placed!'}
+        </h3>
+        <p className="text-sm text-chocolate-light/60">
+          {orderCancelled
+            ? 'Your order has been cancelled. Admin has been notified via WhatsApp.'
+            : 'Thank you for ordering from Cake & Crumb'
+          }
+        </p>
       </div>
 
       {/* Order ID */}
@@ -173,17 +188,22 @@ export default function ConfirmationStep({ onClose }) {
       </p>
 
       {/* Cancellation notice with countdown */}
-      <div className={`rounded-xl px-4 py-3 max-w-xs mx-auto text-left ${cancelExpired ? 'bg-gray-100 border border-gray-200' : 'bg-gold/5 border border-gold/15'}`}>
-        <p className="text-xs font-semibold text-chocolate mb-1">
-          {cancelExpired ? '🔒 Cancellation Window Closed' : '⚠️ Cancellation Policy'}
-        </p>
-        <p className="text-[11px] text-chocolate-light/60 leading-relaxed">
-          {cancelExpired
-            ? 'The 30-minute cancellation window has expired. This order can no longer be cancelled.'
-            : `You can cancel within 30 minutes. Time remaining: ${formatRemaining()}`
-          }
-        </p>
-      </div>
+      {!orderCancelled && (
+        <div className={`rounded-xl px-4 py-3 max-w-xs mx-auto text-left ${cancelExpired ? 'bg-gray-100 border border-gray-200' : 'bg-gold/5 border border-gold/15'}`}>
+          <div className="flex items-center gap-2 mb-1">
+            <Clock size={13} className={cancelExpired ? 'text-gray-400' : 'text-gold'} />
+            <p className="text-xs font-semibold text-chocolate">
+              {cancelExpired ? 'Cancellation Window Closed' : 'Cancellation Policy'}
+            </p>
+          </div>
+          <p className="text-[11px] text-chocolate-light/60 leading-relaxed">
+            {cancelExpired
+              ? 'The 30-minute cancellation window has expired. This order can no longer be cancelled.'
+              : `You can cancel within 30 minutes. Time remaining: ${formatRemaining()}`
+            }
+          </p>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="space-y-3 pt-2 max-w-xs mx-auto">
@@ -195,13 +215,30 @@ export default function ConfirmationStep({ onClose }) {
           Back to Home
         </button>
 
-        {!cancelExpired && (
+        {!orderCancelled && (
           <button
             onClick={handleCancel}
-            className="w-full border border-berry/20 text-berry py-3 rounded-xl font-medium text-sm hover:bg-berry/5 transition-all duration-300 flex items-center justify-center gap-2"
+            disabled={cancelExpired}
+            className={`w-full py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all duration-300 ${
+              cancelExpired
+                ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                : 'border border-berry/20 text-berry hover:bg-berry/5'
+            }`}
           >
-            🚫 Cancel Order ({formatRemaining()} left)
+            {cancelExpired
+              ? <><span>🔒</span> Cancel Expired</>
+              : <><span>🚫</span> Cancel Order ({formatRemaining()} left)</>
+            }
           </button>
+        )}
+
+        {orderCancelled && (
+          <div className="bg-berry/5 border border-berry/15 rounded-xl px-4 py-3 text-left">
+            <p className="text-xs font-semibold text-berry mb-1">Order Cancelled</p>
+            <p className="text-[11px] text-chocolate-light/60">
+              Cancellation notification sent to admin via WhatsApp. If you did not complete the WhatsApp message, please send it manually.
+            </p>
+          </div>
         )}
       </div>
     </div>
