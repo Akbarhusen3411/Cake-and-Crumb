@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star, Search, X } from 'lucide-react'
 import { menuCategories, featuredItems } from '../data/cakes'
-import { getProductsByCategory, productCategories, cheesecakeSubgroups } from '../data/products'
+import { getProductsByCategory, productCategories, cheesecakeSubgroups, products } from '../data/products'
 import useCartStore from '../store/useCartStore'
 import useToastStore from '../store/useToastStore'
 import QuantitySelector from './ui/QuantitySelector'
@@ -11,10 +11,12 @@ const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi!%20I%27d%20like%20to%20
 const SHOP_CATEGORY_IDS = productCategories.map((c) => c.id)
 
 /* ─── Featured Hero Cards ─── */
-function FeaturedCard({ item, index }) {
+function FeaturedCard({ item, index, onNavigate }) {
+  const categoryMap = { 1: 'cheesecake', 2: 'cookies', 3: 'desserts' }
   return (
     <div
-      className="fade-up group relative bg-white rounded-2xl overflow-hidden card-hover"
+      onClick={() => onNavigate?.(categoryMap[item.id])}
+      className="fade-up group relative bg-white rounded-2xl overflow-hidden card-hover cursor-pointer"
       style={{ transitionDelay: `${index * 130}ms` }}
     >
       <div className="relative overflow-hidden aspect-[4/5]">
@@ -79,8 +81,8 @@ function ProductCard({ product }) {
           </span>
         )}
         {!product.inStock && (
-          <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[2px]">
-            <span className="text-xs font-semibold text-chocolate-light bg-cream px-3 py-1 rounded-full">Out of Stock</span>
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center backdrop-blur-[2px]">
+            <span className="text-xs font-bold text-berry bg-white border border-berry/20 px-4 py-1.5 rounded-full shadow-sm">Out of Stock</span>
           </div>
         )}
       </div>
@@ -153,9 +155,9 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
   const addToast = useToastStore((s) => s.addToast)
 
   return (
-    <div className="product-card bg-white rounded-xl overflow-hidden border border-chocolate/5 relative">
+    <div className="product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative">
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-[4/3] sm:aspect-[4/3] md:aspect-square overflow-hidden bg-cream group">
         <img
           src={product.image}
           alt={product.shortName}
@@ -164,30 +166,30 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
+          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
             <Star size={9} fill="currentColor" /> Best
           </span>
         )}
       </div>
 
       {/* Info */}
-      <div className="p-3 space-y-2">
-        <h4 className="text-sm font-semibold text-chocolate truncate">{sliceProduct?.shortName || bantoProduct?.shortName}</h4>
+      <div className="p-2.5 sm:p-3 space-y-1.5 sm:space-y-2">
+        <h4 className="text-[13px] sm:text-sm font-semibold text-chocolate truncate">{sliceProduct?.shortName || bantoProduct?.shortName}</h4>
 
         {/* Per Slice option */}
         {sliceProduct && (
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 bg-cream/40 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2">
             <div className="min-w-0">
-              <p className="text-[11px] text-chocolate-light/50 leading-tight">Per Slice</p>
-              <p className="text-xs text-berry font-semibold">₹{sliceProduct.price}</p>
+              <p className="text-[10px] sm:text-[11px] font-medium text-chocolate/60 leading-tight">Per Slice</p>
+              <p className="text-[13px] sm:text-sm text-berry font-bold">₹{sliceProduct.price}</p>
             </div>
             <div className="shrink-0">
               {sliceQty === 0 ? (
                 <button
                   onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
-                  className="btn-ripple btn-touch px-3 py-1.5 rounded-lg bg-chocolate text-cream text-[11px] font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="btn-ripple btn-touch px-2.5 sm:px-3 py-1.5 rounded-lg bg-chocolate text-cream text-[10px] sm:text-[11px] font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
                 >
-                  <Plus size={11} /> Add
+                  <Plus size={10} /> Add
                 </button>
               ) : (
                 <QuantitySelector
@@ -206,19 +208,19 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
 
         {/* Banto Cake option */}
         {bantoProduct && (
-          <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-chocolate/5">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 bg-berry/[0.04] border border-berry/10 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2">
             <div className="min-w-0">
-              <p className="text-[11px] text-chocolate-light/50 leading-tight">Banto 4" · 3 slices</p>
-              <p className="text-[10px] text-chocolate-light/40">300–350 gm</p>
-              <p className="text-xs text-berry font-semibold">₹{bantoProduct.price}</p>
+              <p className="text-[10px] sm:text-[11px] font-medium text-chocolate/60 leading-tight">Banto 4" · 3 slices</p>
+              <p className="text-[9px] sm:text-[10px] text-chocolate-light/40 leading-tight">300–350 gm</p>
+              <p className="text-[13px] sm:text-sm text-berry font-bold">₹{bantoProduct.price}</p>
             </div>
             <div className="shrink-0">
               {bantoQty === 0 ? (
                 <button
                   onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
-                  className="btn-ripple btn-touch px-3 py-1.5 rounded-lg bg-berry/10 text-berry text-[11px] font-medium hover:bg-berry hover:text-white transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="btn-ripple btn-touch px-2.5 sm:px-3 py-1.5 rounded-lg bg-berry text-white text-[10px] sm:text-[11px] font-medium hover:bg-berry-light transition-all duration-300 flex items-center gap-1 active:scale-95"
                 >
-                  <Plus size={11} /> Add
+                  <Plus size={10} /> Add
                 </button>
               ) : (
                 <QuantitySelector
@@ -396,6 +398,21 @@ function CategoryContent({ category }) {
 /* ─── Main Menu Section ─── */
 export default function FeaturedCakes() {
   const [activeTab, setActiveTab] = useState('cheesecake')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Search results across all shoppable categories
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return null
+    const q = searchQuery.toLowerCase()
+    return products.filter((p) =>
+      p.inStock && (
+        p.name.toLowerCase().includes(q) ||
+        p.shortName.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      )
+    )
+  }, [searchQuery])
 
   // Use menuCategories for tab list (all categories including coming-soon)
   const activeCategory = menuCategories.find((c) => c.id === activeTab)
@@ -424,21 +441,67 @@ export default function FeaturedCakes() {
         {/* Featured Hero Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {featuredItems.map((item, i) => (
-            <FeaturedCard key={item.id} item={item} index={i} />
+            <FeaturedCard key={item.id} item={item} index={i} onNavigate={setActiveTab} />
           ))}
         </div>
 
         {/* Full Menu Title */}
-        <div className="text-center mb-10 fade-up">
+        <div className="text-center mb-8 fade-up">
           <h3 className="font-heading text-xl sm:text-2xl font-bold text-chocolate mb-2">
             Full Menu
           </h3>
           <div className="w-12 h-[2px] bg-gradient-to-r from-berry to-gold mx-auto" />
         </div>
 
+        {/* Search Bar */}
+        <div className="max-w-md mx-auto mb-8 fade-up">
+          <div className="relative">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-chocolate-light/40" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search menu... (e.g. Nutella, Biscoff, Mojito)"
+              className="w-full bg-white border border-chocolate/8 rounded-full pl-11 pr-10 py-3 text-sm text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light/50 hover:text-chocolate transition-colors"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+          {searchResults && (
+            <p className="text-xs text-chocolate-light/50 text-center mt-2">
+              {searchResults.length} {searchResults.length === 1 ? 'item' : 'items'} found
+            </p>
+          )}
+        </div>
+
+        {/* Search Results OR Category View */}
+        {searchResults ? (
+          <div className="mb-10">
+            {searchResults.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+                {searchResults.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-chocolate-light/50 text-sm">No items match your search. Try a different term.</p>
+              </div>
+            )}
+          </div>
+        ) : (
+        <>
         {/* Category Tabs */}
-        <div className="flex overflow-x-auto gap-2 mb-10 pb-2 scrollbar-hide fade-up -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:justify-center">
-          {menuCategories.map((cat) => (
+        <div className="relative fade-up mb-10">
+        <div className="sm:hidden absolute right-0 top-0 bottom-2 w-10 bg-gradient-to-l from-cream-light to-transparent z-10 pointer-events-none" />
+        <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:justify-center">
+          {menuCategories.filter((c) => c.id !== 'coming-soon').map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
@@ -452,14 +515,41 @@ export default function FeaturedCakes() {
             </button>
           ))}
         </div>
+        </div>
 
         {/* Active Category Content */}
         <div key={activeTab} className="tab-content-enter">
           {activeCategory && <CategoryContent category={activeCategory} />}
         </div>
 
+        {/* Coming Soon Banner */}
+        {(() => {
+          const comingSoon = menuCategories.find((c) => c.id === 'coming-soon')
+          if (!comingSoon) return null
+          return (
+            <div className="mt-14 fade-up">
+              <div className="bg-gradient-to-r from-gold/5 via-cream to-gold/5 border border-gold/15 rounded-2xl p-5 sm:p-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <Clock size={16} className="text-gold" />
+                  <h4 className="font-heading text-base sm:text-lg font-bold text-chocolate">Coming Soon</h4>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {comingSoon.items.map((item) => (
+                    <span key={item} className="inline-block bg-white border border-chocolate/6 text-chocolate-light text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                {comingSoon.note && (
+                  <p className="text-xs text-chocolate-light/50 italic mt-4">{comingSoon.note}</p>
+                )}
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Bottom CTA */}
-        <div className="text-center mt-16 fade-up">
+        <div className="text-center mt-10 fade-up">
           <p className="text-chocolate-light/50 mb-5 text-sm">
             Can't find what you want? We love custom orders.
           </p>
@@ -473,6 +563,8 @@ export default function FeaturedCakes() {
             <ExternalLink size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-500" />
           </a>
         </div>
+        </>
+        )}
       </div>
     </section>
   )

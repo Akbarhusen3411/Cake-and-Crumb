@@ -11,6 +11,7 @@ const quickLinks = [
   { label: 'About Us', to: '/about' },
   { label: 'Reviews', to: '/reviews' },
   { label: 'Contact', to: '/contact' },
+  { label: 'FAQ', to: '/faq' },
 ]
 
 export default function Footer() {

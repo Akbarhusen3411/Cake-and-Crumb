@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Instagram, MessageCircle, Phone, MapPin, Home, Cake, Heart, Star, Send, ShoppingBag, X } from 'lucide-react'
+import { Instagram, MessageCircle, Phone, MapPin, Home, Cake, Heart, Star, Send, HelpCircle, ShoppingBag, X } from 'lucide-react'
 import useCartStore from '../store/useCartStore'
 import { assetUrl } from '../utils/assetPath'
 
@@ -13,6 +13,7 @@ const navLinks = [
   { label: 'About', to: '/about', icon: Heart },
   { label: 'Reviews', to: '/reviews', icon: Star },
   { label: 'Contact', to: '/contact', icon: Send },
+  { label: 'FAQ', to: '/faq', icon: HelpCircle },
 ]
 
 export default function Navbar({ onCartClick }) {

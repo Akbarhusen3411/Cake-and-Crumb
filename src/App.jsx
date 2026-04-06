@@ -17,6 +17,7 @@ const MenuPage = lazy(() => import('./pages/MenuPage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 const ReviewsPage = lazy(() => import('./pages/ReviewsPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
+const FaqPage = lazy(() => import('./pages/FaqPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 
@@ -40,6 +41,7 @@ function AppContent() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/reviews" element={<ReviewsPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/faq" element={<FaqPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </PageTransition>

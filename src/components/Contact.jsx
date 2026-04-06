@@ -8,9 +8,16 @@ export default function Contact() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
+  const [phoneError, setPhoneError] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const cleanPhone = formData.phone.replace(/\s/g, '')
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setPhoneError('Enter valid 10-digit mobile number')
+      return
+    }
+    setPhoneError('')
     const text = `Hi! I'm ${formData.name}. ${formData.message} (Phone: ${formData.phone})`
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(text)}`, '_blank')
     setSubmitted(true)
@@ -195,9 +202,10 @@ export default function Contact() {
                       value={formData.phone}
                       onFocus={() => setFocusedField('phone')}
                       onBlur={() => setFocusedField(null)}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-cream/50 border border-chocolate/8 rounded-xl px-4 pt-5 pb-2 text-chocolate text-sm focus:outline-none focus:border-berry/30 focus:bg-cream/80 focus:ring-2 focus:ring-berry/10 transition-all duration-300"
+                      onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); setPhoneError('') }}
+                      className={`w-full bg-cream/50 border rounded-xl px-4 pt-5 pb-2 text-chocolate text-sm focus:outline-none focus:border-berry/30 focus:bg-cream/80 focus:ring-2 focus:ring-berry/10 transition-all duration-300 ${phoneError ? 'border-berry/40' : 'border-chocolate/8'}`}
                     />
+                    {phoneError && <p className="text-[11px] text-berry mt-1 ml-1">{phoneError}</p>}
                   </div>
                 </div>
 

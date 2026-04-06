@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2, AlertCircle } from 'lucide-react'
 import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
+import { getCoordinatesFromPincode, calculateDistance, getDeliveryInfo } from '../../utils/deliveryCalculator'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const items = useCartStore((s) => s.items)
@@ -14,7 +15,37 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const deliveryFee = checkoutFee || 0
   const total = subtotal + deliveryFee
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [pincode, setPincode] = useState('')
+  const [pincodeLoading, setPincodeLoading] = useState(false)
+  const [pincodeResult, setPincodeResult] = useState(null) // { fee, text, error }
   const minOrderMet = subtotal >= 200
+
+  const estimatedFee = pincodeResult && !pincodeResult.error ? pincodeResult.fee : deliveryFee
+  const estimatedTotal = subtotal + estimatedFee
+
+  const handlePincodeCheck = async () => {
+    const trimmed = pincode.trim()
+    if (!/^\d{6}$/.test(trimmed)) {
+      setPincodeResult({ error: 'Enter a valid 6-digit pincode' })
+      return
+    }
+    setPincodeLoading(true)
+    setPincodeResult(null)
+    try {
+      const coords = await getCoordinatesFromPincode(trimmed)
+      if (!coords) {
+        setPincodeResult({ error: 'Could not find location for this pincode' })
+      } else {
+        const dist = calculateDistance(coords.lat, coords.lng)
+        const info = getDeliveryInfo(dist)
+        setPincodeResult({ fee: info.fee, text: info.fee === 0 ? `FREE (within 5 km)` : `₹${info.fee} (${dist} km)` })
+      }
+    } catch {
+      setPincodeResult({ error: 'Something went wrong. Try again.' })
+    } finally {
+      setPincodeLoading(false)
+    }
+  }
 
   const handleWhatsAppOrder = () => {
     const itemLines = cartItems.map((item) =>
@@ -155,13 +186,45 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-chocolate-light/60">Delivery</span>
-                    <span className={`font-medium ${deliveryFee === 0 ? 'text-green-600' : 'text-chocolate'}`}>
-                      {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
+                    <span className={`font-medium ${estimatedFee === 0 ? 'text-green-600' : 'text-chocolate'}`}>
+                      {estimatedFee === 0 ? 'FREE' : `₹${estimatedFee}`}
                     </span>
                   </div>
+
+                  {/* Pincode estimator */}
+                  <div className="pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        placeholder="Pincode"
+                        value={pincode}
+                        onChange={(e) => {
+                          setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))
+                          if (pincodeResult) setPincodeResult(null)
+                        }}
+                        onKeyDown={(e) => e.key === 'Enter' && handlePincodeCheck()}
+                        className="w-24 px-2 py-1 text-xs rounded-lg border border-chocolate/15 bg-white text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/40"
+                      />
+                      <button
+                        onClick={handlePincodeCheck}
+                        disabled={pincodeLoading}
+                        className="px-2.5 py-1 text-[11px] font-medium rounded-lg bg-chocolate/10 text-chocolate active:bg-chocolate/20 transition-colors disabled:opacity-50"
+                      >
+                        {pincodeLoading ? '...' : 'Check'}
+                      </button>
+                    </div>
+                    {pincodeResult && (
+                      <p className={`text-[11px] mt-1 ${pincodeResult.error ? 'text-berry' : 'text-green-600'}`}>
+                        {pincodeResult.error || pincodeResult.text}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="border-t border-chocolate/8 pt-1.5 flex justify-between">
                     <span className="font-semibold text-chocolate">Total</span>
-                    <span className="font-bold text-chocolate text-lg">₹{total}</span>
+                    <span className="font-bold text-chocolate text-lg">₹{estimatedTotal}</span>
                   </div>
                 </div>
 
@@ -225,11 +288,11 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </button>
                 </div>
 
-                {deliveryFee > 0 && (
-                  <p className="text-center text-[10px] text-chocolate-light/40">
-                    Free delivery on orders above ₹499
-                  </p>
-                )}
+                <p className="text-center text-[10px] text-chocolate-light/40">
+                  {pincodeResult && !pincodeResult.error
+                    ? 'Estimated fee — final amount confirmed at checkout'
+                    : 'Enter pincode above to estimate delivery fee'}
+                </p>
               </div>
             </>
           )}

@@ -85,12 +85,21 @@ export default function LocationDialog() {
                 <Check size={16} />
                 Confirm Location
               </button>
-              <button
-                onClick={handleNotInCity}
-                className="w-full text-sm text-chocolate-light/50 hover:text-berry mt-3 transition-colors"
-              >
-                I'm not in Ahmedabad
-              </button>
+              <div className="flex items-center gap-3 mt-3">
+                <button
+                  onClick={handleNotInCity}
+                  className="flex-1 text-sm text-chocolate-light/50 hover:text-berry transition-colors"
+                >
+                  Not in Ahmedabad
+                </button>
+                <span className="text-chocolate-light/20">|</span>
+                <button
+                  onClick={closeDialog}
+                  className="flex-1 text-sm text-chocolate-light/50 hover:text-chocolate transition-colors"
+                >
+                  Maybe Later
+                </button>
+              </div>
             </>
           ) : (
             <div className="text-center py-4">
