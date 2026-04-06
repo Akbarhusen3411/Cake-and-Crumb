@@ -178,7 +178,7 @@ export default function Navbar({ onCartClick }) {
             <div className="text-center">
               <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
                 <MapPin size={11} />
-                <span className="text-[11px]">Gujarat, India</span>
+                <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
               </div>
               <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">The Gourmet Chocolate & Berry Boutique</p>
             </div>

@@ -5,13 +5,13 @@
  * Above 5 km: ₹7 per km (full distance)
  */
 
-// Vaso, Gujarat coordinates
-const BAKERY_LAT = 22.6678
-const BAKERY_LNG = 72.8989
+// Vaso, Gujarat coordinates (MQ84+2GQ, Vaso, Gujarat 387380)
+const BAKERY_LAT = 22.6916
+const BAKERY_LNG = 72.9070
 const BAKERY_LOCATION = 'Vaso, Kheda, Gujarat'
 
 const FREE_RADIUS_KM = 5
-const RATE_PER_KM = 7
+const RATE_PER_KM = 5
 
 /**
  * Haversine formula — calculates distance between two lat/lng points

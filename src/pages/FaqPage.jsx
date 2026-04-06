@@ -15,8 +15,8 @@ const faqs = [
     answer: 'We accept GPay, PhonePe, Paytm, and Cash on Delivery.',
   },
   {
-    question: 'Do you deliver outside Ahmedabad?',
-    answer: 'Currently we deliver across Gujarat. Delivery fee is calculated based on distance from our bakery in Vaso, Kheda. Within 5 km is free, beyond that is \u20B97/km.',
+    question: 'Where do you deliver?',
+    answer: 'We deliver across Gujarat from our bakery in Vaso, Kheda (387380). Delivery fee is calculated based on distance — within 5 km is free, beyond that is \u20B95/km.',
   },
   {
     question: 'Can I cancel my order?',

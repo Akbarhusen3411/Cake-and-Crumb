@@ -112,7 +112,7 @@ export default function Contact() {
               </div>
               <div className="p-5 space-y-4">
                 {[
-                  { icon: MapPin, label: 'Delivery Area', value: 'Ahmedabad, Gujarat, India', color: 'text-berry' },
+                  { icon: MapPin, label: 'Bakery Location', value: 'Vaso, Kheda, Gujarat 387380', color: 'text-berry' },
                   { icon: Clock, label: 'Order Notice', value: 'Please order 24 hours in advance', color: 'text-gold' },
                   { icon: Heart, label: 'Custom Cakes', value: "DM us your vision — we'll bring it to life", color: 'text-pink-500' },
                   { icon: MessageCircle, label: 'WhatsApp', value: '+91 90816 68490', color: 'text-green-500' },

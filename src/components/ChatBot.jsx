@@ -580,7 +580,7 @@ export default function ChatBot() {
       }
       case 'location': {
         setOptions([])
-        await addBotMessage("*Our Location*\n\n📍 Ahmedabad, Gujarat, India\n🏠 Home bakery — we deliver across Gujarat!")
+        await addBotMessage("*Our Location*\n\n📍 Vaso, Kheda, Gujarat 387380\n🏠 Home bakery — we deliver across Gujarat!")
         setOptions([{ label: '🛒 Place Order', action: 'order' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }

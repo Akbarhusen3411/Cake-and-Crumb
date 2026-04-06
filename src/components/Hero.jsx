@@ -40,7 +40,7 @@ export default function Hero() {
             >
               <Sparkles size={14} className="text-gold" />
               <span className="text-xs font-medium text-chocolate-light tracking-widest uppercase">
-                Handcrafted in Ahmedabad
+                Handcrafted in Vaso, Gujarat
               </span>
             </div>
 

@@ -59,8 +59,8 @@ export default function AboutUs() {
             <div className="space-y-5 text-chocolate-light/70 leading-relaxed">
               <p>
                 Cake & Crumb started with a simple dream — to bring gourmet-quality desserts to
-                Ahmedabad without the gourmet price tag. What began as weekend baking experiments
-                has grown into a boutique brand trusted by dessert lovers across the city.
+                Gujarat without the gourmet price tag. What began as weekend baking experiments
+                in Vaso has grown into a boutique brand trusted by dessert lovers across the region.
               </p>
               <p>
                 We keep things intentionally small. Every cake is handcrafted in limited quantities

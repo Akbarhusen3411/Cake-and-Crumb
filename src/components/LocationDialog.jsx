@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { MapPin, X, Check, MessageCircle, Loader2, Search } from 'lucide-react'
 import useLocationStore from '../store/useLocationStore'
 
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27m%20outside%20Ahmedabad%20but%20I%27d%20love%20to%20order.'
+const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27m%20outside%20Gujarat%20but%20I%27d%20love%20to%20order.'
 
 export default function LocationDialog() {
   const { dialogShown, dialogOpen, area, setArea, setDialogShown, closeDialog, setIsInAhmedabad } = useLocationStore()

@@ -60,7 +60,7 @@ export default function Footer() {
               The Gourmet Chocolate & Berry Boutique
             </p>
             <p className="text-sm text-chocolate-light/50 leading-relaxed">
-              Handcrafted premium cakes in Ahmedabad. Made fresh, made with love.
+              Handcrafted premium cakes in Vaso, Gujarat. Made fresh, made with love.
             </p>
           </div>
 
@@ -137,7 +137,7 @@ export default function Footer() {
               </a>
             </div>
             <p className="text-xs text-chocolate-light/35">
-              Ahmedabad, Gujarat, India
+              Vaso, Kheda, Gujarat, India
             </p>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function Footer() {
           <p className="text-xs text-chocolate-light/35 flex items-center gap-1.5">
             &copy; {new Date().getFullYear()} Cake & Crumb. Baked with
             <Heart size={12} className="text-berry fill-berry" />
-            in Ahmedabad.
+            in Vaso.
           </p>
           <button
             onClick={scrollToTop}
