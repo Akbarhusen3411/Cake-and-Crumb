@@ -277,7 +277,7 @@ function CheesecakeContent({ menuCat }) {
         })
 
         return (
-          <div key={subgroup.id} className="mb-10">
+          <div key={subgroup.id} className="mb-10 cheesecake-subgroup">
             {/* Subgroup Header */}
             <div className="flex items-center gap-3 mb-4">
               <span className="text-berry text-sm">✦</span>
@@ -528,7 +528,7 @@ export default function FeaturedCakes() {
           if (!comingSoon) return null
           return (
             <div className="mt-14 fade-up">
-              <div className="bg-gradient-to-r from-gold/5 via-cream to-gold/5 border border-gold/15 rounded-2xl p-5 sm:p-8">
+              <div className="bg-gradient-to-r from-gold/5 via-cream to-gold/5 border border-gold/15 rounded-2xl p-5 sm:p-8 coming-soon-banner">
                 <div className="flex items-center gap-2 mb-4">
                   <Clock size={16} className="text-gold" />
                   <h4 className="font-heading text-base sm:text-lg font-bold text-chocolate">Coming Soon</h4>

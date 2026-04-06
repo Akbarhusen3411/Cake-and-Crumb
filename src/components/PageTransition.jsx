@@ -15,11 +15,12 @@ export default function PageTransition({ children }) {
 
   return (
     <div
-      className={`transition-all duration-500 ease-out ${
+      className={`transition-all duration-600 ${
         show
-          ? 'opacity-100 translate-y-0'
-          : 'opacity-0 translate-y-4'
+          ? 'opacity-100 translate-y-0 blur-0'
+          : 'opacity-0 translate-y-3 blur-[2px]'
       }`}
+      style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
     >
       {children}
     </div>

@@ -636,3 +636,158 @@ body {
   background: linear-gradient(90deg, var(--color-cream) 0%, var(--color-cream-dark) 50%, var(--color-cream) 100%);
   background-size: 200% 100%;
 }
+
+/* ===== Smooth Image Loading ===== */
+@keyframes img-fade-in {
+  from { opacity: 0; transform: scale(1.04); filter: blur(8px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+img {
+  opacity: 0;
+  animation: img-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.1s;
+}
+
+img[src=""], img:not([src]) {
+  visibility: hidden;
+}
+
+/* Navbar logo — no delay */
+nav img {
+  animation-delay: 0s;
+  animation-duration: 0.3s;
+}
+
+/* Product card images — staggered feel */
+.product-card img {
+  animation-duration: 0.5s;
+}
+
+/* ===== Smooth Page Enter ===== */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: page-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== Product Card Staggered Entrance ===== */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.product-card {
+  animation: card-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger product cards in grid */
+.product-card:nth-child(1) { animation-delay: 0ms; }
+.product-card:nth-child(2) { animation-delay: 60ms; }
+.product-card:nth-child(3) { animation-delay: 120ms; }
+.product-card:nth-child(4) { animation-delay: 180ms; }
+.product-card:nth-child(5) { animation-delay: 240ms; }
+.product-card:nth-child(6) { animation-delay: 300ms; }
+.product-card:nth-child(7) { animation-delay: 340ms; }
+.product-card:nth-child(8) { animation-delay: 380ms; }
+.product-card:nth-child(n+9) { animation-delay: 400ms; }
+
+/* ===== Subgroup Section Entrance ===== */
+@keyframes section-slide-in {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.cheesecake-subgroup {
+  animation: section-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ===== Smooth Hover Glow on Cards ===== */
+.product-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  box-shadow: 0 8px 30px rgba(198, 40, 40, 0.08);
+  pointer-events: none;
+}
+
+.product-card:hover::after {
+  opacity: 1;
+}
+
+/* ===== WhatsApp Button Bounce ===== */
+@keyframes wa-bounce {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.15); }
+  30% { transform: scale(0.95); }
+  45% { transform: scale(1.05); }
+}
+
+.wa-btn-bounce {
+  animation: wa-bounce 2s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+/* ===== Mobile Smooth Scroll ===== */
+@media (max-width: 1023px) {
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Faster image load animation on mobile */
+  img {
+    animation-duration: 0.4s;
+    animation-delay: 0.05s;
+  }
+
+  /* Lighter card entrance on mobile */
+  .product-card {
+    animation-duration: 0.35s;
+  }
+
+  .product-card:nth-child(n) {
+    animation-delay: 0ms;
+  }
+
+  .product-card:nth-child(odd) { animation-delay: 0ms; }
+  .product-card:nth-child(even) { animation-delay: 80ms; }
+}
+
+/* ===== Smooth Accordion (FAQ) ===== */
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.accordion-content.open {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content > div {
+  overflow: hidden;
+}
+
+/* ===== Coming Soon Banner Shimmer ===== */
+@keyframes banner-shimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.coming-soon-banner {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 165, 116, 0.08) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: banner-shimmer 4s ease-in-out infinite;
+}

@@ -28,7 +28,7 @@ export default function WhatsAppButton() {
         {/* Outer ring */}
         <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 opacity-20 blur-sm" />
         {/* Button */}
-        <div className="relative w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-xl shadow-green-500/25 hover:scale-110 hover:shadow-2xl hover:shadow-green-500/35 transition-all duration-500">
+        <div className="relative w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-xl shadow-green-500/25 hover:scale-110 hover:shadow-2xl hover:shadow-green-500/35 transition-all duration-500 wa-btn-bounce">
           <MessageCircle size={24} className="text-white" />
         </div>
         {/* Tooltip */}
