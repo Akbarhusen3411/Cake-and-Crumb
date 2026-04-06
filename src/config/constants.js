@@ -21,7 +21,7 @@ export const ADVANCE_ORDER_DAYS = 1           // Days in advance to order
 export const BAKERY_LAT = 22.6678
 export const BAKERY_LNG = 72.8989
 export const FREE_DELIVERY_RADIUS_KM = 5
-export const DELIVERY_RATE_PER_KM = 7         // ₹ per km beyond free radius
+export const DELIVERY_RATE_PER_KM = 5         // ₹ per km beyond free radius
 
 // ─── Payment Methods ─────────────────────────────────────
 export const PAYMENT_METHODS = ['GPay', 'PhonePe', 'Paytm', 'Cash']
