@@ -464,7 +464,7 @@ export default function FeaturedCakes() {
             Can't find what you want? We love custom orders.
           </p>
           <a
-            href="https://instagram.com/cake.and.crumb_1"
+            href="https://instagram.com/cake_and_crumb_1"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 bg-berry/5 text-berry font-medium px-6 py-3 rounded-full hover:bg-berry hover:text-white transition-all duration-500"

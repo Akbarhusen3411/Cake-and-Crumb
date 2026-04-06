@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Instagram, Phone, MessageCircle, Heart, ArrowUp } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 
-const INSTAGRAM_URL = 'https://instagram.com/cake.and.crumb_1'
+const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
 const WHATSAPP_URL = 'https://wa.me/919081668490'
 
 const quickLinks = [
@@ -99,7 +99,7 @@ export default function Footer() {
               <li>
                 <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-pink-500 transition-colors duration-300">
                   <Instagram size={14} />
-                  @cake.and.crumb_1
+                  @cake_and_crumb_1
                 </a>
               </li>
             </ul>

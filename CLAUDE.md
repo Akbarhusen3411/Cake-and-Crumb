@@ -69,7 +69,7 @@ Standalone WhatsApp-style chat widget. Has its own order cart (`orderCart` state
 ## Business Context
 
 - Bakery located in Vaso, Kheda, Gujarat, India
-- Orders via WhatsApp (+91 90816 68490, +91 91731 83440) and Instagram DM (@cake.and.crumb_1)
+- Orders via WhatsApp (+91 90816 68490, +91 91731 83440) and Instagram DM (@cake_and_crumb_1)
 - 80+ products across 6 categories: Cheesecake (slice/banto), Cakes & Treats, Cookies, Desserts, Drinks, Coming Soon
 - Prices from official 2026 menu (cheesecake slices ₹120–₹170, banto 4" cakes ₹350–₹500)
 - Gujarat-only delivery with pincode validation

@@ -104,7 +104,7 @@ export const menuCategories = [
     label: 'Coming Soon',
     image: img('/images/real-cakesicles.jpg'),
     priceLabel: 'New additions coming soon!',
-    note: 'Stay tuned — follow @cake.and.crumb_1 for launch updates!',
+    note: 'Stay tuned — follow @cake_and_crumb_1 for launch updates!',
     items: [
       'Doughnuts', 'Bombolone',
       'Cookie Fries — ₹200', 'Brownie Cheesecake — ₹750',

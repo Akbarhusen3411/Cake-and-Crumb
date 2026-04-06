@@ -585,7 +585,7 @@ export default function ChatBot() {
       }
       case 'contact': {
         setOptions([])
-        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp:* +91 90816 68490\n📱 *WhatsApp:* +91 91731 83440\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake.and.crumb_1")
+        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp:* +91 90816 68490\n📱 *WhatsApp:* +91 91731 83440\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake_and_crumb_1")
         setOptions([{ label: '💬 Open WhatsApp', action: 'whatsapp' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }
