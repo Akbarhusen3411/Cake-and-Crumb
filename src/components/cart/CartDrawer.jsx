@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2, AlertCircle } from 'lucide-react'
 import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 
@@ -13,6 +13,8 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const checkoutFee = useCheckoutStore((s) => s.deliveryFee)
   const deliveryFee = checkoutFee || 0
   const total = subtotal + deliveryFee
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const minOrderMet = subtotal >= 200
 
   const handleWhatsAppOrder = () => {
     const itemLines = cartItems.map((item) =>
@@ -163,18 +165,59 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </div>
                 </div>
 
+                {/* Min order warning */}
+                {!minOrderMet && (
+                  <div className="flex items-center gap-2 bg-berry/5 border border-berry/15 rounded-lg px-3 py-2">
+                    <AlertCircle size={14} className="text-berry shrink-0" />
+                    <p className="text-[11px] text-berry font-medium">Minimum order is ₹200. Add ₹{200 - subtotal} more.</p>
+                  </div>
+                )}
+
+                {/* Order Policy & Agreement */}
+                <div className="bg-cream/60 rounded-xl px-3 py-2.5 space-y-1.5">
+                  <p className="text-[10px] font-semibold text-chocolate/70 uppercase tracking-wider">Before you order</p>
+                  <ul className="space-y-1 text-[11px] text-chocolate-light/60 leading-snug">
+                    <li>• Pre-order required — please order <strong className="text-chocolate/70">1 day in advance</strong></li>
+                    <li>• Minimum order: <strong className="text-chocolate/70">₹200</strong></li>
+                    <li>• Payment: <strong className="text-chocolate/70">GPay · PhonePe · Paytm · Cash</strong></li>
+                    <li>• Home delivery (charges apply) or self-pickup</li>
+                    <li>• Cancellation within <strong className="text-chocolate/70">30 minutes only</strong></li>
+                  </ul>
+                  <label className="flex items-start gap-2 pt-1.5 border-t border-chocolate/8 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => setAgreedToTerms(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded border-chocolate/20 text-berry focus:ring-berry/30 accent-berry cursor-pointer shrink-0"
+                    />
+                    <span className="text-[11px] text-chocolate-light/70 group-hover:text-chocolate transition-colors">
+                      I have read and agree to the above order policies
+                    </span>
+                  </label>
+                </div>
+
                 {/* Buttons */}
                 <div className="flex gap-2">
                   <button
                     onClick={handleWhatsAppOrder}
-                    className="flex-1 bg-[#25D366] text-white py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform"
+                    disabled={!agreedToTerms || !minOrderMet}
+                    className={`flex-1 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 transition-all ${
+                      agreedToTerms && minOrderMet
+                        ? 'bg-[#25D366] text-white active:scale-[0.97]'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                   >
                     <MessageCircle size={15} />
                     WhatsApp
                   </button>
                   <button
                     onClick={() => { onClose(); onCheckout() }}
-                    className="flex-[1.5] bg-chocolate text-cream py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform"
+                    disabled={!agreedToTerms || !minOrderMet}
+                    className={`flex-[1.5] py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 transition-all ${
+                      agreedToTerms && minOrderMet
+                        ? 'bg-chocolate text-cream active:scale-[0.97]'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
                   >
                     <Sparkles size={14} />
                     Checkout
