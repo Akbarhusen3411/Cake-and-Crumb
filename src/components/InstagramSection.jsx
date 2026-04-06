@@ -1,7 +1,7 @@
 import { Instagram, ExternalLink, Sparkles, Heart } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 
-const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
+const INSTAGRAM_URL = 'https://instagram.com/cake.and.crumb_1'
 
 const img = (p) => assetUrl(p)
 
@@ -91,7 +91,7 @@ export default function InstagramSection() {
             </span>
           </div>
           <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            @cake_and_crumb_1
+            @cake.and.crumb_1
           </h2>
           <p className="fade-up text-chocolate-light/60 max-w-xl mx-auto leading-relaxed text-sm">
             Fresh bakes, behind-the-scenes, and your orders — all on our Instagram.
@@ -116,7 +116,7 @@ export default function InstagramSection() {
             className="btn-shimmer group inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 text-white px-8 py-3.5 rounded-full font-medium text-sm hover:shadow-2xl hover:shadow-pink-500/20 hover:-translate-y-1 transition-all duration-500"
           >
             <Instagram size={18} />
-            Follow @cake_and_crumb_1
+            Follow @cake.and.crumb_1
             <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform duration-500" />
           </a>
           <p className="text-sm text-chocolate-light/45 mt-4">

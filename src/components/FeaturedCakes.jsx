@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star } from 'lucide-react'
 import { menuCategories, featuredItems } from '../data/cakes'
-import { getProductsByCategory, productCategories } from '../data/products'
+import { getProductsByCategory, productCategories, cheesecakeSubgroups } from '../data/products'
 import useCartStore from '../store/useCartStore'
 import useToastStore from '../store/useToastStore'
 import QuantitySelector from './ui/QuantitySelector'
@@ -135,10 +135,182 @@ function MenuPill({ name }) {
   )
 }
 
+/* ─── Cheesecake Flavour Card (shows both Slice & Banto in one card) ─── */
+function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
+  const product = sliceProduct || bantoProduct
+  const addItem = useCartStore((s) => s.addItem)
+  const updateQuantity = useCartStore((s) => s.updateQuantity)
+  const sliceQty = useCartStore((s) => {
+    if (!sliceProduct) return 0
+    const item = s.items.find((i) => i.productId === sliceProduct.id)
+    return item ? item.quantity : 0
+  })
+  const bantoQty = useCartStore((s) => {
+    if (!bantoProduct) return 0
+    const item = s.items.find((i) => i.productId === bantoProduct.id)
+    return item ? item.quantity : 0
+  })
+  const addToast = useToastStore((s) => s.addToast)
+
+  return (
+    <div className="product-card bg-white rounded-xl overflow-hidden border border-chocolate/5 relative">
+      {/* Image */}
+      <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-cream group">
+        <img
+          src={product.image}
+          alt={product.shortName}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {product.isBestseller && (
+          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
+            <Star size={9} fill="currentColor" /> Best
+          </span>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="p-3 space-y-2">
+        <h4 className="text-sm font-semibold text-chocolate truncate">{sliceProduct?.shortName || bantoProduct?.shortName}</h4>
+
+        {/* Per Slice option */}
+        {sliceProduct && (
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[11px] text-chocolate-light/50 leading-tight">Per Slice</p>
+              <p className="text-xs text-berry font-semibold">₹{sliceProduct.price}</p>
+            </div>
+            <div className="shrink-0">
+              {sliceQty === 0 ? (
+                <button
+                  onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
+                  className="btn-ripple btn-touch px-3 py-1.5 rounded-lg bg-chocolate text-cream text-[11px] font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                >
+                  <Plus size={11} /> Add
+                </button>
+              ) : (
+                <QuantitySelector
+                  quantity={sliceQty}
+                  onIncrease={() => updateQuantity(sliceProduct.id, sliceQty + 1)}
+                  onDecrease={() => {
+                    updateQuantity(sliceProduct.id, sliceQty - 1)
+                    if (sliceQty === 1) addToast(`${sliceProduct.shortName} slice removed`, 'info')
+                  }}
+                  size="sm"
+                />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Banto Cake option */}
+        {bantoProduct && (
+          <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-chocolate/5">
+            <div className="min-w-0">
+              <p className="text-[11px] text-chocolate-light/50 leading-tight">Banto 4" · 3 slices</p>
+              <p className="text-[10px] text-chocolate-light/40">300–350 gm</p>
+              <p className="text-xs text-berry font-semibold">₹{bantoProduct.price}</p>
+            </div>
+            <div className="shrink-0">
+              {bantoQty === 0 ? (
+                <button
+                  onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
+                  className="btn-ripple btn-touch px-3 py-1.5 rounded-lg bg-berry/10 text-berry text-[11px] font-medium hover:bg-berry hover:text-white transition-all duration-300 flex items-center gap-1 active:scale-95"
+                >
+                  <Plus size={11} /> Add
+                </button>
+              ) : (
+                <QuantitySelector
+                  quantity={bantoQty}
+                  onIncrease={() => updateQuantity(bantoProduct.id, bantoQty + 1)}
+                  onDecrease={() => {
+                    updateQuantity(bantoProduct.id, bantoQty - 1)
+                    if (bantoQty === 1) addToast(`${bantoProduct.shortName} removed`, 'info')
+                  }}
+                  size="sm"
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ─── Cheesecake Content (grouped by Classic/Exotic/Chocolate/Premium) ─── */
+function CheesecakeContent({ menuCat }) {
+  const allProducts = getProductsByCategory('cheesecake')
+  const slices = allProducts.filter((p) => p.subcategory === 'slice')
+  const bantos = allProducts.filter((p) => p.subcategory === 'banto')
+
+  return (
+    <div>
+      {/* Category Header with Image */}
+      {menuCat && (
+        <div className="relative rounded-2xl overflow-hidden mb-8 aspect-[21/7] sm:aspect-[21/5]">
+          <img src={menuCat.image} alt={menuCat.label} className="w-full h-full object-cover" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-r from-chocolate/70 via-chocolate/40 to-transparent" />
+          <div className="absolute inset-0 flex items-center px-6 sm:px-10">
+            <div>
+              <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+                {menuCat.label}
+              </h3>
+              <p className="text-sm sm:text-base font-medium text-white/80">{menuCat.priceLabel}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subgroup Sections */}
+      {cheesecakeSubgroups.map((subgroup) => {
+        const groupSlices = slices.filter((p) => p.subgroup === subgroup.id)
+        if (groupSlices.length === 0) return null
+
+        // Build flavour pairs (slice + banto for same flavourKey)
+        const flavours = groupSlices.map((slice) => {
+          const banto = bantos.find((b) => b.flavourKey === slice.flavourKey)
+          return { slice, banto }
+        })
+
+        return (
+          <div key={subgroup.id} className="mb-10">
+            {/* Subgroup Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-berry text-sm">✦</span>
+              <h4 className="font-heading text-lg sm:text-xl font-bold text-chocolate">{subgroup.label}</h4>
+              <div className="flex-1 h-px bg-chocolate/8" />
+            </div>
+
+            {/* Flavour Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+              {flavours.map(({ slice, banto }) => (
+                <CheesecakeFlavourCard key={slice.flavourKey} sliceProduct={slice} bantoProduct={banto} />
+              ))}
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Note */}
+      {menuCat?.note && (
+        <p className="text-sm text-chocolate-light/50 italic text-center mt-6">{menuCat.note}</p>
+      )}
+    </div>
+  )
+}
+
 /* ─── Category Tab Content ─── */
 function CategoryContent({ category }) {
   const isComingSoon = category.id === 'coming-soon'
   const isShoppable = SHOP_CATEGORY_IDS.includes(category.id)
+
+  // Special cheesecake layout with subgroups
+  if (category.id === 'cheesecake') {
+    const menuCat = menuCategories.find((c) => c.id === 'cheesecake')
+    return <CheesecakeContent menuCat={menuCat} />
+  }
 
   if (isShoppable) {
     const categoryProducts = getProductsByCategory(category.id)
@@ -244,7 +416,7 @@ export default function FeaturedCakes() {
             <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Handcrafted</span> with Love
           </h2>
           <p className="fade-up text-chocolate-light/60 max-w-2xl mx-auto leading-relaxed">
-            From 21 cheesecake flavours to fresh-baked cookies, creamy dessert cups and refreshing drinks —
+            From 23 cheesecake flavours to fresh-baked cookies, creamy dessert cups and refreshing drinks —
             everything is made to order using premium ingredients.
           </p>
         </div>
@@ -292,7 +464,7 @@ export default function FeaturedCakes() {
             Can't find what you want? We love custom orders.
           </p>
           <a
-            href="https://instagram.com/cake_and_crumb_1"
+            href="https://instagram.com/cake.and.crumb_1"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 bg-berry/5 text-berry font-medium px-6 py-3 rounded-full hover:bg-berry hover:text-white transition-all duration-500"

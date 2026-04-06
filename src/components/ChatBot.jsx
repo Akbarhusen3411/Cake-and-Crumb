@@ -45,37 +45,46 @@ const CAT_IMAGES = {
 // ─── Orderable items with prices + category labels ───
 const ORDER_ITEMS = {
   cheesecake_slice: [
-    { name: 'Strawberry Slice', price: 90, cat: '🍰 Cheesecake' },
-    { name: 'Blueberry Slice', price: 90, cat: '🍰 Cheesecake' },
-    { name: 'Raspberry Slice', price: 90, cat: '🍰 Cheesecake' },
-    { name: 'Mango Slice', price: 100, cat: '🍰 Cheesecake' },
-    { name: 'Passion Fruit Slice', price: 100, cat: '🍰 Cheesecake' },
-    { name: 'Chocolate Slice', price: 115, cat: '🍰 Cheesecake' },
-    { name: 'Nutella Slice', price: 120, cat: '🍰 Cheesecake' },
-    { name: 'Biscoff Slice', price: 120, cat: '🍰 Cheesecake' },
-    { name: 'Cookies & Cream Slice', price: 125, cat: '🍰 Cheesecake' },
-    { name: 'Caramel Slice', price: 125, cat: '🍰 Cheesecake' },
-    { name: 'Coffee Slice', price: 125, cat: '🍰 Cheesecake' },
-    { name: 'Pistachio Slice', price: 140, cat: '🍰 Cheesecake' },
+    { name: 'Strawberry Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Blueberry Slice', price: 140, cat: '🍰 Cheesecake' },
+    { name: 'Raspberry Slice', price: 140, cat: '🍰 Cheesecake' },
+    { name: 'Orange Creamsicle Slice', price: 130, cat: '🍰 Cheesecake' },
+    { name: 'Lemon Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Rose Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Mango Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Passion Fruit Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Cherry Slice', price: 120, cat: '🍰 Cheesecake' },
+    { name: 'Chocolate Slice', price: 130, cat: '🍰 Cheesecake' },
+    { name: 'Nutella Slice', price: 160, cat: '🍰 Cheesecake' },
+    { name: 'Biscoff Slice', price: 150, cat: '🍰 Cheesecake' },
+    { name: 'Cookies & Cream Slice', price: 150, cat: '🍰 Cheesecake' },
+    { name: 'Caramel Slice', price: 150, cat: '🍰 Cheesecake' },
+    { name: 'Coffee Slice', price: 150, cat: '🍰 Cheesecake' },
+    { name: 'Pistachio Slice', price: 160, cat: '🍰 Cheesecake' },
+    { name: 'Dubai Special Slice', price: 170, cat: '🍰 Cheesecake' },
   ],
-  cheesecake_whole: [
-    { name: 'Strawberry Whole', price: 700, cat: '🍰 Cheesecake' },
-    { name: 'Blueberry Whole', price: 700, cat: '🍰 Cheesecake' },
-    { name: 'Mango Whole', price: 800, cat: '🍰 Cheesecake' },
-    { name: 'Chocolate Whole', price: 900, cat: '🍰 Cheesecake' },
-    { name: 'Nutella Whole', price: 950, cat: '🍰 Cheesecake' },
-    { name: 'Biscoff Whole', price: 950, cat: '🍰 Cheesecake' },
-    { name: 'Cookies & Cream Whole', price: 1000, cat: '🍰 Cheesecake' },
-    { name: 'Pistachio Whole', price: 1100, cat: '🍰 Cheesecake' },
+  cheesecake_banto: [
+    { name: 'Strawberry Banto', price: 350, cat: '🍰 Cheesecake' },
+    { name: 'Blueberry Banto', price: 410, cat: '🍰 Cheesecake' },
+    { name: 'Raspberry Banto', price: 410, cat: '🍰 Cheesecake' },
+    { name: 'Mango Banto', price: 350, cat: '🍰 Cheesecake' },
+    { name: 'Chocolate Banto', price: 380, cat: '🍰 Cheesecake' },
+    { name: 'Nutella Banto', price: 460, cat: '🍰 Cheesecake' },
+    { name: 'Biscoff Banto', price: 430, cat: '🍰 Cheesecake' },
+    { name: 'Cookies & Cream Banto', price: 430, cat: '🍰 Cheesecake' },
+    { name: 'Pistachio Banto', price: 470, cat: '🍰 Cheesecake' },
+    { name: 'Dubai Special Banto', price: 500, cat: '🍰 Cheesecake' },
   ],
   cookies: [
-    { name: 'Triple Choc Cookie', price: 65, cat: '🍪 Cookies' },
-    { name: 'Classic Cookie', price: 55, cat: '🍪 Cookies' },
-    { name: 'Red Velvet Cookie', price: 70, cat: '🍪 Cookies' },
-    { name: 'Pistachio Rose Cookie', price: 90, cat: '🍪 Cookies' },
+    { name: 'Triple Choc Cookie', price: 60, cat: '🍪 Cookies' },
+    { name: 'White Choc Cookie', price: 50, cat: '🍪 Cookies' },
+    { name: 'Classic Cookie', price: 50, cat: '🍪 Cookies' },
+    { name: 'Red Velvet Cookie', price: 60, cat: '🍪 Cookies' },
     { name: 'Almond Cookie', price: 70, cat: '🍪 Cookies' },
-    { name: 'Cookie Box (6)', price: 360, cat: '🍪 Cookies' },
-    { name: 'Cookie Box (12)', price: 680, cat: '🍪 Cookies' },
+    { name: 'Coconut Cookie', price: 60, cat: '🍪 Cookies' },
+    { name: 'Pistachio Rose Cookie', price: 70, cat: '🍪 Cookies' },
+    { name: 'Cookie Box (6)', price: 340, cat: '🍪 Cookies' },
+    { name: 'Cookie Box (12)', price: 700, cat: '🍪 Cookies' },
   ],
   cakes: [
     { name: 'Choc Cupcake', price: 100, cat: '🧁 Cupcakes' },
@@ -117,32 +126,37 @@ function getItemCat(name) {
 // ─── Menu price display data ───
 const MENU_DATA = {
   cheesecake: {
-    title: 'Cheesecake', subtitle: '6" cake · 8 slices',
+    title: 'Cheesecake', subtitle: 'Banto 4" · 3 slices | Per slice',
     groups: [
       { name: 'Classic', items: [
-        { n: 'Strawberry', s: '₹90', w: '₹700' }, { n: 'Blueberry', s: '₹90', w: '₹700' },
-        { n: 'Raspberry', s: '₹90', w: '₹700' }, { n: 'Cherry', s: '₹90', w: '₹700' }, { n: 'Lemon', s: '₹90', w: '₹700' },
+        { n: 'Strawberry', s: '₹120', w: '₹350' }, { n: 'Blueberry', s: '₹140', w: '₹410' },
+        { n: 'Raspberry', s: '₹140', w: '₹410' }, { n: 'Orange Creamsicle', s: '₹130', w: '₹380' },
+        { n: 'Lemon', s: '₹120', w: '₹350' }, { n: 'Rose', s: '₹120', w: '₹350' },
       ]},
       { name: 'Exotic', items: [
-        { n: 'Mango', s: '₹100', w: '₹800' }, { n: 'Passion Fruit', s: '₹100', w: '₹800' },
-        { n: 'Coconut', s: '₹100', w: '₹800' }, { n: 'Guava', s: '₹100', w: '₹800' },
+        { n: 'Mango', s: '₹120', w: '₹350' }, { n: 'Passion Fruit', s: '₹120', w: '₹350' },
+        { n: 'Cherry', s: '₹120', w: '₹350' }, { n: 'Guava', s: '₹120', w: '₹350' },
+        { n: 'Mango & Passion', s: '₹130', w: '₹380' }, { n: 'Coconut', s: '₹130', w: '₹380' },
       ]},
       { name: 'Chocolate', items: [
-        { n: 'Chocolate Orange', s: '₹115', w: '₹900' }, { n: 'Black Forest', s: '₹115', w: '₹900' },
-        { n: 'Nutella', s: '₹120', w: '₹950' }, { n: 'Biscoff', s: '₹120', w: '₹950' },
+        { n: 'Chocolate', s: '₹130', w: '₹380' }, { n: 'Chocolate Orange', s: '₹130', w: '₹380' },
+        { n: 'Black Forest', s: '₹130', w: '₹380' }, { n: 'Chocolate Chunk', s: '₹130', w: '₹380' },
+        { n: 'Nutella', s: '₹160', w: '₹460' }, { n: 'Biscoff', s: '₹150', w: '₹430' },
       ]},
       { name: 'Premium', items: [
-        { n: 'Cookies & Cream', s: '₹125', w: '₹1,000' }, { n: 'Caramel', s: '₹125', w: '₹1,000' },
-        { n: 'Coffee', s: '₹125', w: '₹1,000' }, { n: 'Pistachio', s: '₹140', w: '₹1,100' },
+        { n: 'Cookies & Cream', s: '₹150', w: '₹430' }, { n: 'Caramel', s: '₹150', w: '₹430' },
+        { n: 'Coffee', s: '₹150', w: '₹430' }, { n: 'Pistachio', s: '₹160', w: '₹470' },
+        { n: 'Dubai Special', s: '₹170', w: '₹500' },
       ]},
     ],
   },
   cookies: {
-    title: 'Cookies', subtitle: 'Per piece',
+    title: 'Cookies', subtitle: 'Per piece | Box of 6 | Box of 12',
     items: [
-      { n: 'Triple Chocolate', p: '₹65' }, { n: 'Classic Choc Chip', p: '₹55' }, { n: 'Red Velvet', p: '₹70' },
-      { n: 'Pistachio & Rose', p: '₹90' }, { n: 'Almond', p: '₹70' }, { n: 'Coconut', p: '₹65' },
-      { n: 'Box of 6', p: '₹360' }, { n: 'Box of 12', p: '₹680' },
+      { n: 'Triple Choc', p: '₹60 · ₹340 · ₹700' }, { n: 'White Choc', p: '₹50 · ₹280 · ₹580' },
+      { n: 'Classic', p: '₹50 · ₹280 · ₹580' }, { n: 'Red Velvet', p: '₹60 · ₹340 · ₹700' },
+      { n: 'Almond', p: '₹70 · ₹400 · ₹820' }, { n: 'Coconut', p: '₹60 · ₹340 · ₹700' },
+      { n: 'Pistachio & Rose', p: '₹70 · ₹400 · ₹820' },
     ],
   },
   cakes: {
@@ -204,7 +218,7 @@ const MENU_CATEGORIES = [
 
 const ORDER_CATEGORIES = [
   { label: '🍰 Cheesecake Slices', action: 'ord_cheesecake_slice' },
-  { label: '🎂 Cheesecake Whole', action: 'ord_cheesecake_whole' },
+  { label: '🎂 Cheesecake Banto', action: 'ord_cheesecake_banto' },
   { label: '🍪 Cookies', action: 'ord_cookies' },
   { label: '🧁 Cakes & Treats', action: 'ord_cakes' },
   { label: '🍮 Dessert Cups', action: 'ord_desserts' },
@@ -571,7 +585,7 @@ export default function ChatBot() {
       }
       case 'contact': {
         setOptions([])
-        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp (IN):* +91 90816 68490\n📱 *WhatsApp (UK):* +44 7862 154461\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake_and_crumb_1")
+        await addBotMessage("*Contact Us*\n\n📱 *WhatsApp:* +91 90816 68490\n📱 *WhatsApp:* +91 91731 83440\n📞 *Call:* +91 90816 68490\n📷 *Instagram:* @cake.and.crumb_1")
         setOptions([{ label: '💬 Open WhatsApp', action: 'whatsapp' }, { label: '🏠 Main Menu', action: 'home' }])
         break
       }

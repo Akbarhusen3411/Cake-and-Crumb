@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Phone, Instagram, MessageCircle, MapPin, Send, Clock, ArrowUpRight, Sparkles, CheckCircle, Heart } from 'lucide-react'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
-const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
+const INSTAGRAM_URL = 'https://instagram.com/cake.and.crumb_1'
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
@@ -67,7 +67,7 @@ export default function Contact() {
             </div>
             <div>
               <p className="text-sm font-semibold text-chocolate leading-tight">Instagram</p>
-              <p className="text-xs text-chocolate-light/50">@cake_and_crumb_1</p>
+              <p className="text-xs text-chocolate-light/50">@cake.and.crumb_1</p>
             </div>
           </a>
 
@@ -108,8 +108,8 @@ export default function Contact() {
                   { icon: MapPin, label: 'Delivery Area', value: 'Ahmedabad, Gujarat, India', color: 'text-berry' },
                   { icon: Clock, label: 'Order Notice', value: 'Please order 24 hours in advance', color: 'text-gold' },
                   { icon: Heart, label: 'Custom Cakes', value: "DM us your vision — we'll bring it to life", color: 'text-pink-500' },
-                  { icon: MessageCircle, label: 'WhatsApp (India)', value: '+91 90816 68490', color: 'text-green-500' },
-                  { icon: MessageCircle, label: 'WhatsApp (UK)', value: '+44 7862 154461', color: 'text-green-500' },
+                  { icon: MessageCircle, label: 'WhatsApp', value: '+91 90816 68490', color: 'text-green-500' },
+                  { icon: MessageCircle, label: 'WhatsApp', value: '+91 91731 83440', color: 'text-green-500' },
                 ].map((item, i) => {
                   const Icon = item.icon
                   return (
