@@ -86,35 +86,36 @@ export default function ConfirmationStep({ onClose }) {
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
 
     // Short admin→customer reply messages (keep under 200 chars each to avoid WhatsApp truncation)
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Order *${orderId}* CONFIRMED! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. Thank you! — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* SHIPPED! On the way to you. Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been cancelled. Contact us to reorder: +91 90816 68490 — Cake & Crumb`)}`
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Please wait, your order is now being processed. Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! On the way to you now. Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact us to reorder: +91 90816 68490 — Cake & Crumb`)}`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}* right now. Please contact: +91 90816 68490 — Cake & Crumb`)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Order message (customer sees this)
+    // Order message sent to admin WhatsApp
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*📋 Items:*\n${itemsList}\n\n` +
+      `*👤 Customer:* ${checkout.customerName}\n` +
+      `*📞 Phone:* ${checkout.phone}\n` +
+      `*📍 Address:* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
+      `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
+      `*💳 Payment:* ${payLabel}\n` +
+      `*🕐 Order Time:* ${orderTime}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*📋 Order Items:*\n${itemsList}\n\n` +
       `*Subtotal:* ₹${subtotal}\n` +
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
-      `*💰 Total: ₹${total}*\n` +
+      `*💰 Total: ₹${total}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*👤* ${checkout.customerName}\n` +
-      `*📞* ${checkout.phone}\n` +
-      `*📍* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
-      `*📅* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
-      `*💳* ${payLabel}\n` +
-      `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancel:* 30 min from order time.\n\n` +
+      `⚠️ *Cancel window:* 30 min from order time.\n\n` +
       `Please confirm my order. Thank you! 🙏\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*ADMIN REPLY:*\n\n` +
-      `✅ Confirm:\n${confirmLink}\n\n` +
-      `📦 Shipped:\n${shippedLink}\n\n` +
-      `🚫 Cancel:\n${cancelLink}\n\n` +
-      `❌ Reject:\n${rejectLink}`
+      `*ADMIN — Tap to reply customer:*\n\n` +
+      `✅ *Approve Order:*\n${confirmLink}\n\n` +
+      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
+      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
+      `❌ *Reject Order:*\n${rejectLink}`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

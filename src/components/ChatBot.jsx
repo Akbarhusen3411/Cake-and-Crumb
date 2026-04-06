@@ -433,35 +433,36 @@ export default function ChatBot() {
     const userItemsList = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
 
     // Short admin→customer reply links (keep short to avoid WhatsApp URL truncation)
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Order *${orderId}* CONFIRMED! Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. Thank you! — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* SHIPPED! On the way. Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* cancelled. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Your order *${orderId}* is *APPROVED*! Please wait, your order is now being processed. Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* is *SHIPPED*! On the way to you now. Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
     const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
 
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Order message (customer can see this)
+    // Order message sent to admin WhatsApp
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*👤 Customer:* ${orderInfo.name}\n` +
+      `*📞 Phone:* ${orderInfo.phone}\n` +
+      `*📍 Address:* ${orderInfo.address}\n` +
+      `*📅 Delivery:* ${orderInfo.date}\n` +
+      `*🕐 Order Time:* ${orderTime}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
       `*📋 Order Items:*${orderLines}\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
       `*Subtotal:* ₹${total}\n` +
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
-      `*💰 Total: ₹${grandTotal}*\n` +
+      `*💰 Total: ₹${grandTotal}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `*👤* ${orderInfo.name}\n` +
-      `*📞* ${orderInfo.phone}\n` +
-      `*📍* ${orderInfo.address}\n` +
-      `*📅* ${orderInfo.date}\n` +
-      `*🕐 Order Time:* ${orderTime}\n\n` +
-      `⚠️ *Cancel:* 30 min from order time.\n\n` +
+      `⚠️ *Cancel window:* 30 min from order time.\n\n` +
       `Please confirm my order. Thank you! 🙏\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*ADMIN REPLY:*\n\n` +
-      `✅ Confirm:\n${confirmLink}\n\n` +
-      `📦 Shipped:\n${shippedLink}\n\n` +
-      `🚫 Cancel:\n${cancelLink}\n\n` +
-      `❌ Reject:\n${rejectLink}`
+      `*ADMIN — Tap to reply customer:*\n\n` +
+      `✅ *Approve Order:*\n${confirmLink}\n\n` +
+      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
+      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
+      `❌ *Reject Order:*\n${rejectLink}`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
   }
