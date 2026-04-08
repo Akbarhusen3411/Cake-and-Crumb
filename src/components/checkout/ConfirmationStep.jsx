@@ -3,6 +3,7 @@ import { CheckCircle, Home, MessageCircle, XCircle, Clock } from 'lucide-react'
 import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
+import { saveOrderToSheet } from '../../utils/orderSheet'
 
 const TIME_SLOT_LABELS = {
   '10-12': '10 AM – 12 PM',
@@ -84,15 +85,9 @@ export default function ConfirmationStep({ onClose }) {
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
-
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Please wait, your order is now being processed. Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! On the way to you now. Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact us to reorder: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}* right now. Please contact: +91 90816 68490 — Cake & Crumb`)}`
-
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Order message sent to admin WhatsApp
+    // Clean order message — customer sees only this
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*👤 Customer:* ${checkout.customerName}\n` +
@@ -108,15 +103,29 @@ export default function ConfirmationStep({ onClose }) {
       `*💰 Total: ₹${total}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*ADMIN — Tap to reply customer:*\n\n` +
-      `✅ *Approve Order:*\n${confirmLink}\n\n` +
-      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
-      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
-      `❌ *Reject Order:*\n${rejectLink}`
+      `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
+
+    // Save admin action links to Google Sheet (admin manages from there)
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+
+    saveOrderToSheet({
+      orderId,
+      customerName: checkout.customerName,
+      phone: checkout.phone,
+      items: itemsList,
+      total: `₹${total}`,
+      delivery: `${formatDate(checkout.selectedDate)} | ${timeLabel}`,
+      date: orderTime,
+      confirmLink,
+      shippedLink,
+      cancelLink,
+      rejectLink,
+    })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoHome = () => {

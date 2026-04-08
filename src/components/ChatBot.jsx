@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
+import { saveOrderToSheet } from '../utils/orderSheet'
 
 const WHATSAPP_NUMBER = '919081668490'
 
@@ -431,15 +432,9 @@ export default function ChatBot() {
 
     const phone = orderInfo.phone.replace(/\s/g, '')
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
-
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Your order *${orderId}* is *APPROVED*! Please wait, your order is now being processed. Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* is *SHIPPED*! On the way to you now. Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Order message sent to admin WhatsApp
+    // Clean order message — customer sees only this
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*👤 Customer:* ${orderInfo.name}\n` +
@@ -455,15 +450,29 @@ export default function ChatBot() {
       `*💰 Total: ₹${grandTotal}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*ADMIN — Tap to reply customer:*\n\n` +
-      `✅ *Approve Order:*\n${confirmLink}\n\n` +
-      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
-      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
-      `❌ *Reject Order:*\n${rejectLink}`
+      `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+
+    // Save admin action links to Google Sheet
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Your order *${orderId}* is *APPROVED*! Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* is *SHIPPED*! Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+
+    saveOrderToSheet({
+      orderId,
+      customerName: orderInfo.name,
+      phone: orderInfo.phone,
+      items: userItemsList,
+      total: `₹${grandTotal}`,
+      delivery: orderInfo.date,
+      date: orderTime,
+      confirmLink,
+      shippedLink,
+      cancelLink,
+      rejectLink,
+    })
   }
 
   const handleAction = async (action, label) => {
