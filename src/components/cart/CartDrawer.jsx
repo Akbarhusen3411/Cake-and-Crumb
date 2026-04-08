@@ -136,9 +136,9 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
               </button>
             </div>
           ) : (
-            <>
+            <div className="flex-1 overflow-y-auto sm:flex sm:flex-col" style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}>
               {/* Cart Items — compact list */}
-              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-[40vh] sm:max-h-none" style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}>
+              <div className="px-4 py-3 space-y-2 sm:flex-1 sm:overflow-y-auto">
                 {cartItems.map((item, i) => (
                   <div
                     key={item.id}
@@ -190,8 +190,8 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                 ))}
               </div>
 
-              {/* Summary + CTA — sticky bottom */}
-              <div className="px-4 pb-5 pt-3 border-t border-chocolate/5 bg-white space-y-3">
+              {/* Summary + CTA */}
+              <div className="px-4 pb-5 pt-3 border-t border-chocolate/5 bg-white space-y-3 sm:shrink-0">
                 {/* Price Summary */}
                 <div className="bg-cream/50 rounded-xl px-4 py-3 space-y-1.5">
                   <div className="flex justify-between text-sm">
@@ -308,7 +308,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                     : 'Enter pincode above to estimate delivery fee'}
                 </p>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
