@@ -1,1 +1,0 @@
-import{m as a,j as s}from"./index-B6m4go3M.js";import{T as e}from"./Testimonials-BR5Yek3-.js";import"./cakes-BP5zsOk9.js";import"./useReviews-B2gEaNe7.js";function n(){const[t]=a(),r=t.get("product")||"";return s.jsx("div",{className:"pt-20",children:s.jsx(e,{highlightProduct:r})})}export{n as default};
