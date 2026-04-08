@@ -1,0 +1,1 @@
+import{j as r}from"./index-DBWS7dH5.js";import{F as t}from"./FeaturedCakes-CjuEkjEV.js";import"./cakes-BxzACL55.js";import"./useReviews-De9fpgWE.js";import"./external-link-B22keoF8.js";function m(){return r.jsx("div",{className:"pt-20",children:r.jsx(t,{})})}export{m as default};
