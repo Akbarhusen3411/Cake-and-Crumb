@@ -82,9 +82,17 @@ export function generateOrderId(customerName = '') {
   const dd = String(now.getDate()).padStart(2, '0')
   const mm = String(now.getMonth() + 1).padStart(2, '0')
   const yy = String(now.getFullYear()).slice(-2)
+  const dateKey = `${dd}${mm}${yy}`
 
-  // Short random code (3 chars)
-  const code = Math.random().toString(36).substring(2, 5).toUpperCase()
+  // Sequential order number (resets daily, stored in localStorage)
+  let orderNum = 1
+  try {
+    const stored = JSON.parse(localStorage.getItem('cake-crumb-order-counter') || '{}')
+    if (stored.date === dateKey) {
+      orderNum = (stored.count || 0) + 1
+    }
+    localStorage.setItem('cake-crumb-order-counter', JSON.stringify({ date: dateKey, count: orderNum }))
+  } catch {}
 
-  return `CC-${initials}-${dd}${mm}${yy}-${code}`
+  return `CC-${initials}-${dateKey}-${String(orderNum).padStart(4, '0')}`
 }
