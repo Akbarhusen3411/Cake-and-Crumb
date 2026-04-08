@@ -118,9 +118,24 @@ export default function Testimonials({ highlightProduct = '' }) {
         )}
 
         {/* All Reviews */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {others.map((r, i) => <ReviewCard key={r.id} review={r} index={i} />)}
-        </div>
+        {others.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {others.map((r, i) => <ReviewCard key={r.id} review={r} index={i} />)}
+          </div>
+        ) : highlighted.length === 0 && (
+          <div className="text-center py-16 fade-up">
+            <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-5">
+              <Star size={28} className="text-gold" />
+            </div>
+            <h3 className="font-heading text-lg font-bold text-chocolate mb-2">Be the First to Review!</h3>
+            <p className="text-sm text-chocolate-light/50 mb-6 max-w-sm mx-auto">
+              Ordered from Cake & Crumb? Share your experience and help others discover our treats.
+            </p>
+            <a href="#/review" className="inline-flex items-center gap-2 bg-chocolate text-cream px-6 py-3 rounded-full text-sm font-medium hover:bg-chocolate-light transition-colors">
+              <Star size={15} /> Write a Review
+            </a>
+          </div>
+        )}
       </div>
     </section>
   )
