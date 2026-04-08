@@ -40,11 +40,82 @@ export default function Footer() {
       {/* Decorative accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-soft-pink/20 rounded-full blur-[60px]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 text-center sm:text-left">
+      {/* ========== MOBILE FOOTER (below lg) ========== */}
+      <div className="lg:hidden relative px-4 py-10">
+        {/* Brand centered */}
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src={assetUrl('/images/logo.png')}
+            alt="Cake & Crumb"
+            className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-gold/20 mb-3"
+          />
+          <span className="font-script text-2xl text-chocolate block">
+            Cake <span className="text-berry">&</span> Crumb
+          </span>
+          <p className="font-heading text-xs text-chocolate-light/50 italic mt-1">
+            The Gourmet Chocolate & Berry Boutique
+          </p>
+        </div>
+
+        {/* Social icon row */}
+        <div className="flex items-center justify-center gap-4 mb-7">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white transition-all duration-500 shadow-sm"
+            aria-label="Instagram"
+          >
+            <Instagram size={19} />
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-green-500 hover:text-white transition-all duration-500 shadow-sm"
+            aria-label="WhatsApp"
+          >
+            <MessageCircle size={19} />
+          </a>
+          <a
+            href="tel:+919081668490"
+            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-chocolate hover:text-cream transition-all duration-500 shadow-sm"
+            aria-label="Phone"
+          >
+            <Phone size={19} />
+          </a>
+        </div>
+
+        {/* Quick links - 2 column grid */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 max-w-[260px] mx-auto mb-6">
+          {quickLinks.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              className="text-xs text-chocolate-light/50 hover:text-berry transition-colors duration-300 text-center py-1"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Contact info compact */}
+        <div className="text-center mb-2">
+          <p className="text-[11px] text-chocolate-light/40 leading-relaxed">
+            Vaso, Kheda, Gujarat, India
+          </p>
+          <a href="tel:+919081668490" className="text-[11px] text-chocolate-light/40 hover:text-berry transition-colors">
+            +91 90816 68490
+          </a>
+        </div>
+      </div>
+
+      {/* ========== DESKTOP FOOTER (lg+) ========== */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden lg:block">
+        <div className="grid lg:grid-cols-4 gap-12 text-left">
           {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
               <img
                 src={assetUrl('/images/logo.png')}
                 alt="Cake & Crumb"
@@ -109,7 +180,7 @@ export default function Footer() {
           {/* Social */}
           <div>
             <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Follow Us</h4>
-            <div className="flex justify-center sm:justify-start gap-3 mb-6">
+            <div className="flex gap-3 mb-6">
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"

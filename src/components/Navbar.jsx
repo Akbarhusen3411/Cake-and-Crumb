@@ -19,6 +19,7 @@ const navLinks = [
 export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuVisible, setMenuVisible] = useState(false)
   const location = useLocation()
   const items = useCartStore((s) => s.items)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
@@ -30,19 +31,29 @@ export default function Navbar({ onCartClick }) {
   }, [])
 
   const openMenu = useCallback(() => {
-    setMenuOpen(true)
+    setMenuVisible(true)
+    // Force a reflow before setting menuOpen so the transition triggers
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setMenuOpen(true)
+      })
+    })
     document.body.style.overflow = 'hidden'
   }, [])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
     document.body.style.overflow = ''
+    // Wait for transition to finish before unmounting
+    setTimeout(() => {
+      setMenuVisible(false)
+    }, 400)
   }, [])
 
   // Close on route change
   useEffect(() => {
-    closeMenu()
-  }, [location.pathname, closeMenu])
+    if (menuOpen) closeMenu()
+  }, [location.pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     return () => { document.body.style.overflow = '' }
@@ -101,90 +112,146 @@ export default function Navbar({ onCartClick }) {
         </div>
       </div>
 
-      {/* =========== Full-Screen Mobile Menu =========== */}
-      <div
-        className={`lg:hidden fixed inset-0 z-[100] overflow-hidden ${menuOpen ? 'menu-overlay-open' : 'menu-overlay-close pointer-events-none'}`}
-      >
-        {/* Background */}
-        <div className="absolute inset-0 bg-cream-light" />
-        <div className="absolute top-[-10%] right-[-15%] w-80 h-80 bg-soft-pink/40 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[-10%] left-[-15%] w-72 h-72 bg-gold/15 rounded-full blur-[80px]" />
-        <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px]" />
+      {/* =========== Slide-from-Right Mobile Menu =========== */}
+      {menuVisible && (
+        <div className="lg:hidden fixed inset-0 z-[100]">
+          {/* Backdrop with blur */}
+          <div
+            onClick={closeMenu}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'rgba(62, 39, 35, 0.3)',
+              backdropFilter: menuOpen ? 'blur(6px)' : 'blur(0px)',
+              WebkitBackdropFilter: menuOpen ? 'blur(6px)' : 'blur(0px)',
+              opacity: menuOpen ? 1 : 0,
+              transition: 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
 
-        {/* Close button */}
-        <button
-          onClick={closeMenu}
-          className={`absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10 ${menuOpen ? 'menu-item-in' : ''}`}
-          style={{ '--menu-delay': '50ms' }}
-        >
-          <X size={20} />
-        </button>
+          {/* Slide-in Panel */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '85%',
+              maxWidth: '360px',
+              transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+              transition: 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
+            }}
+            className="bg-cream-light shadow-2xl overflow-hidden"
+          >
+            {/* Decorative blobs */}
+            <div className="absolute top-[-10%] right-[-15%] w-80 h-80 bg-soft-pink/40 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-15%] w-72 h-72 bg-gold/15 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px] pointer-events-none" />
 
-        {/* Content — scrollable on small screens */}
-        <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-y-auto py-20">
-
-          {/* Nav Links */}
-          <nav className="flex flex-col items-center gap-1 mb-6">
-            {navLinks.map((link, i) => {
-              const isActive = location.pathname === link.to
-              const LinkIcon = link.icon
-              return (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className={`flex items-center gap-4 px-8 py-3 rounded-2xl w-64 transition-colors duration-200 ${menuOpen ? 'menu-item-in' : ''} ${
-                    isActive
-                      ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
-                      : 'text-chocolate active:bg-chocolate/5'
-                  }`}
-                  style={{ '--menu-delay': `${100 + i * 50}ms` }}
-                >
-                  <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
-                  <span className="font-heading text-base font-semibold">{link.label}</span>
-                  {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
-                </Link>
-              )
-            })}
-          </nav>
-
-          {/* CTA Buttons */}
-          <div className={`flex flex-col gap-2.5 w-64 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '380ms' }}>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
-            >
-              <MessageCircle size={18} />
-              Order on WhatsApp
-            </a>
+            {/* Close button */}
             <button
-              onClick={() => { closeMenu(); setTimeout(onCartClick, 300) }}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
+              onClick={closeMenu}
+              style={{
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                transition: 'opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s',
+              }}
+              className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10"
             >
-              <ShoppingBag size={18} />
-              View Cart
-              {itemCount > 0 && <span className="ml-1 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center">{itemCount}</span>}
+              <X size={20} />
             </button>
-          </div>
 
-          {/* Bottom Social */}
-          <div className={`mt-6 ${menuOpen ? 'menu-item-in' : ''}`} style={{ '--menu-delay': '450ms' }}>
-            <div className="flex items-center justify-center gap-4 mb-3">
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Instagram size={18} /></a>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
-              <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
-                <MapPin size={11} />
-                <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
+            {/* Content — scrollable */}
+            <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-y-auto py-20">
+
+              {/* Nav Links */}
+              <nav className="flex flex-col items-center gap-1 mb-6">
+                {navLinks.map((link, i) => {
+                  const isActive = location.pathname === link.to
+                  const LinkIcon = link.icon
+                  return (
+                    <Link
+                      key={link.label}
+                      to={link.to}
+                      style={{
+                        opacity: menuOpen ? 1 : 0,
+                        transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
+                        transition: menuOpen
+                          ? `opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms`
+                          : 'opacity 0.2s ease, transform 0.2s ease',
+                      }}
+                      className={`flex items-center gap-4 px-8 py-3 rounded-2xl w-64 transition-colors duration-200 ${
+                        isActive
+                          ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
+                          : 'text-chocolate active:bg-chocolate/5'
+                      }`}
+                    >
+                      <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
+                      <span className="font-heading text-base font-semibold">{link.label}</span>
+                      {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
+                    </Link>
+                  )
+                })}
+              </nav>
+
+              {/* CTA Buttons */}
+              <div
+                style={{
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
+                  transition: menuOpen
+                    ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms'
+                    : 'opacity 0.2s ease, transform 0.2s ease',
+                }}
+                className="flex flex-col gap-2.5 w-64"
+              >
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
+                >
+                  <MessageCircle size={18} />
+                  Order on WhatsApp
+                </a>
+                <button
+                  onClick={() => { closeMenu(); setTimeout(onCartClick, 300) }}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
+                >
+                  <ShoppingBag size={18} />
+                  View Cart
+                  {itemCount > 0 && <span className="ml-1 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center">{itemCount}</span>}
+                </button>
               </div>
-              <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">The Gourmet Chocolate & Berry Boutique</p>
+
+              {/* Bottom Social */}
+              <div
+                style={{
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
+                  transition: menuOpen
+                    ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 450ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) 450ms'
+                    : 'opacity 0.2s ease, transform 0.2s ease',
+                }}
+                className="mt-6"
+              >
+                <div className="flex items-center justify-center gap-4 mb-3">
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Instagram size={18} /></a>
+                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
+                  <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
+                    <MapPin size={11} />
+                    <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
+                  </div>
+                  <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">The Gourmet Chocolate & Berry Boutique</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </nav>
   )
 }
