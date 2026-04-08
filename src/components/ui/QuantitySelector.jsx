@@ -3,23 +3,23 @@ import { Minus, Plus } from 'lucide-react'
 export default function QuantitySelector({ quantity, onIncrease, onDecrease, size = 'sm' }) {
   const isSmall = size === 'sm'
   return (
-    <div className={`inline-flex items-center rounded-full bg-chocolate text-cream ${isSmall ? 'gap-1' : 'gap-2'}`}>
+    <div className={`count-animate inline-flex items-center rounded-full bg-chocolate text-cream ${isSmall ? 'h-8 gap-0.5' : 'h-9 gap-1'}`}>
       <button
         onClick={onDecrease}
-        className={`flex items-center justify-center rounded-full hover:bg-chocolate-light transition-colors ${isSmall ? 'w-7 h-7' : 'w-8 h-8'}`}
+        className={`flex items-center justify-center rounded-full hover:bg-chocolate-light active:scale-90 transition-all ${isSmall ? 'w-8 h-8' : 'w-9 h-9'}`}
         aria-label="Decrease quantity"
       >
-        <Minus size={isSmall ? 13 : 15} />
+        <Minus size={isSmall ? 14 : 16} />
       </button>
-      <span className={`font-semibold min-w-[20px] text-center ${isSmall ? 'text-xs' : 'text-sm'}`}>
+      <span className={`font-bold min-w-[18px] text-center ${isSmall ? 'text-sm' : 'text-base'}`}>
         {quantity}
       </span>
       <button
         onClick={onIncrease}
-        className={`flex items-center justify-center rounded-full hover:bg-chocolate-light transition-colors ${isSmall ? 'w-7 h-7' : 'w-8 h-8'}`}
+        className={`flex items-center justify-center rounded-full hover:bg-chocolate-light active:scale-90 transition-all ${isSmall ? 'w-8 h-8' : 'w-9 h-9'}`}
         aria-label="Increase quantity"
       >
-        <Plus size={isSmall ? 13 : 15} />
+        <Plus size={isSmall ? 14 : 16} />
       </button>
     </div>
   )

@@ -294,18 +294,18 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
 
         {/* Per Slice option */}
         {sliceProduct && (
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 bg-cream/40 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2">
+          <div className="flex items-center justify-between gap-1.5 bg-cream/40 rounded-lg px-2.5 py-2">
             <div className="min-w-0">
-              <p className="text-[10px] sm:text-[11px] font-medium text-chocolate/60 leading-tight">Per Slice</p>
-              <p className="text-[13px] sm:text-sm text-berry font-bold">₹{sliceProduct.price}</p>
+              <p className="text-[10px] font-medium text-chocolate/50">Per Slice</p>
+              <p className="text-sm text-berry font-bold">₹{sliceProduct.price}</p>
             </div>
             <div className="shrink-0">
               {sliceQty === 0 ? (
                 <button
                   onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
-                  className="btn-ripple btn-touch px-2.5 sm:px-3 py-1.5 rounded-lg bg-chocolate text-cream text-[10px] sm:text-[11px] font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="add-btn-animate h-8 px-3.5 rounded-full bg-chocolate text-cream text-[11px] font-semibold hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
                 >
-                  <Plus size={10} /> Add
+                  <Plus size={12} /> Add
                 </button>
               ) : (
                 <QuantitySelector
@@ -324,19 +324,18 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
 
         {/* Banto Cake option */}
         {bantoProduct && (
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 bg-berry/[0.04] border border-berry/10 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2">
+          <div className="flex items-center justify-between gap-1.5 bg-berry/[0.04] border border-berry/10 rounded-lg px-2.5 py-2">
             <div className="min-w-0">
-              <p className="text-[10px] sm:text-[11px] font-medium text-chocolate/60 leading-tight">Banto 4" · 3 slices</p>
-              <p className="text-[9px] sm:text-[10px] text-chocolate-light/40 leading-tight">300–350 gm</p>
-              <p className="text-[13px] sm:text-sm text-berry font-bold">₹{bantoProduct.price}</p>
+              <p className="text-[10px] font-medium text-chocolate/50">Banto 4" <span className="text-chocolate-light/35">(300–350 gm)</span></p>
+              <p className="text-sm text-berry font-bold">₹{bantoProduct.price}</p>
             </div>
             <div className="shrink-0">
               {bantoQty === 0 ? (
                 <button
                   onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
-                  className="btn-ripple btn-touch px-2.5 sm:px-3 py-1.5 rounded-lg bg-berry text-white text-[10px] sm:text-[11px] font-medium hover:bg-berry-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="add-btn-animate h-8 px-3.5 rounded-full bg-berry text-white text-[11px] font-semibold hover:bg-berry-light transition-all duration-300 flex items-center gap-1 active:scale-95"
                 >
-                  <Plus size={10} /> Add
+                  <Plus size={12} /> Add
                 </button>
               ) : (
                 <QuantitySelector
