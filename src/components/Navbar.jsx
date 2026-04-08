@@ -149,7 +149,7 @@ export default function Navbar({ onCartClick }) {
             <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px] pointer-events-none" />
 
             {/* Content — scrollable */}
-            <div className="relative h-full flex flex-col items-center justify-center px-6 overflow-y-auto py-16">
+            <div className="relative h-full flex flex-col items-center px-6 overflow-y-auto pt-20 pb-10">
 
               {/* Nav Links */}
               <nav className="flex flex-col items-center gap-0.5 mb-5">
@@ -196,12 +196,9 @@ export default function Navbar({ onCartClick }) {
                   <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
                   <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
                 </div>
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40 mb-1">
-                    <MapPin size={11} />
-                    <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
-                  </div>
-                  <p className="text-[9px] text-chocolate-light/25 tracking-widest uppercase">The Gourmet Chocolate & Berry Boutique</p>
+                <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40">
+                  <MapPin size={11} />
+                  <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
                 </div>
               </div>
             </div>
