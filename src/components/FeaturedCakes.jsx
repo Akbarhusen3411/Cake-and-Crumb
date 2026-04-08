@@ -57,27 +57,45 @@ function formatDate(dateStr) {
   } catch { return '' }
 }
 
-/* ─── Review Badge with hover tooltip ─── */
-function ReviewBadge({ count, avg, latestReview }) {
+/* ─── Review Badge with hover popup (2-3 reviews) + click to reviews page ─── */
+function ReviewBadge({ count, avg, productReviews, productName }) {
   if (!count) return null
+  const topReviews = (productReviews || []).slice(0, 3)
   return (
     <div className="absolute bottom-2 left-2 z-[2] group/badge">
-      <span className="bg-white/90 backdrop-blur-sm text-chocolate text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm cursor-pointer">
+      <a
+        href={`#/reviews?product=${encodeURIComponent(productName)}`}
+        className="bg-white/90 backdrop-blur-sm text-chocolate text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm cursor-pointer hover:bg-white transition-colors"
+      >
         <Star size={10} className="fill-gold text-gold" />
         {avg} <span className="font-normal text-chocolate-light/50">({count})</span>
-      </span>
-      {latestReview && (
-        <div className="absolute bottom-full left-0 mb-2 w-56 bg-white rounded-xl shadow-xl border border-chocolate/8 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 pointer-events-none z-[3]">
-          <div className="flex gap-0.5 mb-1.5">
-            {Array.from({ length: Number(latestReview.rating) }).map((_, j) => (
-              <Star key={j} size={10} className="fill-gold text-gold" />
+      </a>
+      {topReviews.length > 0 && (
+        <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-xl border border-chocolate/8 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 z-[3]">
+          <div className="space-y-2.5">
+            {topReviews.map((review, i) => (
+              <div key={i} className={i > 0 ? 'pt-2.5 border-t border-cream-dark/15' : ''}>
+                <div className="flex gap-0.5 mb-1">
+                  {Array.from({ length: Number(review.rating) }).map((_, j) => (
+                    <Star key={j} size={9} className="fill-gold text-gold" />
+                  ))}
+                </div>
+                <p className="text-[11px] text-chocolate-light/70 leading-relaxed line-clamp-2">"{review.text}"</p>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-[10px] font-medium text-chocolate">— {review.name}</span>
+                  {review.date && <span className="text-[10px] text-chocolate-light/40">{formatDate(review.date)}</span>}
+                </div>
+              </div>
             ))}
           </div>
-          <p className="text-xs text-chocolate-light/70 leading-relaxed line-clamp-3">"{latestReview.text}"</p>
-          <div className="flex items-center justify-between mt-2 pt-2 border-t border-cream-dark/20">
-            <span className="text-[10px] font-medium text-chocolate">— {latestReview.name}</span>
-            {latestReview.date && <span className="text-[10px] text-chocolate-light/40">{formatDate(latestReview.date)}</span>}
-          </div>
+          {count > 3 && (
+            <a
+              href={`#/reviews?product=${encodeURIComponent(productName)}`}
+              className="block text-center text-[10px] font-semibold text-berry mt-2.5 pt-2 border-t border-cream-dark/15 hover:underline"
+            >
+              See all {count} reviews →
+            </a>
+          )}
           <div className="absolute -bottom-1 left-4 w-2 h-2 bg-white border-r border-b border-chocolate/8 rotate-45" />
         </div>
       )}
@@ -179,7 +197,7 @@ function ProductCard({ product, reviews }) {
             <span className="text-xs font-bold text-berry bg-white border border-berry/20 px-4 py-1.5 rounded-full shadow-sm">Out of Stock</span>
           </div>
         )}
-        <ReviewBadge count={productReviews.length} avg={avgRating} latestReview={productReviews[0]} />
+        <ReviewBadge count={productReviews.length} avg={avgRating} productReviews={productReviews} productName={product.shortName} />
       </div>
 
       {/* Info */}
@@ -267,7 +285,7 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
             <Star size={9} fill="currentColor" /> Best
           </span>
         )}
-        <ReviewBadge count={productReviews.length} avg={avgRating} latestReview={productReviews[0]} />
+        <ReviewBadge count={productReviews.length} avg={avgRating} productReviews={productReviews} productName={product.shortName} />
       </div>
 
       {/* Info */}
