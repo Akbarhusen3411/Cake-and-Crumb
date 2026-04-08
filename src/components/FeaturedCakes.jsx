@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
-import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star, Search, X } from 'lucide-react'
+import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star, Search, X, Quote } from 'lucide-react'
 import { menuCategories, featuredItems } from '../data/cakes'
 import { getProductsByCategory, productCategories, cheesecakeSubgroups, products } from '../data/products'
 import useCartStore from '../store/useCartStore'
 import useToastStore from '../store/useToastStore'
 import QuantitySelector from './ui/QuantitySelector'
+import useReviews, { getProductReviews, getAverageRating } from '../hooks/useReviews'
 
 const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi!%20I%27d%20like%20to%20order%20from%20Cake%20%26%20Crumb.'
 
@@ -49,8 +50,76 @@ function FeaturedCard({ item, index, onNavigate }) {
   )
 }
 
+/* ─── Review Badge (shows on product cards) ─── */
+function ReviewBadge({ count, avg }) {
+  if (!count) return null
+  return (
+    <span className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm text-chocolate text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm z-[2]">
+      <Star size={10} className="fill-gold text-gold" />
+      {avg} <span className="font-normal text-chocolate-light/50">({count})</span>
+    </span>
+  )
+}
+
+/* ─── Product Reviews Section (below product grid) ─── */
+function ProductReviewsSection({ reviews, categoryProducts }) {
+  // Get reviews that match any product in this category
+  const categoryReviews = useMemo(() => {
+    if (!reviews.length || !categoryProducts.length) return []
+    const names = new Set(categoryProducts.map((p) => p.shortName.toLowerCase()))
+    return reviews.filter((r) => r.product && names.has(r.product.toLowerCase()))
+  }, [reviews, categoryProducts])
+
+  if (!categoryReviews.length) return null
+
+  return (
+    <div className="mt-8 mb-4">
+      <div className="flex items-center gap-2 mb-4">
+        <Star size={16} className="text-gold fill-gold" />
+        <h4 className="font-heading text-base font-bold text-chocolate">Customer Reviews</h4>
+        <span className="text-xs text-chocolate-light/40">({categoryReviews.length})</span>
+      </div>
+      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+        {categoryReviews.map((review, i) => (
+          <div key={i} className="shrink-0 w-[280px] sm:w-[300px] bg-white rounded-xl border border-chocolate/5 overflow-hidden">
+            {review.photo && (
+              <div className="w-full h-40 overflow-hidden">
+                <img src={review.photo} alt={`Review by ${review.name}`} className="w-full h-full object-cover" loading="lazy" />
+              </div>
+            )}
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-semibold text-berry bg-berry/5 px-2 py-0.5 rounded-full">{review.product}</span>
+              </div>
+              <div className="flex gap-0.5 my-2">
+                {Array.from({ length: Number(review.rating) }).map((_, j) => (
+                  <Star key={j} size={12} className="fill-gold text-gold" />
+                ))}
+              </div>
+              <p className="text-sm text-chocolate-light/70 leading-relaxed line-clamp-3">"{review.text}"</p>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-cream-dark/20">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center">
+                  <span className="font-heading text-xs font-bold text-berry">{review.name.charAt(0)}</span>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-chocolate">{review.name}</p>
+                  {review.date && (
+                    <p className="text-[10px] text-chocolate-light/40">
+                      {new Date(review.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /* ─── Product Card (shoppable) ─── */
-function ProductCard({ product }) {
+function ProductCard({ product, reviews }) {
   const addItem = useCartStore((s) => s.addItem)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
   const quantity = useCartStore((s) => {
@@ -58,6 +127,9 @@ function ProductCard({ product }) {
     return item ? item.quantity : 0
   })
   const addToast = useToastStore((s) => s.addToast)
+
+  const productReviews = useMemo(() => getProductReviews(reviews || [], product.shortName), [reviews, product.shortName])
+  const avgRating = getAverageRating(productReviews)
 
   const handleAdd = () => {
     addItem(product.id)
@@ -85,6 +157,7 @@ function ProductCard({ product }) {
             <span className="text-xs font-bold text-berry bg-white border border-berry/20 px-4 py-1.5 rounded-full shadow-sm">Out of Stock</span>
           </div>
         )}
+        <ReviewBadge count={productReviews.length} avg={avgRating} />
       </div>
 
       {/* Info */}
@@ -138,8 +211,10 @@ function MenuPill({ name }) {
 }
 
 /* ─── Cheesecake Flavour Card (shows both Slice & Banto in one card) ─── */
-function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
+function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
   const product = sliceProduct || bantoProduct
+  const productReviews = useMemo(() => getProductReviews(reviews || [], product.shortName), [reviews, product.shortName])
+  const avgRating = getAverageRating(productReviews)
   const addItem = useCartStore((s) => s.addItem)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
   const sliceQty = useCartStore((s) => {
@@ -170,6 +245,7 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
             <Star size={9} fill="currentColor" /> Best
           </span>
         )}
+        <ReviewBadge count={productReviews.length} avg={avgRating} />
       </div>
 
       {/* Info */}
@@ -242,7 +318,7 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct }) {
 }
 
 /* ─── Cheesecake Content (grouped by Classic/Exotic/Chocolate/Premium) ─── */
-function CheesecakeContent({ menuCat }) {
+function CheesecakeContent({ menuCat, reviews }) {
   const allProducts = getProductsByCategory('cheesecake')
   const slices = allProducts.filter((p) => p.subcategory === 'slice')
   const bantos = allProducts.filter((p) => p.subcategory === 'banto')
@@ -288,7 +364,7 @@ function CheesecakeContent({ menuCat }) {
             {/* Flavour Cards Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
               {flavours.map(({ slice, banto }) => (
-                <CheesecakeFlavourCard key={slice.flavourKey} sliceProduct={slice} bantoProduct={banto} />
+                <CheesecakeFlavourCard key={slice.flavourKey} sliceProduct={slice} bantoProduct={banto} reviews={reviews} />
               ))}
             </div>
           </div>
@@ -299,19 +375,22 @@ function CheesecakeContent({ menuCat }) {
       {menuCat?.note && (
         <p className="text-sm text-chocolate-light/50 italic text-center mt-6">{menuCat.note}</p>
       )}
+
+      {/* Reviews for this category */}
+      <ProductReviewsSection reviews={reviews} categoryProducts={allProducts} />
     </div>
   )
 }
 
 /* ─── Category Tab Content ─── */
-function CategoryContent({ category }) {
+function CategoryContent({ category, reviews }) {
   const isComingSoon = category.id === 'coming-soon'
   const isShoppable = SHOP_CATEGORY_IDS.includes(category.id)
 
   // Special cheesecake layout with subgroups
   if (category.id === 'cheesecake') {
     const menuCat = menuCategories.find((c) => c.id === 'cheesecake')
-    return <CheesecakeContent menuCat={menuCat} />
+    return <CheesecakeContent menuCat={menuCat} reviews={reviews} />
   }
 
   if (isShoppable) {
@@ -339,7 +418,7 @@ function CategoryContent({ category }) {
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {categoryProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} reviews={reviews} />
           ))}
         </div>
 
@@ -347,6 +426,9 @@ function CategoryContent({ category }) {
         {menuCat?.note && (
           <p className="text-sm text-chocolate-light/50 italic text-center mt-6">{menuCat.note}</p>
         )}
+
+        {/* Reviews for this category */}
+        <ProductReviewsSection reviews={reviews} categoryProducts={categoryProducts} />
       </div>
     )
   }
@@ -399,6 +481,7 @@ function CategoryContent({ category }) {
 export default function FeaturedCakes() {
   const [activeTab, setActiveTab] = useState('cheesecake')
   const [searchQuery, setSearchQuery] = useState('')
+  const { reviews } = useReviews()
 
   // Search results across all shoppable categories
   const searchResults = useMemo(() => {
@@ -486,7 +569,7 @@ export default function FeaturedCakes() {
             {searchResults.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 {searchResults.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} reviews={reviews} />
                 ))}
               </div>
             ) : (
@@ -519,7 +602,7 @@ export default function FeaturedCakes() {
 
         {/* Active Category Content */}
         <div key={activeTab} className="tab-content-enter">
-          {activeCategory && <CategoryContent category={activeCategory} />}
+          {activeCategory && <CategoryContent category={activeCategory} reviews={reviews} />}
         </div>
 
         {/* Coming Soon Banner */}

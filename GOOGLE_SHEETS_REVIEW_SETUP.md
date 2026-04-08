@@ -1,6 +1,6 @@
 # Google Sheets Review System Setup
 
-This connects the review form on your website to a Google Sheet so customer reviews (with photos) are saved and displayed automatically.
+Customer reviews with photos, linked to specific products. Reviews show on product cards in the menu.
 
 ## Step 1: Create Google Sheet
 
@@ -8,11 +8,11 @@ This connects the review form on your website to a Google Sheet so customer revi
 2. Name it "Cake & Crumb Reviews"
 3. In **Row 1**, add these headers exactly:
 
-| A | B | C | D | E |
-|---|---|---|---|---|
-| name | rating | text | date | photo |
+| A | B | C | D | E | F |
+|---|---|---|---|---|---|
+| product | name | rating | text | date | photo |
 
-4. Click cell A1, type `name`, press Tab, type `rating`, press Tab, type `text`, press Tab, type `date`, press Tab, type `photo`
+Type `product` in A1, press Tab, `name`, Tab, `rating`, Tab, `text`, Tab, `date`, Tab, `photo`
 
 ## Step 2: Add Apps Script
 
@@ -25,13 +25,14 @@ function doGet() {
   var data = sheet.getDataRange().getValues();
   var reviews = [];
   for (var i = 1; i < data.length; i++) {
-    if (data[i][0] && data[i][1] && data[i][2]) {
+    if (data[i][1] && data[i][2] && data[i][3]) {
       reviews.push({
-        name: data[i][0],
-        rating: data[i][1],
-        text: data[i][2],
-        date: data[i][3],
-        photo: data[i][4] || ''
+        product: data[i][0],
+        name: data[i][1],
+        rating: data[i][2],
+        text: data[i][3],
+        date: data[i][4],
+        photo: data[i][5] || ''
       });
     }
   }
@@ -57,6 +58,7 @@ function doPost(e) {
   }
 
   sheet.appendRow([
+    data.product || '',
     data.name,
     data.rating,
     data.text,
@@ -83,16 +85,14 @@ function getDriveFolder() {
 ## Step 3: Deploy as Web App
 
 1. Click **Deploy > New deployment**
-2. Click the gear icon next to "Select type" and choose **Web app**
-3. Set:
-   - **Description:** Reviews API
-   - **Execute as:** Me
-   - **Who has access:** Anyone
-4. Click **Deploy**
-5. Click **Authorize access** and follow the prompts (choose your Google account, click "Advanced" > "Go to ... (unsafe)" > "Allow")
-6. Copy the **Web app URL** (looks like `https://script.google.com/macros/s/AKfyc.../exec`)
+2. Click the gear icon > **Web app**
+3. Set: Execute as **Me**, Who has access **Anyone**
+4. Click **Deploy** > **Authorize access** > follow prompts
+5. Copy the Web app URL
 
-**If you get the redirect loop error:** Open an **incognito window** (Ctrl+Shift+N), log in with only one Google account, and deploy from there.
+**If redirect loop:** Use incognito window with one Google account.
+
+**IMPORTANT:** If you already had a previous deployment, you must create a **New deployment** (not "Manage deployments") to get the updated code.
 
 ## Step 4: Add URL to Website
 
@@ -104,8 +104,20 @@ export const REVIEWS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx...
 
 ## Done!
 
-- **Review link to share with customers:** `https://akbarhusen3411.github.io/Cake-and-Crumb/#/review`
-- Customer photos are saved in a Google Drive folder called "Cake & Crumb Reviews Photos" (auto-created)
-- Customer reviews with photos will appear on the Reviews page automatically
-- You can delete spam reviews directly from the Google Sheet
-- To remove a review photo: delete the URL from column E in the sheet
+- **Review link:** `https://akbarhusen3411.github.io/Cake-and-Crumb/#/review`
+- Customer selects the product they ordered, gives star rating, writes review, optionally adds photo
+- Reviews appear on product cards in the menu (star badge + review section below products)
+- Reviews also appear on the Reviews page
+- Moderate by editing/deleting rows in the Google Sheet
+- Photos saved in Google Drive folder "Cake & Crumb Reviews Photos"
+
+## Google Sheet Columns
+
+| Column | Description |
+|--------|-------------|
+| product | Product name (e.g., "Pistachio", "Brownie") — matches to product cards |
+| name | Customer name |
+| rating | 1-5 star rating |
+| text | Review text |
+| date | Auto-generated ISO date |
+| photo | Google Drive photo URL (auto-filled) |
