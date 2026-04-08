@@ -145,36 +145,8 @@ export const featuredItems = [
 ]
 
 // ─── Testimonials ────────────────────────────────────────
-export const testimonials = [
-  {
-    id: 1,
-    name: 'Priya S.',
-    location: 'Gujarat',
-    text: 'The Biscoff cheesecake was absolutely divine! You can taste the difference when ingredients are fresh. Cake & Crumb is now my go-to for every celebration.',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Rahul M.',
-    location: 'Gujarat',
-    text: 'Ordered the cookie box for my wife\'s birthday and she was blown away. The Triple Choc cookies are dangerously good!',
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: 'Ananya K.',
-    location: 'Gujarat',
-    text: 'Finally a bakery that does premium cheesecakes properly! The Strawberry cheesecake was creamy, tangy, and absolutely perfect.',
-    rating: 5,
-  },
-  {
-    id: 4,
-    name: 'Deepak T.',
-    location: 'Gujarat',
-    text: 'What I love about Cake & Crumb is the personal touch. They customised my order exactly how I wanted. The dessert cups are a must-try!',
-    rating: 5,
-  },
-]
+// Only real customer reviews from Google Sheet are shown now
+export const testimonials = []
 
 // ─── Why Choose Us ───────────────────────────────────────
 export const whyChooseUs = [
