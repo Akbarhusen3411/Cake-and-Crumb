@@ -435,13 +435,13 @@ export default function ChatBot() {
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : (phone.length === 10 ? `91${phone}` : phone)
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Admin action links — with full order details for customer
-    const orderSummary = `Order: *${orderId}*\n📋 ${items.map(([name, { qty, price }]) => `${name} x${qty} = ₹${price * qty}`).join(', ')}\n💰 Total: *₹${grandTotal}*\n📅 ${orderInfo.date}\n📍 ${orderInfo.address}`
+    // Admin action links — short messages (wa.me has URL length limit)
+    const shortItems = items.map(([name, { qty }]) => `${name} x${qty}`).join(', ')
 
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ *ORDER CONFIRMED!*\n\nHi ${orderInfo.name}! Your order is *APPROVED* and being prepared.\n\n${orderSummary}\n\nWe'll notify you when it's shipped. Thank you! — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 *ORDER SHIPPED!*\n\nHi ${orderInfo.name}! Your order is on the way!\n\n${orderSummary}\n\nEnjoy your treats! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 *ORDER CANCELLED*\n\nHi ${orderInfo.name}, your order *${orderId}* has been cancelled.\n\n${orderSummary}\n\nTo reorder: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ *ORDER UPDATE*\n\nHi ${orderInfo.name}, sorry we cannot fulfill your order right now.\n\n${orderSummary}\n\nPlease contact: +91 90816 68490 — Cake & Crumb`)}`
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}!\n\nYour order *${orderId}* is *CONFIRMED*!\n\n📋 ${shortItems}\n💰 Total: ₹${grandTotal}\n📅 ${orderInfo.date}\n\nBeing prepared now! — Cake & Crumb`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}!\n\nOrder *${orderId}* is *SHIPPED*!\n\n📋 ${shortItems}\n💰 ₹${grandTotal}\n📅 ${orderInfo.date}\n\nOn the way! — Cake & Crumb`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* is *CANCELLED*.\n\nTo reorder: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}* right now.\n\nContact: +91 90816 68490 — Cake & Crumb`)}`
 
     // Order message with admin links at bottom
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
