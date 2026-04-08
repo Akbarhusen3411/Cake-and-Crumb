@@ -126,7 +126,7 @@ function ProductReviewsSection({ reviews, categoryProducts }) {
           <div key={i} className="shrink-0 w-[280px] sm:w-[300px] bg-white rounded-xl border border-chocolate/5 overflow-hidden">
             {review.photo && (
               <div className="w-full h-40 overflow-hidden">
-                <img src={review.photo} alt={`Review by ${review.name}`} className="w-full h-full object-cover" loading="lazy" />
+                <img src={review.photo} alt="" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.target.parentElement.style.display = 'none' }} />
               </div>
             )}
             <div className="p-4">

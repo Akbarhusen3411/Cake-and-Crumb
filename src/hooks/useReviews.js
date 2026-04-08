@@ -9,12 +9,12 @@ function notifyListeners() {
   listeners.forEach((fn) => fn(cachedReviews || []))
 }
 
-// Convert Google Drive thumbnail URL to direct-view URL that works on all devices
+// Convert Google Drive URL to embeddable thumbnail format
 function fixDrivePhotoUrl(url) {
   if (!url) return ''
   // Extract file ID from any Google Drive URL format
-  const match = url.match(/(?:thumbnail\?id=|\/d\/|id=)([a-zA-Z0-9_-]+)/)
-  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`
+  const match = url.match(/(?:thumbnail\?id=|\/d\/|id=|export=view&id=)([a-zA-Z0-9_-]+)/)
+  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`
   return url
 }
 
