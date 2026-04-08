@@ -36,7 +36,7 @@ function getReviewableProducts() {
     .map(([id, g]) => ({ id, label: g.label, items: g.items }))
 }
 
-function resizeImage(file, maxSize = 500) {
+function resizeImage(file, maxSize = 300) {
   return new Promise((resolve) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -52,7 +52,8 @@ function resizeImage(file, maxSize = 500) {
         canvas.width = w
         canvas.height = h
         canvas.getContext('2d').drawImage(img, 0, 0, w, h)
-        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1])
+        // Return full data URL (stored directly in sheet, no Google Drive needed)
+        resolve(canvas.toDataURL('image/jpeg', 0.5))
       }
       img.src = e.target.result
     }
@@ -117,15 +118,14 @@ export default function WriteReviewPage() {
       rating,
       text: text.trim(),
       date: new Date().toISOString(),
-      photo: '',
+      photo: photo || '',
     }
     try {
-      // Send review text first (small payload — saves fast)
       await fetch(REVIEWS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(photo ? { ...reviewData, photo } : reviewData),
+        body: JSON.stringify(reviewData),
       })
       // Add to local cache immediately so it shows on the site right away
       addReviewToCache(reviewData)

@@ -20,11 +20,9 @@ function saveToStorage(data) {
   try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)) } catch {}
 }
 
-// Convert Google Drive URL to embeddable thumbnail format
-function fixDrivePhotoUrl(url) {
+// Pass through photo URL (data URLs or any hosted URL)
+function fixPhotoUrl(url) {
   if (!url) return ''
-  const match = url.match(/(?:thumbnail\?id=|\/d\/|id=|export=view&id=)([a-zA-Z0-9_-]+)/)
-  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`
   return url
 }
 
@@ -36,7 +34,7 @@ function fetchReviews() {
       if (Array.isArray(data)) {
         const reviews = data
           .filter((r) => r.name && r.rating && r.text)
-          .map((r) => ({ ...r, photo: fixDrivePhotoUrl(r.photo) }))
+          .map((r) => ({ ...r, photo: fixPhotoUrl(r.photo) }))
         cachedReviews = reviews
         saveToStorage(reviews)
         notifyListeners()
