@@ -63,11 +63,11 @@ export default function Navbar({ onCartClick }) {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'navbar-scrolled py-2' : 'py-3 bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group relative z-[110]">
-          <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform duration-500 border-2 border-gold/30" />
-          <div className="leading-tight">
-            <span className="font-script text-xl sm:text-2xl tracking-wide block text-chocolate">Cake <span className="text-berry">&</span> Crumb</span>
-            <span className="font-heading text-[8px] sm:text-[10px] text-chocolate-light/60 italic tracking-wider">The Gourmet Chocolate & Berry Boutique</span>
+        <Link to="/" className="flex items-center gap-2 group relative z-[110] min-w-0">
+          <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform duration-500 border-2 border-gold/30 shrink-0" />
+          <div className="leading-tight min-w-0">
+            <span className="font-script text-lg sm:text-2xl tracking-wide block text-chocolate">Cake <span className="text-berry">&</span> Crumb</span>
+            <span className="font-heading text-[7px] sm:text-[10px] text-chocolate-light/50 italic tracking-wide block truncate">The Gourmet Chocolate & Berry Boutique</span>
           </div>
         </Link>
 
