@@ -238,8 +238,8 @@ function formatBold(text) {
 function OrderItemSelector({ items, cart, onUpdate, onDone }) {
   return (
     <div className="bg-white rounded-2xl rounded-tl-sm shadow-sm overflow-hidden max-w-[90%]" style={{ animation: 'chat-msg-in 0.25s ease-out' }}>
-      <div className="px-3 py-2 bg-[#075E54]/5 border-b border-gray-100">
-        <p className="text-[11px] font-semibold text-[#075E54]">Tap + to add items</p>
+      <div className="px-3 py-2 bg-cream/60 border-b border-gray-100">
+        <p className="text-[11px] font-semibold text-chocolate">Tap + to add items</p>
       </div>
       <div className="max-h-[250px] overflow-y-auto">
         {items.map((item) => {
@@ -264,7 +264,7 @@ function OrderItemSelector({ items, cart, onUpdate, onDone }) {
                 )}
                 <button
                   onClick={() => onUpdate(item.name, item.price, qty + 1)}
-                  className="w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white active:scale-90"
+                  className="w-6 h-6 rounded-full bg-berry flex items-center justify-center text-white active:scale-90"
                 >
                   <Plus size={11} />
                 </button>
@@ -275,7 +275,7 @@ function OrderItemSelector({ items, cart, onUpdate, onDone }) {
       </div>
       <button
         onClick={onDone}
-        className="w-full py-2.5 bg-[#075E54] text-white text-[12px] font-semibold flex items-center justify-center gap-1.5 active:bg-[#064e47]"
+        className="w-full py-2.5 bg-chocolate text-cream text-[12px] font-semibold flex items-center justify-center gap-1.5 active:bg-chocolate-light rounded-b-xl"
       >
         <ShoppingBag size={13} />
         Done — Add More or Review Order
@@ -430,8 +430,8 @@ export default function ChatBot() {
     // Simple order list for user message
     const userItemsList = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
 
-    const phone = orderInfo.phone.replace(/\s/g, '')
-    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
+    const phone = orderInfo.phone.replace(/[\s\-()]/g, '')
+    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : (phone.length === 10 ? `91${phone}` : phone)
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
     // Clean order message — customer sees only this
@@ -615,8 +615,9 @@ export default function ChatBot() {
       return
     }
     if (orderStep === 'phone') {
-      if (!/^[6-9]\d{9}$/.test(text.replace(/\s/g, ''))) {
-        await addBotMessage("Please enter a valid 10-digit Indian phone number:")
+      const cleaned = text.replace(/[\s\-()]/g, '')
+      if (!/^\+?\d{7,15}$/.test(cleaned)) {
+        await addBotMessage("Please enter a valid phone number (with country code for international):")
         return
       }
       setOrderInfo((prev) => ({ ...prev, phone: text }))
@@ -698,40 +699,40 @@ export default function ChatBot() {
       {/* Toggle Button */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
-          open ? 'bg-chocolate text-cream' : 'bg-[#25D366] text-white'
+        className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-500 active:scale-90 ${
+          open ? 'bg-chocolate text-cream rotate-90' : 'bg-berry text-white wa-btn-bounce'
         }`}
-        style={{ boxShadow: open ? undefined : '0 0 20px rgba(37, 211, 102, 0.4)' }}
+        style={{ boxShadow: open ? undefined : '0 4px 20px rgba(198, 40, 40, 0.35)' }}
       >
         {open ? <X size={22} /> : <MessageCircle size={24} />}
       </button>
 
       {/* Chat Window */}
       <div
-        className={`fixed z-[90] transition-all duration-300 ease-out
+        className={`fixed z-[90] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
           bottom-0 right-0 left-0 sm:bottom-24 sm:right-6 sm:left-auto
           ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}
       >
-        <div className="bg-white sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] sm:h-[520px] sm:w-[380px] border border-chocolate/5">
+        <div className="bg-cream-light sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] sm:h-[520px] sm:w-[380px] border border-chocolate/10">
 
           {/* Header */}
-          <div className="bg-[#075E54] px-4 py-3 flex items-center gap-3 shrink-0">
-            <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 rounded-full object-cover border-2 border-white/20" />
+          <div className="bg-gradient-to-r from-chocolate to-chocolate-light px-4 py-3 flex items-center gap-3 shrink-0">
+            <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 rounded-full object-cover border-2 border-gold/30 shadow-md" />
             <div className="flex-1">
-              <h3 className="text-white text-sm font-semibold">Cake & Crumb</h3>
-              <p className="text-[11px] text-green-200 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+              <h3 className="text-cream text-sm font-heading font-bold">Cake & Crumb</h3>
+              <p className="text-[11px] text-gold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block animate-pulse" />
                 Online · Replies instantly
               </p>
             </div>
             {/* Cart badge */}
             {Object.keys(orderCart).length > 0 && (
-              <div className="bg-white/20 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+              <div className="bg-berry text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
                 <ShoppingBag size={11} />
                 ₹{getCartTotal()}
               </div>
             )}
-            <button onClick={() => setOpen(false)} className="text-white/60 hover:text-white sm:hidden">
+            <button onClick={() => setOpen(false)} className="text-cream/60 hover:text-cream sm:hidden">
               <X size={20} />
             </button>
           </div>
@@ -739,16 +740,15 @@ export default function ChatBot() {
           {/* Messages */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto px-3 py-4 space-y-2"
-            style={{ background: '#ECE5DD url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23c8bfb0\' fill-opacity=\'0.15\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}
+            className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-cream"
           >
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[85%] shadow-sm overflow-hidden ${
                     msg.from === 'user'
-                      ? 'bg-[#DCF8C6] rounded-2xl rounded-tr-sm'
-                      : 'bg-white rounded-2xl rounded-tl-sm'
+                      ? 'bg-berry/10 border border-berry/10 rounded-2xl rounded-tr-sm'
+                      : 'bg-white border border-chocolate/5 rounded-2xl rounded-tl-sm'
                   }`}
                   style={{ animation: 'chat-msg-in 0.25s ease-out' }}
                 >
@@ -764,7 +764,7 @@ export default function ChatBot() {
                       ))}
                     </div>
                   )}
-                  <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line text-gray-800">
+                  <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line text-chocolate">
                     {formatBold(msg.text)}
                   </div>
                 </div>
@@ -792,10 +792,10 @@ export default function ChatBot() {
 
             {typing && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm flex gap-1">
-                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="bg-white border border-chocolate/5 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm flex gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-berry animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             )}
@@ -806,10 +806,10 @@ export default function ChatBot() {
                   <button
                     key={opt.action}
                     onClick={() => handleAction(opt.action, opt.label)}
-                    className="bg-white border border-[#25D366]/30 text-[#075E54] text-[12px] font-medium px-3 py-2 rounded-full hover:bg-[#25D366]/5 active:scale-95 transition-all shadow-sm flex items-center gap-1"
+                    className="bg-white border border-chocolate/10 text-chocolate text-[12px] font-medium px-3 py-2 rounded-full hover:bg-berry/5 hover:border-berry/20 active:scale-95 transition-all shadow-sm flex items-center gap-1"
                   >
                     {opt.label}
-                    <ChevronRight size={12} className="text-[#25D366]" />
+                    <ChevronRight size={12} className="text-berry" />
                   </button>
                 ))}
               </div>
@@ -817,19 +817,19 @@ export default function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="px-3 py-2 bg-[#F0F0F0] flex items-center gap-2 shrink-0">
+          <div className="px-3 py-2.5 bg-white border-t border-chocolate/5 flex items-center gap-2 shrink-0">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && input.trim()) handleTextInput(input) }}
               placeholder={orderStep ? 'Type here...' : 'Type a message...'}
-              className="flex-1 bg-white rounded-full px-4 py-2.5 text-sm text-gray-800 outline-none border border-gray-200 focus:border-[#25D366]/50 transition-colors"
+              className="flex-1 bg-cream/50 rounded-full px-4 py-2.5 text-sm text-chocolate outline-none border border-chocolate/10 focus:border-berry/30 focus:ring-1 focus:ring-berry/10 transition-all placeholder:text-chocolate-light/35"
             />
             <button
               onClick={() => { if (input.trim()) handleTextInput(input) }}
               disabled={!input.trim()}
-              className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shrink-0 disabled:opacity-40 active:scale-90 transition-transform"
+              className="w-10 h-10 rounded-full bg-chocolate text-cream flex items-center justify-center shrink-0 disabled:opacity-30 active:scale-90 transition-all hover:bg-chocolate-light"
             >
               <Send size={18} />
             </button>

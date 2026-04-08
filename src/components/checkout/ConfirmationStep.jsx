@@ -80,8 +80,8 @@ export default function ConfirmationStep({ onClose }) {
     })
 
     // Send WhatsApp summary to admin
-    const phone = checkout.phone.replace(/\s/g, '')
-    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
+    const phone = checkout.phone.replace(/[\s\-()]/g, '')
+    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : (phone.length === 10 ? `91${phone}` : phone)
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
