@@ -19,6 +19,7 @@ const navLinks = [
 export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuVisible, setMenuVisible] = useState(false)
   const location = useLocation()
   const items = useCartStore((s) => s.items)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
@@ -30,13 +31,21 @@ export default function Navbar({ onCartClick }) {
   }, [])
 
   const openMenu = useCallback(() => {
-    setMenuOpen(true)
+    setMenuVisible(true)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setMenuOpen(true)
+      })
+    })
     document.body.style.overflow = 'hidden'
   }, [])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
     document.body.style.overflow = ''
+    setTimeout(() => {
+      setMenuVisible(false)
+    }, 400)
   }, [])
 
   // Close on route change
@@ -101,114 +110,99 @@ export default function Navbar({ onCartClick }) {
         </div>
       </div>
 
-      {/* =========== Full-Screen Overlay Mobile Menu =========== */}
-        <div className={`lg:hidden fixed inset-0 z-[100] ${menuOpen ? '' : 'pointer-events-none'}`}>
-          {/* Backdrop — dark chocolate with blur */}
+      {/* =========== Slide-from-Right Mobile Menu =========== */}
+      {menuVisible && (
+        <div className="lg:hidden fixed inset-0 z-[100]">
+          {/* Backdrop with blur */}
           <div
             onClick={closeMenu}
             style={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: menuOpen ? 'rgba(62, 39, 35, 0.95)' : 'rgba(62, 39, 35, 0)',
-              backdropFilter: menuOpen ? 'blur(20px)' : 'blur(0px)',
-              WebkitBackdropFilter: menuOpen ? 'blur(20px)' : 'blur(0px)',
-              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-            }}
-          />
-
-          {/* Decorative elements */}
-          <div
-            className="absolute top-10 right-10 w-32 h-32 rounded-full pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, rgba(212,165,116,0.15) 0%, transparent 70%)',
+              backgroundColor: 'rgba(62, 39, 35, 0.3)',
+              backdropFilter: menuOpen ? 'blur(6px)' : 'blur(0px)',
+              WebkitBackdropFilter: menuOpen ? 'blur(6px)' : 'blur(0px)',
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? 'scale(1)' : 'scale(0)',
-              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+              transition: 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           />
+
+          {/* Slide-in Panel */}
           <div
-            className="absolute bottom-20 left-10 w-40 h-40 rounded-full pointer-events-none"
             style={{
-              background: 'radial-gradient(circle, rgba(198,40,40,0.08) 0%, transparent 70%)',
-              opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? 'scale(1)' : 'scale(0)',
-              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '85%',
+              maxWidth: '360px',
+              transform: menuOpen ? 'translateX(0)' : 'translateX(100%)',
+              transition: 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
             }}
-          />
+            className="bg-cream-light shadow-2xl overflow-hidden"
+          >
+            {/* Decorative blobs */}
+            <div className="absolute top-[-10%] right-[-15%] w-80 h-80 bg-soft-pink/40 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-15%] w-72 h-72 bg-gold/15 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px] pointer-events-none" />
 
-          {/* Content */}
-          <div className="relative h-full flex flex-col justify-center px-10 overflow-y-auto">
+            {/* Content */}
+            <div className="relative h-full flex flex-col items-center pt-20 pb-10 px-6 overflow-y-auto">
 
-            {/* Nav Links */}
-            <nav className="flex flex-col gap-1 mb-10">
-              {navLinks.map((link, i) => {
-                const isActive = location.pathname === link.to
-                const LinkIcon = link.icon
-                return (
-                  <Link
-                    key={link.label}
-                    to={link.to}
-                    style={{
-                      opacity: menuOpen ? 1 : 0,
-                      transform: menuOpen ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
-                      transition: menuOpen
-                        ? `all 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${120 + i * 60}ms`
-                        : 'all 0.25s ease',
-                    }}
-                    className={`flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-colors duration-200 ${
-                      isActive
-                        ? 'bg-cream/10'
-                        : 'active:bg-cream/5'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isActive ? 'bg-gold/20' : 'bg-cream/8'}`}>
-                      <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-cream/40'} />
-                    </div>
-                    <span className={`font-heading text-lg font-semibold ${isActive ? 'text-cream' : 'text-cream/70'}`}>{link.label}</span>
-                    {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold animate-pulse" />}
-                  </Link>
-                )
-              })}
-            </nav>
+              {/* Nav Links */}
+              <nav className="flex flex-col items-center gap-0.5 mb-5">
+                {navLinks.map((link, i) => {
+                  const isActive = location.pathname === link.to
+                  const LinkIcon = link.icon
+                  return (
+                    <Link
+                      key={link.label}
+                      to={link.to}
+                      style={{
+                        opacity: menuOpen ? 1 : 0,
+                        transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
+                        transition: menuOpen
+                          ? `opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms`
+                          : 'opacity 0.2s ease, transform 0.2s ease',
+                      }}
+                      className={`flex items-center gap-4 px-7 py-2.5 rounded-2xl w-60 transition-colors duration-200 ${
+                        isActive
+                          ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
+                          : 'text-chocolate active:bg-chocolate/5'
+                      }`}
+                    >
+                      <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
+                      <span className="font-heading text-[15px] font-semibold">{link.label}</span>
+                      {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
+                    </Link>
+                  )
+                })}
+              </nav>
 
-            {/* Divider */}
-            <div
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'scaleX(1)' : 'scaleX(0)',
-                transition: menuOpen ? 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s' : 'all 0.2s ease',
-                transformOrigin: 'left',
-              }}
-              className="h-px bg-gradient-to-r from-gold/30 via-cream/10 to-transparent mb-8 mx-5"
-            />
-
-            {/* Social + Location */}
-            <div
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'translateY(0)' : 'translateY(15px)',
-                transition: menuOpen ? 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s' : 'all 0.2s ease',
-              }}
-              className="px-5"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                {[
-                  { href: INSTAGRAM_URL, icon: Instagram, label: 'Instagram' },
-                  { href: WHATSAPP_URL, icon: MessageCircle, label: 'WhatsApp' },
-                  { href: 'tel:+919081668490', icon: Phone, label: 'Phone' },
-                ].map(({ href, icon: Icon, label }) => (
-                  <a key={label} href={href} target={label !== 'Phone' ? '_blank' : undefined} rel={label !== 'Phone' ? 'noopener noreferrer' : undefined} className="w-11 h-11 rounded-xl bg-cream/8 flex items-center justify-center text-cream/50 active:bg-cream/15 transition-colors">
-                    <Icon size={18} />
-                  </a>
-                ))}
-              </div>
-              <div className="flex items-center gap-1.5 text-cream/30">
-                <MapPin size={12} />
-                <span className="text-[11px] tracking-wide">Vaso, Kheda, Gujarat</span>
+              {/* Bottom Social */}
+              <div
+                style={{
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
+                  transition: menuOpen
+                    ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms'
+                    : 'opacity 0.2s ease, transform 0.2s ease',
+                }}
+              >
+                <div className="flex items-center justify-center gap-4 mb-3">
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Instagram size={18} /></a>
+                  <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
+                  <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
+                </div>
+                <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40">
+                  <MapPin size={11} />
+                  <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      )}
     </nav>
   )
 }
