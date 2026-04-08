@@ -162,29 +162,34 @@ export default function Testimonials({ highlightProduct = '' }) {
 function ReviewCard({ review, index, isHighlighted = false }) {
   return (
     <div
-      className={`fade-up group bg-white rounded-2xl overflow-hidden card-hover relative ${
+      className={`fade-up group bg-white rounded-2xl overflow-hidden card-hover relative flex flex-col ${
         isHighlighted ? 'ring-2 ring-berry/20 shadow-lg' : ''
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-berry to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
 
-      {review.photo && (
-        <div className="w-full aspect-[4/3] overflow-hidden">
-          <img src={review.photo} alt={`Review by ${review.name}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+      <div className="p-5 flex flex-col flex-1">
+        {/* Top row: product badge + photo */}
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div>
+            {review.product && (
+              <span className="inline-block text-[10px] font-semibold text-berry bg-berry/5 px-2 py-0.5 rounded-full mb-2">{review.product}</span>
+            )}
+            <Quote size={20} className="text-cream-dark/50" />
+          </div>
+          {review.photo && (
+            <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm">
+              <img src={review.photo} alt={`Review by ${review.name}`} className="w-full h-full object-cover" loading="lazy" />
+            </div>
+          )}
         </div>
-      )}
 
-      <div className="p-5">
-        {review.product && (
-          <span className="inline-block text-[10px] font-semibold text-berry bg-berry/5 px-2 py-0.5 rounded-full mb-2">{review.product}</span>
-        )}
-        <Quote size={22} className="text-cream-dark/50 mb-3" />
         <StarRating rating={review.rating} />
-        <p className="text-sm text-chocolate-light/70 mt-4 mb-6 leading-relaxed">"{review.text}"</p>
-        <div className="flex items-center gap-3 pt-4 border-t border-cream-dark/20">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center shadow-sm shrink-0">
-            <span className="font-heading text-sm font-bold text-berry">{review.name.charAt(0)}</span>
+        <p className="text-sm text-chocolate-light/70 mt-3 mb-5 leading-relaxed flex-1">"{review.text}"</p>
+        <div className="flex items-center gap-3 pt-3 border-t border-cream-dark/20 mt-auto">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center shadow-sm shrink-0">
+            <span className="font-heading text-xs font-bold text-berry">{review.name.charAt(0)}</span>
           </div>
           <div>
             <p className="text-sm font-medium text-chocolate">{review.name}</p>
