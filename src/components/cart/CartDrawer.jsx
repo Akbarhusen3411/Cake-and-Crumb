@@ -5,19 +5,14 @@ import useCheckoutStore from '../../store/useCheckoutStore'
 import { getCoordinatesFromPincode, calculateDistance, getDeliveryInfo } from '../../utils/deliveryCalculator'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
-  // Lock body scroll when cart is open
+  // Lock body scroll when cart is open (overflow:hidden prevents background scroll)
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
-      document.body.style.touchAction = 'none'
     } else {
       document.body.style.overflow = ''
-      document.body.style.touchAction = ''
     }
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.touchAction = ''
-    }
+    return () => { document.body.style.overflow = '' }
   }, [isOpen])
   const items = useCartStore((s) => s.items)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
