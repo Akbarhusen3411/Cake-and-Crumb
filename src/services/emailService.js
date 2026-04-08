@@ -68,8 +68,23 @@ export async function sendOrderConfirmation({
   }
 }
 
-export function generateOrderId() {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 5).toUpperCase();
-  return `CC-${timestamp}-${random}`;
+export function generateOrderId(customerName = '') {
+  // Get initials from customer name (first + last name first letters)
+  const words = customerName.trim().split(/\s+/).filter(Boolean)
+  const initials = words.length >= 2
+    ? (words[0][0] + words[words.length - 1][0]).toUpperCase()
+    : words.length === 1
+      ? (words[0][0] + (words[0][1] || 'X')).toUpperCase()
+      : 'CC'
+
+  // Date part: DDMMYY
+  const now = new Date()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const yy = String(now.getFullYear()).slice(-2)
+
+  // Short random code (3 chars)
+  const code = Math.random().toString(36).substring(2, 5).toUpperCase()
+
+  return `CC-${initials}-${dd}${mm}${yy}-${code}`
 }

@@ -25,7 +25,7 @@ export default function ConfirmationStep({ onClose }) {
   const clearCart = useCartStore((s) => s.clearCart)
   const hasSent = useRef(false)
 
-  const orderId = checkout.orderId || generateOrderId()
+  const orderId = checkout.orderId || generateOrderId(checkout.customerName)
   const [orderTimestamp] = useState(Date.now())
   const [cancelExpired, setCancelExpired] = useState(false)
   const [remainingTime, setRemainingTime] = useState(CANCEL_WINDOW_MS)

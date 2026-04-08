@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 import { saveOrderToSheet } from '../utils/orderSheet'
+import { generateOrderId } from '../services/emailService'
 
 const WHATSAPP_NUMBER = '919081668490'
 
@@ -408,7 +409,7 @@ export default function ChatBot() {
     const total = getCartTotal()
     const deliveryFee = total >= 499 ? 0 : 49
     const grandTotal = total + deliveryFee
-    const orderId = `CC-${Date.now().toString(36).toUpperCase()}`
+    const orderId = generateOrderId(orderInfo.name)
     setLastOrderId(orderId)
     setLastOrderTime(Date.now())
 
