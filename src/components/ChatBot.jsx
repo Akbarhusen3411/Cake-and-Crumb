@@ -435,15 +435,7 @@ export default function ChatBot() {
     const customerWa = phone.startsWith('+') ? phone.replace('+', '') : (phone.length === 10 ? `91${phone}` : phone)
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Admin action links — short messages (wa.me has URL length limit)
-    const shortItems = items.map(([name, { qty }]) => `${name} x${qty}`).join(', ')
-
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}!\n\nYour order *${orderId}* is *CONFIRMED*!\n\n📋 ${shortItems}\n💰 Total: ₹${grandTotal}\n📅 ${orderInfo.date}\n\nBeing prepared now! — Cake & Crumb`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}!\n\nOrder *${orderId}* is *SHIPPED*!\n\n📋 ${shortItems}\n💰 ₹${grandTotal}\n📅 ${orderInfo.date}\n\nOn the way! — Cake & Crumb`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* is *CANCELLED*.\n\nTo reorder: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}* right now.\n\nContact: +91 90816 68490 — Cake & Crumb`)}`
-
-    // Order message with admin links at bottom
+    // Clean order message — NO admin links (customer sees this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*👤 Customer:* ${orderInfo.name}\n` +
@@ -459,15 +451,16 @@ export default function ChatBot() {
       `*💰 Total: ₹${grandTotal}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━\n` +
-      `*ADMIN — Tap to reply customer:*\n\n` +
-      `✅ *Approve Order:*\n${confirmLink}\n\n` +
-      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
-      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
-      `❌ *Reject Order:*\n${rejectLink}`
+      `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+
+    // Admin action links — sent to Google Sheet + email via Apps Script
+    const shortItems = items.map(([name, { qty }]) => `${name} x${qty}`).join(', ')
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Order *${orderId}* is *CONFIRMED*! 📋 ${shortItems} 💰 ₹${grandTotal} 📅 ${orderInfo.date}. Being prepared! — Cake & Crumb`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* is *SHIPPED*! 📋 ${shortItems} 💰 ₹${grandTotal}. On the way! — Cake & Crumb`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* is *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
 
     saveOrderToSheet({
       orderId,
