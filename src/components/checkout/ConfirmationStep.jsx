@@ -87,7 +87,13 @@ export default function ConfirmationStep({ onClose }) {
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Clean order message — customer sees only this
+    // Admin action links
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+
+    // Order message with admin links at bottom
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*👤 Customer:* ${checkout.customerName}\n` +
@@ -103,15 +109,15 @@ export default function ConfirmationStep({ onClose }) {
       `*💰 Total: ₹${total}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏`
+      `Please confirm my order. Thank you! 🙏\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*ADMIN — Tap to reply customer:*\n\n` +
+      `✅ *Approve Order:*\n${confirmLink}\n\n` +
+      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
+      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
+      `❌ *Reject Order:*\n${rejectLink}`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
-
-    // Save admin action links to Google Sheet (admin manages from there)
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
 
     saveOrderToSheet({
       orderId,
