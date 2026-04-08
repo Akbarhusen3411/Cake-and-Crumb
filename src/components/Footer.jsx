@@ -87,7 +87,7 @@ export default function Footer() {
         </div>
 
         {/* Quick links - 2 column grid */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2 max-w-[260px] mx-auto mb-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2.5 w-full max-w-xs mx-auto mb-6">
           {quickLinks.map((link) => (
             <Link
               key={link.label}

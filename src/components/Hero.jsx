@@ -31,7 +31,7 @@ export default function Hero() {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
 
           {/* Text Content */}
           <div className="text-center lg:text-left">

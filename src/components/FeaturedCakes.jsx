@@ -71,7 +71,7 @@ function ReviewBadge({ count, avg, productReviews, productName }) {
         {avg} <span className="font-normal text-chocolate-light/50">({count})</span>
       </a>
       {topReviews.length > 0 && (
-        <div className="absolute bottom-full left-0 mb-2 w-64 bg-white rounded-xl shadow-xl border border-chocolate/8 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 z-[3]">
+        <div className="absolute bottom-full left-0 mb-2 w-56 sm:w-64 max-w-[calc(100vw-2rem)] bg-white rounded-xl shadow-xl border border-chocolate/8 p-3 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 z-[3]">
           <div className="space-y-2.5">
             {topReviews.map((review, i) => (
               <div key={i} className={i > 0 ? 'pt-2.5 border-t border-cream-dark/15' : ''}>
@@ -179,7 +179,7 @@ function ProductCard({ product, reviews }) {
   return (
     <div className={`product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative ${!product.inStock ? 'opacity-50' : ''}`}>
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-square overflow-hidden bg-cream group">
         <img
           src={product.image}
           alt={product.name}
@@ -272,7 +272,7 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
   return (
     <div className="product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative">
       {/* Image */}
-      <div className="relative aspect-[4/3] sm:aspect-[4/3] md:aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-square overflow-hidden bg-cream group">
         <img
           src={product.image}
           alt={product.shortName}
@@ -401,7 +401,7 @@ function CheesecakeContent({ menuCat, reviews }) {
             </div>
 
             {/* Flavour Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {flavours.map(({ slice, banto }) => (
                 <CheesecakeFlavourCard key={slice.flavourKey} sliceProduct={slice} bantoProduct={banto} reviews={reviews} />
               ))}
@@ -455,7 +455,7 @@ function CategoryContent({ category, reviews }) {
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {categoryProducts.map((product) => (
             <ProductCard key={product.id} product={product} reviews={reviews} />
           ))}
@@ -606,7 +606,7 @@ export default function FeaturedCakes() {
         {searchResults ? (
           <div className="mb-10">
             {searchResults.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 {searchResults.map((product) => (
                   <ProductCard key={product.id} product={product} reviews={reviews} />
                 ))}
