@@ -1,21 +1,50 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { REVIEWS_SCRIPT_URL } from '../config/googleSheetReviews'
 
+const CACHE_KEY = 'cake-crumb-reviews'
 let cachedReviews = null
 let fetchPromise = null
 let listeners = new Set()
+
+// Load from localStorage on startup (instant display)
+try {
+  const stored = localStorage.getItem(CACHE_KEY)
+  if (stored) cachedReviews = JSON.parse(stored)
+} catch {}
 
 function notifyListeners() {
   listeners.forEach((fn) => fn(cachedReviews || []))
 }
 
+function saveToStorage(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)) } catch {}
+}
+
 // Convert Google Drive URL to embeddable thumbnail format
 function fixDrivePhotoUrl(url) {
   if (!url) return ''
-  // Extract file ID from any Google Drive URL format
   const match = url.match(/(?:thumbnail\?id=|\/d\/|id=|export=view&id=)([a-zA-Z0-9_-]+)/)
   if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`
   return url
+}
+
+function fetchReviews() {
+  if (!REVIEWS_SCRIPT_URL) return Promise.resolve([])
+  return fetch(REVIEWS_SCRIPT_URL)
+    .then((r) => r.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
+        const reviews = data
+          .filter((r) => r.name && r.rating && r.text)
+          .map((r) => ({ ...r, photo: fixDrivePhotoUrl(r.photo) }))
+        cachedReviews = reviews
+        saveToStorage(reviews)
+        notifyListeners()
+        return reviews
+      }
+      return cachedReviews || []
+    })
+    .catch(() => cachedReviews || [])
 }
 
 export default function useReviews() {
@@ -28,55 +57,40 @@ export default function useReviews() {
   }, [])
 
   useEffect(() => {
-    if (cachedReviews) { setReviews(cachedReviews); setLoading(false); return }
-    if (!REVIEWS_SCRIPT_URL) { setLoading(false); return }
-
-    if (!fetchPromise) {
-      fetchPromise = fetch(REVIEWS_SCRIPT_URL)
-        .then((r) => r.json())
-        .then((data) => {
-          if (Array.isArray(data)) {
-            cachedReviews = data
-              .filter((r) => r.name && r.rating && r.text)
-              .map((r) => ({ ...r, photo: fixDrivePhotoUrl(r.photo) }))
-          } else {
-            cachedReviews = []
-          }
-          return cachedReviews
-        })
-        .catch(() => { cachedReviews = []; return [] })
+    // Show cached reviews instantly
+    if (cachedReviews) {
+      setReviews(cachedReviews)
+      setLoading(false)
     }
 
+    // Always fetch fresh data in background
+    if (!fetchPromise) fetchPromise = fetchReviews()
     fetchPromise.then((data) => {
       setReviews(data)
       setLoading(false)
+      fetchPromise = null // Allow refetch on next mount
     })
   }, [])
 
   return { reviews, loading }
 }
 
-// Add a review to cache immediately (optimistic update) and notify all components
+// Add a review to cache immediately (optimistic update)
 export function addReviewToCache(review) {
   if (!cachedReviews) cachedReviews = []
   cachedReviews = [review, ...cachedReviews]
+  saveToStorage(cachedReviews)
   notifyListeners()
 }
 
-// Force refetch from Google Sheets on next mount
-export function clearReviewsCache() {
-  cachedReviews = null
-  fetchPromise = null
-}
-
-// Get reviews for a specific product (matches by product name)
+// Get reviews for a specific product
 export function getProductReviews(reviews, productName) {
   if (!productName || !reviews.length) return []
   const name = productName.toLowerCase()
   return reviews.filter((r) => r.product && r.product.toLowerCase() === name)
 }
 
-// Get average rating for reviews
+// Get average rating
 export function getAverageRating(productReviews) {
   if (!productReviews.length) return 0
   const sum = productReviews.reduce((acc, r) => acc + Number(r.rating), 0)
