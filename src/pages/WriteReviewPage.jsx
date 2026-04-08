@@ -121,11 +121,33 @@ export default function WriteReviewPage() {
       photo: photo || '',
     }
     try {
-      await fetch(REVIEWS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(reviewData),
+      // Use hidden form + iframe to bypass CORS (most reliable for Apps Script)
+      await new Promise((resolve) => {
+        const iframe = document.createElement('iframe')
+        iframe.name = 'review-submit'
+        iframe.style.display = 'none'
+        document.body.appendChild(iframe)
+
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = REVIEWS_SCRIPT_URL
+        form.target = 'review-submit'
+
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = 'data'
+        input.value = JSON.stringify(reviewData)
+        form.appendChild(input)
+
+        document.body.appendChild(form)
+        iframe.onload = () => {
+          document.body.removeChild(form)
+          document.body.removeChild(iframe)
+          resolve()
+        }
+        form.submit()
+        // Resolve after 3s even if iframe doesn't fire onload
+        setTimeout(resolve, 3000)
       })
       // Add to local cache immediately so it shows on the site right away
       addReviewToCache(reviewData)
