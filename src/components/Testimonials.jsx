@@ -15,7 +15,7 @@ function StarRating({ rating }) {
 function formatReviewDate(dateStr) {
   try {
     const d = new Date(dateStr)
-    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
   } catch {
     return ''
   }
