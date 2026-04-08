@@ -67,7 +67,7 @@ export default function Navbar({ onCartClick }) {
           <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform duration-500 border-2 border-gold/30" />
           <div className="leading-tight">
             <span className="font-script text-xl sm:text-2xl tracking-wide block text-chocolate">Cake <span className="text-berry">&</span> Crumb</span>
-            <span className="font-heading text-[9px] sm:text-[10px] text-chocolate-light/60 italic tracking-wider hidden sm:block">The Gourmet Chocolate & Berry Boutique</span>
+            <span className="font-heading text-[8px] sm:text-[10px] text-chocolate-light/60 italic tracking-wider">The Gourmet Chocolate & Berry Boutique</span>
           </div>
         </Link>
 
@@ -149,10 +149,10 @@ export default function Navbar({ onCartClick }) {
             <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px] pointer-events-none" />
 
             {/* Content — scrollable */}
-            <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-y-auto py-20">
+            <div className="relative h-full flex flex-col items-center justify-center px-6 overflow-y-auto py-16">
 
               {/* Nav Links */}
-              <nav className="flex flex-col items-center gap-1 mb-6">
+              <nav className="flex flex-col items-center gap-0.5 mb-5">
                 {navLinks.map((link, i) => {
                   const isActive = location.pathname === link.to
                   const LinkIcon = link.icon
@@ -167,21 +167,21 @@ export default function Navbar({ onCartClick }) {
                           ? `opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) ${80 + i * 50}ms`
                           : 'opacity 0.2s ease, transform 0.2s ease',
                       }}
-                      className={`flex items-center gap-4 px-8 py-3 rounded-2xl w-64 transition-colors duration-200 ${
+                      className={`flex items-center gap-4 px-7 py-2.5 rounded-2xl w-60 transition-colors duration-200 ${
                         isActive
                           ? 'bg-chocolate text-cream shadow-lg shadow-chocolate/20'
                           : 'text-chocolate active:bg-chocolate/5'
                       }`}
                     >
                       <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
-                      <span className="font-heading text-base font-semibold">{link.label}</span>
+                      <span className="font-heading text-[15px] font-semibold">{link.label}</span>
                       {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
                     </Link>
                   )
                 })}
               </nav>
 
-              {/* CTA Buttons */}
+              {/* Bottom Social */}
               <div
                 style={{
                   opacity: menuOpen ? 1 : 0,
@@ -190,37 +190,6 @@ export default function Navbar({ onCartClick }) {
                     ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) 380ms'
                     : 'opacity 0.2s ease, transform 0.2s ease',
                 }}
-                className="flex flex-col gap-2.5 w-64"
-              >
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-semibold text-sm active:scale-[0.97] transition-transform shadow-lg shadow-[#25D366]/20"
-                >
-                  <MessageCircle size={18} />
-                  Order on WhatsApp
-                </a>
-                <button
-                  onClick={() => { closeMenu(); setTimeout(onCartClick, 300) }}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-chocolate/15 text-chocolate font-semibold text-sm active:scale-[0.97] transition-transform"
-                >
-                  <ShoppingBag size={18} />
-                  View Cart
-                  {itemCount > 0 && <span className="ml-1 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center">{itemCount}</span>}
-                </button>
-              </div>
-
-              {/* Bottom Social */}
-              <div
-                style={{
-                  opacity: menuOpen ? 1 : 0,
-                  transform: menuOpen ? 'translateX(0)' : 'translateX(40px)',
-                  transition: menuOpen
-                    ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 450ms, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) 450ms'
-                    : 'opacity 0.2s ease, transform 0.2s ease',
-                }}
-                className="mt-6"
               >
                 <div className="flex items-center justify-center gap-4 mb-3">
                   <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Instagram size={18} /></a>
