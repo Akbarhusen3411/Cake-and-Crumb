@@ -19,7 +19,6 @@ const navLinks = [
 export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [menuVisible, setMenuVisible] = useState(false)
   const location = useLocation()
   const items = useCartStore((s) => s.items)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
@@ -31,23 +30,13 @@ export default function Navbar({ onCartClick }) {
   }, [])
 
   const openMenu = useCallback(() => {
-    setMenuVisible(true)
-    // Force a reflow before setting menuOpen so the transition triggers
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setMenuOpen(true)
-      })
-    })
+    setMenuOpen(true)
     document.body.style.overflow = 'hidden'
   }, [])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
     document.body.style.overflow = ''
-    // Wait for transition to finish before unmounting
-    setTimeout(() => {
-      setMenuVisible(false)
-    }, 400)
   }, [])
 
   // Close on route change
@@ -113,8 +102,7 @@ export default function Navbar({ onCartClick }) {
       </div>
 
       {/* =========== Full-Screen Overlay Mobile Menu =========== */}
-      {menuVisible && (
-        <div className="lg:hidden fixed inset-0 z-[100]">
+        <div className={`lg:hidden fixed inset-0 z-[100] ${menuOpen ? '' : 'pointer-events-none'}`}>
           {/* Backdrop — dark chocolate with blur */}
           <div
             onClick={closeMenu}
@@ -221,7 +209,6 @@ export default function Navbar({ onCartClick }) {
             </div>
           </div>
         </div>
-      )}
     </nav>
   )
 }
