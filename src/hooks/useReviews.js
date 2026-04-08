@@ -9,13 +9,12 @@ function notifyListeners() {
   listeners.forEach((fn) => fn(cachedReviews || []))
 }
 
-// Convert Google Drive thumbnail URL to direct-serve URL that works on mobile
+// Convert Google Drive thumbnail URL to direct-view URL that works on all devices
 function fixDrivePhotoUrl(url) {
   if (!url) return ''
-  // Convert https://drive.google.com/thumbnail?id=XXX&sz=w800
-  // to https://lh3.googleusercontent.com/d/XXX=w800
-  const match = url.match(/drive\.google\.com\/thumbnail\?id=([^&]+)/)
-  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=w800`
+  // Extract file ID from any Google Drive URL format
+  const match = url.match(/(?:thumbnail\?id=|\/d\/|id=)([a-zA-Z0-9_-]+)/)
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`
   return url
 }
 
