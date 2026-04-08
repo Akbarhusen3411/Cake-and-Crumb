@@ -78,8 +78,10 @@ export default function WriteReviewPage() {
   const handlePhotoSelect = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (!file.type.startsWith('image/')) { setError('Please select an image file'); return }
-    if (file.size > 10 * 1024 * 1024) { setError('Image too large. Max 10MB.'); return }
+    // Accept all image formats including HEIC (iPhone), WEBP, AVIF, GIF, BMP, SVG
+    const isImage = file.type.startsWith('image/') || /\.(heic|heif|webp|avif|jpe?g|png|gif|bmp|svg)$/i.test(file.name)
+    if (!isImage) { setError('Please select an image file (JPG, PNG, WEBP, HEIC, etc.)'); return }
+    if (file.size > 20 * 1024 * 1024) { setError('Image too large. Max 20MB.'); return }
     setError('')
     const previewReader = new FileReader()
     previewReader.onload = (ev) => setPhotoPreview(ev.target.result)
@@ -269,10 +271,10 @@ export default function WriteReviewPage() {
               <button type="button" onClick={() => fileRef.current?.click()} className="w-full py-8 rounded-xl border-2 border-dashed border-chocolate/15 bg-cream-light/30 flex flex-col items-center gap-2 hover:border-berry/30 hover:bg-berry/3 transition-colors">
                 <Camera size={28} className="text-chocolate-light/30" />
                 <span className="text-sm text-chocolate-light/50">Tap to add a photo</span>
-                <span className="text-xs text-chocolate-light/30">JPG, PNG (max 10MB)</span>
+                <span className="text-xs text-chocolate-light/30">JPG, PNG, WEBP, HEIC (max 20MB)</span>
               </button>
             )}
-            <input ref={fileRef} type="file" accept="image/*" onChange={handlePhotoSelect} className="hidden" />
+            <input ref={fileRef} type="file" accept="image/*,.heic,.heif,.webp,.avif" onChange={handlePhotoSelect} className="hidden" />
           </div>
 
           {/* Error */}
