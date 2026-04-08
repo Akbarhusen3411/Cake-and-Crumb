@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
 import { Star, Quote, Sparkles } from 'lucide-react'
-import { testimonials } from '../data/cakes'
+import { testimonials as staticTestimonials } from '../data/cakes'
+import { REVIEWS_SCRIPT_URL } from '../config/googleSheetReviews'
 
 function StarRating({ rating }) {
   return (
@@ -11,7 +13,43 @@ function StarRating({ rating }) {
   )
 }
 
+function formatReviewDate(dateStr) {
+  try {
+    const d = new Date(dateStr)
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+  } catch {
+    return ''
+  }
+}
+
 export default function Testimonials() {
+  const [customerReviews, setCustomerReviews] = useState([])
+
+  useEffect(() => {
+    if (!REVIEWS_SCRIPT_URL) return
+    fetch(REVIEWS_SCRIPT_URL)
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCustomerReviews(data.filter((r) => r.name && r.rating && r.text))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const allReviews = [
+    ...customerReviews.map((r, i) => ({
+      id: `customer-${i}`,
+      name: r.name,
+      location: r.location || 'Customer',
+      text: r.text,
+      rating: Number(r.rating),
+      date: r.date,
+      photo: r.photo || '',
+    })),
+    ...staticTestimonials,
+  ]
+
   return (
     <section id="testimonials" className="py-20 bg-cream-light relative overflow-hidden">
       {/* Background */}
@@ -36,29 +74,45 @@ export default function Testimonials() {
 
         {/* Reviews Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {testimonials.map((review, index) => (
+          {allReviews.map((review, index) => (
             <div
               key={review.id}
-              className="fade-up group bg-white rounded-2xl p-5 card-hover relative overflow-hidden"
+              className="fade-up group bg-white rounded-2xl overflow-hidden card-hover relative"
               style={{ transitionDelay: `${index * 120}ms` }}
             >
               {/* Subtle top gradient */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-berry to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-berry to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
 
-              <Quote size={22} className="text-cream-dark/50 mb-3" />
-              <StarRating rating={review.rating} />
-              <p className="text-sm text-chocolate-light/70 mt-4 mb-6 leading-relaxed">
-                "{review.text}"
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-cream-dark/20">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center shadow-sm">
-                  <span className="font-heading text-sm font-bold text-berry">
-                    {review.name.charAt(0)}
-                  </span>
+              {/* Review Photo */}
+              {review.photo && (
+                <div className="w-full aspect-[4/3] overflow-hidden">
+                  <img
+                    src={review.photo}
+                    alt={`Review by ${review.name}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-chocolate">{review.name}</p>
-                  <p className="text-xs text-chocolate-light/50">{review.location}</p>
+              )}
+
+              <div className="p-5">
+                <Quote size={22} className="text-cream-dark/50 mb-3" />
+                <StarRating rating={review.rating} />
+                <p className="text-sm text-chocolate-light/70 mt-4 mb-6 leading-relaxed">
+                  "{review.text}"
+                </p>
+                <div className="flex items-center gap-3 pt-4 border-t border-cream-dark/20">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center shadow-sm shrink-0">
+                    <span className="font-heading text-sm font-bold text-berry">
+                      {review.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-chocolate">{review.name}</p>
+                    <p className="text-xs text-chocolate-light/50">
+                      {review.date ? formatReviewDate(review.date) : review.location}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

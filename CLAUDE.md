@@ -15,11 +15,15 @@ npm run build    # Production build to dist/
 npm run preview  # Preview production build
 ```
 
+No test runner or linter is configured.
+
 **GitHub Pages deployment:**
 ```bash
 GITHUB_PAGES=true npm run build   # Build with /Cake-and-Crumb/ base path
 npx gh-pages -d dist              # Deploy dist/ to gh-pages branch
 ```
+
+Auto-deploy: pushing to `master` triggers `.github/workflows/deploy.yml` which builds (without `GITHUB_PAGES` env) and deploys via GitHub Pages Actions. The manual `gh-pages` branch method above is the alternative.
 
 Note: Scripts use `node ./node_modules/vite/bin/vite.js` instead of bare `vite` because the directory name contains `&` which breaks Windows path resolution via npx/node_modules/.bin.
 
@@ -29,11 +33,12 @@ Note: Scripts use `node ./node_modules/vite/bin/vite.js` instead of bare `vite` 
 - **React Router 7** with `HashRouter` (required for GitHub Pages — no server-side routing)
 - **Zustand** for state management (cart persists to localStorage)
 - **Lucide React** for icons
+- **EmailJS** (`@emailjs/browser`) for order confirmation emails
 - Google Fonts: Poppins (headings), Inter (body), Great Vibes (bakery script accents)
 
 ### Routing & Code Splitting
 
-All pages are lazy-loaded via `React.lazy()` in `App.jsx`. Routes use HashRouter so URLs look like `/#/menu`, `/#/about`. The `PageTransition` component wraps routes for fade animations. `ScrollToTop` resets scroll position on navigation.
+All pages are lazy-loaded via `React.lazy()` in `App.jsx`. Routes: `/`, `/menu`, `/about`, `/reviews`, `/contact`, `/faq`, `*` (404). URLs look like `/#/menu`, `/#/about` due to HashRouter. The `PageTransition` component wraps routes for fade animations. `ScrollToTop` resets scroll position on navigation.
 
 ### Asset Path Handling
 
@@ -58,9 +63,8 @@ Distance-based pricing in `src/utils/deliveryCalculator.js`. Base location: Vaso
 
 1. Customer builds order (chatbot or cart checkout)
 2. Order message sent to admin WhatsApp (9081668490) via `wa.me` URL
-3. Admin reply links (confirm/shipped/cancel/reject) included at bottom of same message
-4. Each link opens customer's WhatsApp with pre-filled short message (~150 chars to avoid WhatsApp URL truncation)
-5. 30-minute cancellation window with live countdown timer in ConfirmationStep
+3. Admin manages orders manually via WhatsApp (no automated admin links — the message is sent from the customer's phone so only the customer sees it)
+4. 30-minute cancellation window with live countdown timer in ConfirmationStep; customer can cancel via button or chatbot
 
 ### ChatBot (`src/components/ChatBot.jsx`)
 
