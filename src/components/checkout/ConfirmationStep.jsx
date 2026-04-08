@@ -3,7 +3,6 @@ import { CheckCircle, Home, MessageCircle, XCircle, Clock } from 'lucide-react'
 import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
-import { saveOrderToSheet } from '../../utils/orderSheet'
 
 const TIME_SLOT_LABELS = {
   '10-12': '10 AM – 12 PM',
@@ -79,15 +78,12 @@ export default function ConfirmationStep({ onClose }) {
       paymentId: checkout.razorpayOrderId,
     })
 
-    // Send WhatsApp summary to admin
-    const phone = checkout.phone.replace(/[\s\-()]/g, '')
-    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : (phone.length === 10 ? `91${phone}` : phone)
+    // Send WhatsApp order to admin
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Clean order message — NO admin links (customer sees this)
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*👤 Customer:* ${checkout.customerName}\n` +
@@ -106,27 +102,6 @@ export default function ConfirmationStep({ onClose }) {
       `Please confirm my order. Thank you! 🙏`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
-
-    // Admin action links — sent to Google Sheet + email via Apps Script
-    const shortItems = cartItems.map((i) => `${i.shortName || i.name} x${i.quantity}`).join(', ')
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Order *${orderId}* is *CONFIRMED*! 📋 ${shortItems} 💰 ₹${total} 📅 ${formatDate(checkout.selectedDate)} ${timeLabel}. Being prepared! — Cake & Crumb`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! 📋 ${shortItems} 💰 ₹${total}. On the way! — Cake & Crumb`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* is *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-
-    saveOrderToSheet({
-      orderId,
-      customerName: checkout.customerName,
-      phone: checkout.phone,
-      items: itemsList,
-      total: `₹${total}`,
-      delivery: `${formatDate(checkout.selectedDate)} | ${timeLabel}`,
-      date: orderTime,
-      confirmLink,
-      shippedLink,
-      cancelLink,
-      rejectLink,
-    })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoHome = () => {
