@@ -1,10 +1,24 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2, AlertCircle } from 'lucide-react'
 import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { getCoordinatesFromPincode, calculateDistance, getDeliveryInfo } from '../../utils/deliveryCalculator'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
+  // Lock body scroll when cart is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+  }, [isOpen])
   const items = useCartStore((s) => s.items)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
   const removeItem = useCartStore((s) => s.removeItem)
@@ -124,7 +138,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
           ) : (
             <>
               {/* Cart Items — compact list */}
-              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-[40vh] sm:max-h-none">
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-[40vh] sm:max-h-none" style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}>
                 {cartItems.map((item, i) => (
                   <div
                     key={item.id}
