@@ -87,11 +87,13 @@ export default function ConfirmationStep({ onClose }) {
     const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
-    // Admin action links
-    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${checkout.customerName}! Your order *${orderId}* is *APPROVED*! Total: ₹${total}. Delivery: ${formatDate(checkout.selectedDate)} ${timeLabel}. — Cake & Crumb 🎂`)}`
-    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${checkout.customerName}! Order *${orderId}* is *SHIPPED*! Expected: ${formatDate(checkout.selectedDate)} ${timeLabel}. Enjoy! — Cake & Crumb 🚗`)}`
-    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${checkout.customerName}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
-    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${checkout.customerName}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    // Admin action links — with full order details for customer
+    const orderSummary = `Order: *${orderId}*\n📋 ${cartItems.map((i) => `${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join(', ')}\n💰 Total: *₹${total}*\n📅 ${formatDate(checkout.selectedDate)} | ${timeLabel}\n💳 ${payLabel}\n📍 ${checkout.deliveryArea}`
+
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ *ORDER CONFIRMED!*\n\nHi ${checkout.customerName}! Your order is *APPROVED* and being prepared.\n\n${orderSummary}\n\nWe'll notify you when it's shipped. Thank you! — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 *ORDER SHIPPED!*\n\nHi ${checkout.customerName}! Your order is on the way!\n\n${orderSummary}\n\nExpected: ${formatDate(checkout.selectedDate)} ${timeLabel}\nEnjoy your treats! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 *ORDER CANCELLED*\n\nHi ${checkout.customerName}, your order *${orderId}* has been cancelled.\n\n${orderSummary}\n\nTo reorder: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ *ORDER UPDATE*\n\nHi ${checkout.customerName}, sorry we cannot fulfill your order right now.\n\n${orderSummary}\n\nPlease contact: +91 90816 68490 — Cake & Crumb`)}`
 
     // Order message with admin links at bottom
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
