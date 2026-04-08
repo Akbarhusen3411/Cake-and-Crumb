@@ -9,6 +9,16 @@ function notifyListeners() {
   listeners.forEach((fn) => fn(cachedReviews || []))
 }
 
+// Convert Google Drive thumbnail URL to direct-serve URL that works on mobile
+function fixDrivePhotoUrl(url) {
+  if (!url) return ''
+  // Convert https://drive.google.com/thumbnail?id=XXX&sz=w800
+  // to https://lh3.googleusercontent.com/d/XXX=w800
+  const match = url.match(/drive\.google\.com\/thumbnail\?id=([^&]+)/)
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=w800`
+  return url
+}
+
 export default function useReviews() {
   const [reviews, setReviews] = useState(cachedReviews || [])
   const [loading, setLoading] = useState(!cachedReviews)
@@ -27,7 +37,9 @@ export default function useReviews() {
         .then((r) => r.json())
         .then((data) => {
           if (Array.isArray(data)) {
-            cachedReviews = data.filter((r) => r.name && r.rating && r.text)
+            cachedReviews = data
+              .filter((r) => r.name && r.rating && r.text)
+              .map((r) => ({ ...r, photo: fixDrivePhotoUrl(r.photo) }))
           } else {
             cachedReviews = []
           }

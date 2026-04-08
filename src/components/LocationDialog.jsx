@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MapPin, X, Check, MessageCircle, Loader2, Search } from 'lucide-react'
 import useLocationStore from '../store/useLocationStore'
 
@@ -7,6 +8,7 @@ const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%2
 export default function LocationDialog() {
   const { dialogShown, dialogOpen, area, setArea, setDialogShown, closeDialog, setIsInAhmedabad } = useLocationStore()
   const [notInCity, setNotInCity] = useState(false)
+  const location = useLocation()
 
   const [pincode, setPincode] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,15 +17,16 @@ export default function LocationDialog() {
   const [locationInfo, setLocationInfo] = useState(null) // { district, state }
   const [error, setError] = useState('')
 
-  // Auto-popup after 3 seconds (only once)
+  // Auto-popup after 3 seconds (only on homepage, only once)
   useEffect(() => {
     if (dialogShown) return
+    if (location.pathname !== '/') return
     const timer = setTimeout(() => {
       useLocationStore.getState().openDialog()
       setDialogShown()
     }, 3000)
     return () => clearTimeout(timer)
-  }, [dialogShown, setDialogShown])
+  }, [dialogShown, setDialogShown, location.pathname])
 
   const lookupPincode = async () => {
     if (!/^\d{6}$/.test(pincode)) {
