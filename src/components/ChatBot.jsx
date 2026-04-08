@@ -429,6 +429,14 @@ export default function ChatBot() {
     // Simple order list for user message
     const userItemsList = items.map(([name, { qty, price }]) => `• ${name} × ${qty} = ₹${price * qty}`).join('\n')
 
+    const phone = orderInfo.phone.replace(/\s/g, '')
+    const customerWa = phone.startsWith('+') ? phone.replace('+', '') : `91${phone}`
+
+    const confirmLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`✅ Hi ${orderInfo.name}! Your order *${orderId}* is *APPROVED*! Please wait, your order is now being processed. Total: ₹${grandTotal}. Delivery: ${orderInfo.date}. — Cake & Crumb 🎂`)}`
+    const shippedLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`📦 Hi ${orderInfo.name}! Order *${orderId}* is *SHIPPED*! On the way to you now. Expected: ${orderInfo.date}. Enjoy! — Cake & Crumb 🚗`)}`
+    const cancelLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`🚫 Hi ${orderInfo.name}, order *${orderId}* has been *CANCELLED*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+    const rejectLink = `https://wa.me/${customerWa}?text=${encodeURIComponent(`❌ Hi ${orderInfo.name}, sorry we cannot fulfill order *${orderId}*. Contact: +91 90816 68490 — Cake & Crumb`)}`
+
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
 
     // Order message sent to admin WhatsApp
@@ -447,7 +455,13 @@ export default function ChatBot() {
       `*💰 Total: ₹${grandTotal}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏`
+      `Please confirm my order. Thank you! 🙏\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `*ADMIN — Tap to reply customer:*\n\n` +
+      `✅ *Approve Order:*\n${confirmLink}\n\n` +
+      `📦 *Order Shipped:*\n${shippedLink}\n\n` +
+      `🚫 *Cancel Order:*\n${cancelLink}\n\n` +
+      `❌ *Reject Order:*\n${rejectLink}`
 
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
   }

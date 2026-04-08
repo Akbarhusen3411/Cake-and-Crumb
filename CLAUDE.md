@@ -63,8 +63,9 @@ Distance-based pricing in `src/utils/deliveryCalculator.js`. Base location: Vaso
 
 1. Customer builds order (chatbot or cart checkout)
 2. Order message sent to admin WhatsApp (9081668490) via `wa.me` URL
-3. Admin manages orders manually via WhatsApp (no automated admin links — the message is sent from the customer's phone so only the customer sees it)
-4. 30-minute cancellation window with live countdown timer in ConfirmationStep; customer can cancel via button or chatbot
+3. Admin reply links (confirm/shipped/cancel/reject) appended at bottom of same message
+4. Each link opens customer's WhatsApp with pre-filled short message (~150 chars to avoid WhatsApp URL truncation)
+5. 30-minute cancellation window with live countdown timer in ConfirmationStep; customer can cancel via button or chatbot
 
 ### ChatBot (`src/components/ChatBot.jsx`)
 
