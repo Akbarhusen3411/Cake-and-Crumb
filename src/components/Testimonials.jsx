@@ -179,7 +179,7 @@ function ReviewCard({ review, index, isHighlighted = false }) {
             <Quote size={20} className="text-cream-dark/50" />
           </div>
           {review.photo && (
-            <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 shadow-sm">
+            <div className="w-24 h-24 rounded-xl overflow-hidden shrink-0 shadow-sm border border-chocolate/5">
               <img src={review.photo} alt="" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.target.parentElement.style.display = 'none' }} />
             </div>
           )}
