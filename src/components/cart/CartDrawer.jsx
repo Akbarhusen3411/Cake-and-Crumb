@@ -77,14 +77,14 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
       {/* Cart Panel — bottom sheet on mobile, side drawer on desktop */}
       <div
         className={`fixed z-[110] bg-white shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
-          bottom-0 left-0 right-0 max-h-[90vh] rounded-t-3xl
+          bottom-0 left-0 right-0 max-h-[90vh] rounded-t-3xl overflow-hidden
           sm:top-0 sm:right-0 sm:left-auto sm:bottom-0 sm:w-full sm:max-w-md sm:rounded-t-none sm:max-h-none
           ${isOpen
             ? 'translate-y-0 sm:translate-x-0'
             : 'translate-y-full sm:translate-y-0 sm:translate-x-full'
           }`}
       >
-        <div className="h-full flex flex-col">
+        <div className="h-full max-h-[90vh] sm:max-h-none flex flex-col">
           {/* Drag handle — mobile only */}
           <div className="sm:hidden flex justify-center pt-3 pb-1">
             <div className="w-10 h-1 rounded-full bg-chocolate/15" />
@@ -131,9 +131,9 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
               </button>
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto sm:flex sm:flex-col" style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}>
+            <div className="flex-1 min-h-0 overflow-y-auto" style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}>
               {/* Cart Items — compact list */}
-              <div className="px-4 py-3 space-y-2 sm:flex-1 sm:overflow-y-auto">
+              <div className="px-4 py-3 space-y-2">
                 {cartItems.map((item, i) => (
                   <div
                     key={item.id}
@@ -186,7 +186,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
               </div>
 
               {/* Summary + CTA */}
-              <div className="px-4 pb-5 pt-3 border-t border-chocolate/5 bg-white space-y-3 sm:shrink-0">
+              <div className="px-4 pb-5 pt-3 border-t border-chocolate/5 space-y-3">
                 {/* Price Summary */}
                 <div className="bg-cream/50 rounded-xl px-4 py-3 space-y-1.5">
                   <div className="flex justify-between text-sm">

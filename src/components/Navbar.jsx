@@ -148,19 +148,6 @@ export default function Navbar({ onCartClick }) {
             <div className="absolute bottom-[-10%] left-[-15%] w-72 h-72 bg-gold/15 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute top-[30%] left-[50%] w-48 h-48 bg-berry/5 rounded-full blur-[60px] pointer-events-none" />
 
-            {/* Close button */}
-            <button
-              onClick={closeMenu}
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
-                transition: 'opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s',
-              }}
-              className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate active:bg-chocolate/10"
-            >
-              <X size={20} />
-            </button>
-
             {/* Content — scrollable */}
             <div className="relative h-full flex flex-col items-center justify-center px-8 overflow-y-auto py-20">
 
