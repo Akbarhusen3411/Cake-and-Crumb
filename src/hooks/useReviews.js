@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react'
-import { REVIEWS_SCRIPT_URL } from '../config/googleSheetReviews'
+import { db, isFirebaseConfigured } from '../config/firebase'
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp,
+} from 'firebase/firestore'
 
+const COLLECTION_NAME = 'reviews'
 const CACHE_KEY = 'cake-crumb-reviews'
 let cachedReviews = null
-let fetchPromise = null
 let listeners = new Set()
 
 // Load from localStorage on startup (instant display)
@@ -17,32 +25,57 @@ function notifyListeners() {
 }
 
 function saveToStorage(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)) } catch {}
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data))
+  } catch {}
 }
 
-// Pass through photo URL (data URLs or any hosted URL)
-function fixPhotoUrl(url) {
-  if (!url) return ''
-  return url
+// Fetch reviews from Firestore
+async function fetchReviews() {
+  if (!isFirebaseConfigured()) return cachedReviews || []
+  try {
+    const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'))
+    const snapshot = await getDocs(q)
+    const reviews = snapshot.docs
+      .map((doc) => {
+        const d = doc.data()
+        return {
+          id: doc.id,
+          name: d.name || '',
+          rating: d.rating || 0,
+          text: d.text || '',
+          product: d.product || '',
+          photo: d.photo || '',
+          date: d.date || '',
+        }
+      })
+      .filter((r) => r.name && r.rating && r.text)
+    cachedReviews = reviews
+    saveToStorage(reviews)
+    notifyListeners()
+    return reviews
+  } catch (err) {
+    console.error('Failed to fetch reviews:', err)
+    return cachedReviews || []
+  }
 }
 
-function fetchReviews() {
-  if (!REVIEWS_SCRIPT_URL) return Promise.resolve([])
-  return fetch(REVIEWS_SCRIPT_URL)
-    .then((r) => r.json())
-    .then((data) => {
-      if (Array.isArray(data)) {
-        const reviews = data
-          .filter((r) => r.name && r.rating && r.text)
-          .map((r) => ({ ...r, photo: fixPhotoUrl(r.photo) }))
-        cachedReviews = reviews
-        saveToStorage(reviews)
-        notifyListeners()
-        return reviews
-      }
-      return cachedReviews || []
-    })
-    .catch(() => cachedReviews || [])
+// Submit a review to Firestore
+export async function submitReview(reviewData) {
+  if (!isFirebaseConfigured()) {
+    throw new Error('Review system is not configured. Please contact the bakery.')
+  }
+  const docData = {
+    product: reviewData.product,
+    name: reviewData.name,
+    rating: reviewData.rating,
+    text: reviewData.text,
+    photo: reviewData.photo || '',
+    date: reviewData.date,
+    createdAt: serverTimestamp(),
+  }
+  const docRef = await addDoc(collection(db, COLLECTION_NAME), docData)
+  return docRef.id
 }
 
 export default function useReviews() {
@@ -61,12 +94,10 @@ export default function useReviews() {
       setLoading(false)
     }
 
-    // Always fetch fresh data in background
-    if (!fetchPromise) fetchPromise = fetchReviews()
-    fetchPromise.then((data) => {
+    // Fetch fresh data from Firestore
+    fetchReviews().then((data) => {
       setReviews(data)
       setLoading(false)
-      fetchPromise = null // Allow refetch on next mount
     })
   }, [])
 

@@ -1,8 +1,8 @@
 import { useState, useRef, useMemo } from 'react'
 import { Star, Send, CheckCircle, Sparkles, Camera, X, ChevronDown } from 'lucide-react'
-import { REVIEWS_SCRIPT_URL } from '../config/googleSheetReviews'
+import { isFirebaseConfigured } from '../config/firebase'
 import { products, productCategories } from '../data/products'
-import { addReviewToCache } from '../hooks/useReviews'
+import { addReviewToCache, submitReview } from '../hooks/useReviews'
 
 // Build unique reviewable product list grouped by category
 function getReviewableProducts() {
@@ -106,7 +106,7 @@ export default function WriteReviewPage() {
     if (!text.trim()) return setError('Please write your review')
     if (text.trim().length < 10) return setError('Please write at least 10 characters')
 
-    if (!REVIEWS_SCRIPT_URL) {
+    if (!isFirebaseConfigured()) {
       setError('Review system is not configured yet. Please contact the bakery.')
       return
     }
@@ -121,39 +121,12 @@ export default function WriteReviewPage() {
       photo: photo || '',
     }
     try {
-      // Use hidden form + iframe to bypass CORS (most reliable for Apps Script)
-      await new Promise((resolve) => {
-        const iframe = document.createElement('iframe')
-        iframe.name = 'review-submit'
-        iframe.style.display = 'none'
-        document.body.appendChild(iframe)
-
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = REVIEWS_SCRIPT_URL
-        form.target = 'review-submit'
-
-        const input = document.createElement('input')
-        input.type = 'hidden'
-        input.name = 'data'
-        input.value = JSON.stringify(reviewData)
-        form.appendChild(input)
-
-        document.body.appendChild(form)
-        iframe.onload = () => {
-          document.body.removeChild(form)
-          document.body.removeChild(iframe)
-          resolve()
-        }
-        form.submit()
-        // Resolve after 3s even if iframe doesn't fire onload
-        setTimeout(resolve, 3000)
-      })
-      // Add to local cache immediately so it shows on the site right away
+      await submitReview(reviewData)
+      // Add to local cache for instant display
       addReviewToCache(reviewData)
       setSubmitted(true)
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
