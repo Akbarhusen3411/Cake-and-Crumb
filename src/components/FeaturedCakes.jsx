@@ -177,19 +177,26 @@ function ProductCard({ product, reviews }) {
   }
 
   return (
-    <div className={`product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative ${!product.inStock ? 'opacity-50' : ''}`}>
+    <div
+      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/10 ${
+        product.isBestseller
+          ? 'border border-gold/30 shadow-md shadow-gold/10 ring-1 ring-gold/15'
+          : 'border border-chocolate/5 shadow-sm'
+      } ${!product.inStock ? 'opacity-50' : ''}`}
+    >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-square overflow-hidden bg-cream">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[900ms] ease-out"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Soft cream sweep on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
-            <Star size={9} fill="currentColor" /> Best
+          <span className="absolute top-2 left-2 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/20 ring-1 ring-white/30">
+            <Sparkles size={10} className="fill-white" /> Best
           </span>
         )}
         {!product.inStock && (
@@ -204,7 +211,7 @@ function ProductCard({ product, reviews }) {
       <div className="p-3">
         <h4 className="text-sm font-semibold text-chocolate truncate">{product.shortName}</h4>
         <p className="text-xs text-chocolate-light/50 mt-0.5 flex items-center gap-1">
-          <span className="text-berry font-semibold">₹{product.price}</span>
+          <span className="text-berry font-bold tabular-nums">₹{product.price}</span>
           <span>/ {product.unit}</span>
         </p>
 
@@ -217,9 +224,9 @@ function ProductCard({ product, reviews }) {
           ) : quantity === 0 ? (
             <button
               onClick={handleAdd}
-              className="btn-ripple btn-touch w-full py-2 rounded-lg bg-chocolate text-cream text-xs font-medium hover:bg-chocolate-light transition-all duration-300 flex items-center justify-center gap-1.5 hover:shadow-lg active:scale-95"
+              className="btn-ripple btn-touch group/add w-full py-2 rounded-lg bg-gradient-to-br from-chocolate to-chocolate-light text-cream text-xs font-medium transition-all duration-300 flex items-center justify-center gap-1.5 hover:shadow-lg hover:shadow-chocolate/25 active:scale-95"
             >
-              <Plus size={13} />
+              <Plus size={13} className="group-hover/add:rotate-90 transition-transform duration-300" />
               Add to Cart
             </button>
           ) : (
@@ -270,19 +277,25 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
   const addToast = useToastStore((s) => s.addToast)
 
   return (
-    <div className="product-card bg-white rounded-xl sm:rounded-xl overflow-hidden border border-chocolate/5 relative">
+    <div
+      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/10 ${
+        product.isBestseller
+          ? 'border border-gold/30 shadow-md shadow-gold/10 ring-1 ring-gold/15'
+          : 'border border-chocolate/5 shadow-sm'
+      }`}
+    >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cream group">
+      <div className="relative aspect-square overflow-hidden bg-cream">
         <img
           src={product.image}
           alt={product.shortName}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[900ms] ease-out"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gold text-white text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md backdrop-blur-sm">
-            <Star size={9} fill="currentColor" /> Best
+          <span className="absolute top-2 left-2 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/20 ring-1 ring-white/30">
+            <Sparkles size={10} className="fill-white" /> Best
           </span>
         )}
         <ReviewBadge count={productReviews.length} avg={avgRating} productReviews={productReviews} productName={product.shortName} />
@@ -292,20 +305,20 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
       <div className="p-2.5 sm:p-3 space-y-1.5 sm:space-y-2">
         <h4 className="text-[13px] sm:text-sm font-semibold text-chocolate truncate">{sliceProduct?.shortName || bantoProduct?.shortName}</h4>
 
-        {/* Per Slice option */}
+        {/* Per Slice option — everyday cream pill */}
         {sliceProduct && (
-          <div className="flex items-center justify-between gap-1.5 bg-cream/40 rounded-lg px-2.5 py-2">
+          <div className="flex items-center justify-between gap-1.5 bg-cream/60 border border-cream-dark/50 rounded-lg px-2.5 py-2 transition-colors hover:bg-cream">
             <div className="min-w-0">
-              <p className="text-[10px] font-medium text-chocolate/50">Per Slice</p>
-              <p className="text-sm text-berry font-bold">₹{sliceProduct.price}</p>
+              <p className="text-[10px] font-medium text-chocolate-light/55 uppercase tracking-wider">Per Slice</p>
+              <p className="text-sm text-chocolate font-bold tabular-nums">₹{sliceProduct.price}</p>
             </div>
             <div className="shrink-0">
               {sliceQty === 0 ? (
                 <button
                   onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
-                  className="add-btn-animate h-8 px-3.5 rounded-full bg-chocolate text-cream text-[11px] font-semibold hover:bg-chocolate-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="add-btn-animate group/add h-8 px-3.5 rounded-full bg-gradient-to-br from-chocolate to-chocolate-light text-cream text-[11px] font-semibold transition-all duration-300 flex items-center gap-1 hover:shadow-md hover:shadow-chocolate/25 active:scale-95"
                 >
-                  <Plus size={12} /> Add
+                  <Plus size={12} className="group-hover/add:rotate-90 transition-transform duration-300" /> Add
                 </button>
               ) : (
                 <QuantitySelector
@@ -322,20 +335,23 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
           </div>
         )}
 
-        {/* Banto Cake option */}
+        {/* Banto Cake option — premium gold-tinted upsell */}
         {bantoProduct && (
-          <div className="flex items-center justify-between gap-1.5 bg-berry/[0.04] border border-berry/10 rounded-lg px-2.5 py-2">
+          <div className="relative flex items-center justify-between gap-1.5 bg-gradient-to-br from-gold/8 via-soft-pink/30 to-berry/5 border border-gold/25 rounded-lg px-2.5 py-2 transition-shadow hover:shadow-md hover:shadow-gold/10">
             <div className="min-w-0">
-              <p className="text-[10px] font-medium text-chocolate/50">Banto 4" <span className="text-chocolate-light/35">(300–350 gm)</span></p>
-              <p className="text-sm text-berry font-bold">₹{bantoProduct.price}</p>
+              <p className="text-[10px] font-medium text-chocolate-light/55 uppercase tracking-wider flex items-center gap-1">
+                <Sparkles size={8} className="text-gold" />
+                Banto 4" <span className="text-chocolate-light/35 normal-case font-normal">(300–350 gm)</span>
+              </p>
+              <p className="text-sm text-berry font-bold tabular-nums">₹{bantoProduct.price}</p>
             </div>
             <div className="shrink-0">
               {bantoQty === 0 ? (
                 <button
                   onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
-                  className="add-btn-animate h-8 px-3.5 rounded-full bg-berry text-white text-[11px] font-semibold hover:bg-berry-light transition-all duration-300 flex items-center gap-1 active:scale-95"
+                  className="add-btn-animate group/add h-8 px-3.5 rounded-full bg-gradient-to-br from-berry to-berry-light text-white text-[11px] font-semibold transition-all duration-300 flex items-center gap-1 hover:shadow-md hover:shadow-berry/30 active:scale-95"
                 >
-                  <Plus size={12} /> Add
+                  <Plus size={12} className="group-hover/add:rotate-90 transition-transform duration-300" /> Add
                 </button>
               ) : (
                 <QuantitySelector
