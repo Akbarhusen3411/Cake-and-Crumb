@@ -620,6 +620,11 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* ===== Chat — Bakery Theme Extras ===== */
 @keyframes chat-fab-ring {
   0%, 100% { transform: scale(1); opacity: 0.6; }
