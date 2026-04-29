@@ -9,7 +9,7 @@ export const WHATSAPP_NUMBER_ALT = '919173183440'
 export const INSTAGRAM_HANDLE = 'cake_and_crumb_1'
 
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Cake & Crumb! I'd like to place an order.")}`
-export const WHATSAPP_URL_ALT = `https://wa.me/${WHATSAPP_NUMBER_ALT}`
+export const WHATSAPP_URL_ALT = `https://wa.me/${WHATSAPP_NUMBER_ALT}?text=${encodeURIComponent("Hi Cake & Crumb!")}`
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`
 
 // ─── Order Policies ──────────────────────────────────────

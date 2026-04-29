@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Phone, Instagram, MessageCircle, MapPin, Send, Clock, ArrowUpRight, Sparkles, CheckCircle, Heart } from 'lucide-react'
-
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
-const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
+import { WHATSAPP_URL, WHATSAPP_URL_ALT, INSTAGRAM_URL } from '../config/constants'
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
@@ -64,7 +62,17 @@ export default function Contact() {
             </div>
             <div>
               <p className="text-sm font-semibold text-chocolate leading-tight">WhatsApp</p>
-              <p className="text-xs text-chocolate-light/50">Fastest reply</p>
+              <p className="text-xs text-chocolate-light/50">+91 90816 68490</p>
+            </div>
+          </a>
+
+          <a href={WHATSAPP_URL_ALT} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
+            <div className="w-11 h-11 rounded-full bg-green-500/10 flex items-center justify-center group-hover:bg-green-500 transition-all duration-400 group-hover:shadow-lg group-hover:shadow-green-500/20">
+              <MessageCircle size={20} className="text-green-600 group-hover:text-white transition-colors duration-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-chocolate leading-tight">WhatsApp Alt</p>
+              <p className="text-xs text-chocolate-light/50">+91 91731 83440</p>
             </div>
           </a>
 

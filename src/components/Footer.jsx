@@ -104,9 +104,15 @@ export default function Footer() {
           <p className="text-[11px] text-chocolate-light/40 leading-relaxed">
             Vaso, Kheda, Gujarat, India
           </p>
-          <a href="tel:+919081668490" className="text-[11px] text-chocolate-light/40 hover:text-berry transition-colors">
-            +91 90816 68490
-          </a>
+          <div className="flex items-center justify-center gap-3 text-[11px] text-chocolate-light/40">
+            <a href="tel:+919081668490" className="hover:text-berry transition-colors">
+              +91 90816 68490
+            </a>
+            <span className="text-chocolate-light/20">|</span>
+            <a href="tel:+919173183440" className="hover:text-berry transition-colors">
+              +91 91731 83440
+            </a>
+          </div>
         </div>
       </div>
 
@@ -160,6 +166,12 @@ export default function Footer() {
                 <a href="tel:+919081668490" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
                   <Phone size={14} />
                   +91 90816 68490
+                </a>
+              </li>
+              <li>
+                <a href="tel:+919173183440" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
+                  <Phone size={14} />
+                  +91 91731 83440
                 </a>
               </li>
               <li>
