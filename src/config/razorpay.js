@@ -12,7 +12,34 @@ export const RAZORPAY_CONFIG = {
   },
 }
 
-export function openRazorpay({ amount, customerName, email, phone, onSuccess, onFailure }) {
+const RAZORPAY_SDK_URL = 'https://checkout.razorpay.com/v1/checkout.js'
+let sdkPromise = null
+
+function loadRazorpaySdk() {
+  if (window.Razorpay) return Promise.resolve()
+  if (sdkPromise) return sdkPromise
+  sdkPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = RAZORPAY_SDK_URL
+    script.async = true
+    script.onload = () => resolve()
+    script.onerror = () => {
+      sdkPromise = null
+      reject(new Error('Failed to load payment gateway'))
+    }
+    document.head.appendChild(script)
+  })
+  return sdkPromise
+}
+
+export async function openRazorpay({ amount, customerName, email, phone, onSuccess, onFailure }) {
+  try {
+    await loadRazorpaySdk()
+  } catch (err) {
+    onFailure(err.message)
+    return
+  }
+
   const options = {
     key: RAZORPAY_KEY_ID,
     amount: amount * 100, // Razorpay expects paise
