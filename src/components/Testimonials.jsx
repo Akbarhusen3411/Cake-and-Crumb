@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { Star, Sparkles, X, Maximize2 } from 'lucide-react'
+import { Star, Sparkles, X } from 'lucide-react'
 import { testimonials as staticTestimonials } from '../data/cakes'
 import useReviews from '../hooks/useReviews'
 
@@ -23,21 +23,7 @@ function formatDate(dateStr) {
 export default function Testimonials({ highlightProduct = '' }) {
   const { reviews: customerReviews } = useReviews()
   const [filter, setFilter] = useState(highlightProduct)
-  const [lightboxReview, setLightboxReview] = useState(null)
   const highlightRef = useRef(null)
-
-  // Lock body scroll + close on Esc while lightbox is open
-  useEffect(() => {
-    if (!lightboxReview) return
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const onKey = (e) => { if (e.key === 'Escape') setLightboxReview(null) }
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prev
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [lightboxReview])
 
   useEffect(() => { setFilter(highlightProduct) }, [highlightProduct])
   useEffect(() => {
@@ -118,7 +104,7 @@ export default function Testimonials({ highlightProduct = '' }) {
         {/* Highlighted Reviews */}
         {highlighted.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-            {highlighted.map((r, i) => <ReviewCard key={r.id} review={r} index={i} highlighted onPhotoClick={setLightboxReview} />)}
+            {highlighted.map((r, i) => <ReviewCard key={r.id} review={r} index={i} highlighted />)}
           </div>
         )}
 
@@ -134,7 +120,7 @@ export default function Testimonials({ highlightProduct = '' }) {
         {/* All Reviews */}
         {others.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {others.map((r, i) => <ReviewCard key={r.id} review={r} index={i} onPhotoClick={setLightboxReview} />)}
+            {others.map((r, i) => <ReviewCard key={r.id} review={r} index={i} />)}
           </div>
         ) : highlighted.length === 0 && (
           <div className="text-center py-16 fade-up">
@@ -151,76 +137,16 @@ export default function Testimonials({ highlightProduct = '' }) {
           </div>
         )}
       </div>
-
-      {/* Photo Lightbox */}
-      {lightboxReview && (
-        <PhotoLightbox review={lightboxReview} onClose={() => setLightboxReview(null)} />
-      )}
     </section>
   )
 }
 
-function PhotoLightbox({ review, onClose }) {
-  return (
-    <div
-      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Photo from ${review.name}`}
-      style={{ animation: 'fadeIn 0.2s ease-out' }}
-    >
-      {/* Close button */}
-      <button
-        onClick={onClose}
-        aria-label="Close photo"
-        className="fixed top-4 right-4 sm:top-6 sm:right-6 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white flex items-center justify-center transition-colors"
-      >
-        <X size={22} />
-      </button>
-
-      {/* Full-screen image */}
-      <img
-        src={review.photo}
-        alt={`Review photo by ${review.name}`}
-        className="max-w-[100vw] max-h-[100vh] w-auto h-auto object-contain"
-        onClick={(e) => e.stopPropagation()}
-        style={{ animation: 'chat-msg-in 0.32s cubic-bezier(0.16, 1, 0.3, 1)' }}
-      />
-
-      {/* Caption overlay at the bottom */}
-      <div
-        className="fixed left-0 right-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-5 sm:px-8 pt-12 pb-6 sm:pb-8 pointer-events-none"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="max-w-3xl mx-auto pointer-events-auto">
-          <div className="flex items-center justify-between gap-3 mb-2">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/40 to-berry/30 flex items-center justify-center shrink-0 border border-white/20">
-                <span className="text-sm font-bold text-white">{review.name.charAt(0)}</span>
-              </div>
-              <p className="text-sm sm:text-base font-semibold text-white truncate">{review.name}</p>
-            </div>
-            <Stars rating={review.rating} size={15} />
-          </div>
-          {review.product && (
-            <span className="inline-block text-[10px] font-bold text-white bg-berry/80 px-2.5 py-0.5 rounded-full mb-2">
-              {review.product}
-            </span>
-          )}
-          <p className="text-[13px] sm:text-sm text-white/85 leading-relaxed line-clamp-3">"{review.text}"</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ReviewCard({ review, index, highlighted = false, onPhotoClick }) {
+function ReviewCard({ review, index, highlighted = false }) {
   const hasPhoto = !!review.photo
 
   return (
     <div
-      className={`fade-up group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 ${
+      className={`fade-up group bg-white rounded-2xl flex flex-col transition-all duration-500 hover:-translate-y-1 relative hover:z-20 ${
         highlighted
           ? 'shadow-lg shadow-berry/8 ring-1 ring-berry/15'
           : 'shadow-sm shadow-chocolate/5 hover:shadow-lg hover:shadow-chocolate/10'
@@ -229,34 +155,38 @@ function ReviewCard({ review, index, highlighted = false, onPhotoClick }) {
     >
       {/* Photo Section */}
       {hasPhoto && (
-        <button
-          type="button"
-          onClick={() => onPhotoClick?.(review)}
-          aria-label={`View larger photo from ${review.name}`}
-          className="relative aspect-[16/10] overflow-hidden bg-cream w-full block cursor-zoom-in group/photo"
-        >
+        <div className="relative aspect-[16/10] bg-cream rounded-t-2xl group/photo">
           <img
             src={review.photo}
             alt=""
-            className="w-full h-full object-cover transition-transform duration-700 group-hover/photo:scale-110"
+            className="absolute inset-0 w-full h-full object-cover rounded-t-2xl transition-transform duration-500 group-hover/photo:scale-105"
             loading="lazy"
             referrerPolicy="no-referrer"
-            onError={(e) => { e.target.closest('button').style.display = 'none' }}
+            onError={(e) => { e.target.closest('.relative').style.display = 'none' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-
-          {/* Magnify hint — fades in on hover */}
-          <div className="absolute inset-0 bg-chocolate/35 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-xl scale-90 group-hover/photo:scale-100 transition-transform duration-300">
-              <Maximize2 size={20} className="text-chocolate" />
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-t-2xl" />
 
           {/* Stars on photo */}
-          <div className="absolute bottom-3 left-3 group-hover/photo:opacity-0 transition-opacity duration-200">
+          <div className="absolute bottom-3 left-3">
             <Stars rating={review.rating} size={14} />
           </div>
-        </button>
+
+          {/* Hover preview popup — large square frame floating above card */}
+          <div className="hidden md:block pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-full mb-3 z-30 opacity-0 invisible scale-90 group-hover/photo:opacity-100 group-hover/photo:visible group-hover/photo:scale-100 transition-all duration-300 ease-out">
+            <div className="relative w-72 h-72 rounded-2xl overflow-hidden shadow-2xl ring-2 ring-gold/40 bg-white">
+              <img src={review.photo} alt="" className="w-full h-full object-cover" />
+              {/* Caption strip on bottom of preview */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-3 pt-6 pb-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-semibold text-white truncate">{review.name}</p>
+                  <Stars rating={review.rating} size={11} />
+                </div>
+              </div>
+              {/* Down-arrow tail */}
+              <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 rotate-45 bg-white ring-2 ring-gold/40" style={{ zIndex: -1 }} />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Content */}
