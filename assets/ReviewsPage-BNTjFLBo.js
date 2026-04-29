@@ -1,0 +1,1 @@
+import{j as e}from"./index-CFGC56R5.js";import i from"./ClientReviewsSlider-BZC8Syz2.js";import"./useReviews-C8Z5kssX.js";import"./quote-uv7H9Gnk.js";import"./chevron-right-mCd4tM4V.js";function p(){return e.jsx("div",{className:"pt-20",children:e.jsx(i,{})})}export{p as default};
