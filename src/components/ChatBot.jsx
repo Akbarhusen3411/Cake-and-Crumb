@@ -234,6 +234,106 @@ function formatBold(text) {
   )
 }
 
+// ─── Price Card (structured menu display) ───
+function PriceCard({ cat }) {
+  // Render price cell(s) for an item — handles slice/whole, multi-column, or single price
+  const renderPrices = (item) => {
+    if (item.s && item.w) {
+      return (
+        <div className="flex gap-2.5 shrink-0">
+          <span className="w-12 text-right text-[12px] font-bold text-berry">{item.s}</span>
+          <span className="w-14 text-right text-[12px] font-bold text-chocolate">{item.w}</span>
+        </div>
+      )
+    }
+    if (item.p && item.p.includes('·')) {
+      const parts = item.p.split('·').map((s) => s.trim())
+      return (
+        <div className="flex gap-2 shrink-0">
+          {parts.map((price, i) => (
+            <span
+              key={i}
+              className={`w-11 text-right text-[12px] font-bold ${i === 0 ? 'text-berry' : 'text-chocolate'}`}
+            >
+              {price}
+            </span>
+          ))}
+        </div>
+      )
+    }
+    return <span className="text-[12px] font-bold text-berry shrink-0">{item.p}</span>
+  }
+
+  // Column headers row — only for slice/whole or multi-price layouts
+  const renderColumnHeaders = (items) => {
+    const first = items[0]
+    if (first.s && first.w) {
+      return (
+        <div className="flex justify-end gap-2.5 px-3 pb-1.5 pt-0.5">
+          <span className="w-12 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">Slice</span>
+          <span className="w-14 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">Whole</span>
+        </div>
+      )
+    }
+    if (first.p && first.p.includes('·')) {
+      const parts = first.p.split('·').length
+      const labels = parts === 3 ? ['Piece', 'Box 6', 'Box 12'] : ['Slice', 'Whole']
+      return (
+        <div className="flex justify-end gap-2 px-3 pb-1.5 pt-0.5">
+          {labels.slice(0, parts).map((label) => (
+            <span key={label} className="w-11 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">{label}</span>
+          ))}
+        </div>
+      )
+    }
+    return null
+  }
+
+  const renderGroup = (items, groupName, key) => (
+    <div key={key}>
+      {groupName && (
+        <div className="flex items-center gap-2 px-3 pt-3 pb-1">
+          <span className="w-1 h-3 rounded-full bg-gold" />
+          <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-chocolate">{groupName}</span>
+          <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-cream-dark/40 to-transparent" />
+        </div>
+      )}
+      {renderColumnHeaders(items)}
+      <div className="divide-y divide-cream-dark/30">
+        {items.map((item, i) => (
+          <div key={i} className="flex items-center justify-between px-3 py-1.5 gap-2">
+            <span className="text-[12.5px] text-chocolate truncate flex-1">{item.n}</span>
+            {renderPrices(item)}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  return (
+    <div
+      className="bg-white rounded-2xl rounded-bl-md shadow-md overflow-hidden border border-gold/15 max-w-[88%] w-[88%]"
+      style={{ animation: 'chat-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }}
+    >
+      {/* Header */}
+      <div className="px-3 py-2.5 bg-gradient-to-r from-gold/15 via-cream/80 to-soft-pink/40 border-b border-gold/10">
+        <div className="flex items-center gap-1.5">
+          <Sparkles size={11} className="text-gold" />
+          <h4 className="font-heading text-[13px] font-bold text-chocolate">{cat.title}</h4>
+        </div>
+        <p className="text-[10px] text-chocolate-light/60 mt-0.5">{cat.subtitle}</p>
+      </div>
+
+      {/* Body */}
+      <div className="pb-2">
+        {cat.groups
+          ? cat.groups.map((g, i) => renderGroup(g.items, g.name, i))
+          : renderGroup(cat.items, null, 'flat')}
+      </div>
+    </div>
+  )
+}
+
 // ─── Order Item Selector Component ───
 function OrderItemSelector({ items, cart, onUpdate, onDone }) {
   return (
@@ -329,6 +429,21 @@ export default function ChatBot() {
     scrollToBottom()
   }
 
+  const addBotMenuMessage = (cat, delay = 0) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setTyping(true)
+        scrollToBottom()
+        setTimeout(() => {
+          setTyping(false)
+          setMessages((prev) => [...prev, { from: 'bot', menu: cat }])
+          scrollToBottom()
+          resolve()
+        }, 400)
+      }, delay)
+    })
+  }
+
   const getCartTotal = () => {
     return Object.values(orderCart).reduce((sum, item) => sum + item.price * item.qty, 0)
   }
@@ -373,20 +488,7 @@ export default function ChatBot() {
 
     if (images) await addBotMessage(`Here's our *${cat.title}* collection! 😍`, 0, images)
 
-    let priceText = `*${cat.title} — Price List*\n${cat.subtitle}\n\n`
-    if (cat.groups) {
-      cat.groups.forEach((g) => {
-        priceText += `*${g.name}*\n`
-        g.items.forEach((item) => {
-          priceText += item.s ? `  ${item.n} — ${item.s}/slice · ${item.w}/whole\n` : `  ${item.n} — ${item.p}\n`
-        })
-        priceText += '\n'
-      })
-    } else {
-      cat.items.forEach((item) => { priceText += `  ${item.n} — ${item.p}\n` })
-    }
-
-    await addBotMessage(priceText.trim())
+    await addBotMenuMessage(cat)
     await addBotMessage("Would you like to see another category or place an order?")
     setOptions([
       { label: '📋 More Categories', action: 'menu' },
@@ -757,30 +859,34 @@ export default function ChatBot() {
                       <img src={assetUrl('/images/logo.png')} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <div
-                    className={`max-w-[78%] shadow-sm overflow-hidden ${
-                      isUser
-                        ? 'bg-gradient-to-br from-berry to-berry-light text-white rounded-2xl rounded-br-md'
-                        : 'bg-white border border-cream-dark/40 rounded-2xl rounded-bl-md'
-                    }`}
-                    style={{ animation: 'chat-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }}
-                  >
-                    {msg.images && (
-                      <div className="flex overflow-x-auto gap-1.5 p-1.5 scrollbar-hide">
-                        {msg.images.map((img, j) => (
-                          <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative ring-1 ring-gold/10">
-                            <img src={assetUrl(img.src)} alt={img.label} className="w-28 h-28 object-cover" loading="lazy" />
-                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-chocolate/85 via-chocolate/40 to-transparent px-2 py-1.5">
-                              <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
+                  {msg.menu ? (
+                    <PriceCard cat={msg.menu} />
+                  ) : (
+                    <div
+                      className={`max-w-[78%] shadow-sm overflow-hidden ${
+                        isUser
+                          ? 'bg-gradient-to-br from-berry to-berry-light text-white rounded-2xl rounded-br-md'
+                          : 'bg-white border border-cream-dark/40 rounded-2xl rounded-bl-md'
+                      }`}
+                      style={{ animation: 'chat-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }}
+                    >
+                      {msg.images && (
+                        <div className="flex overflow-x-auto gap-1.5 p-1.5 scrollbar-hide">
+                          {msg.images.map((img, j) => (
+                            <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative ring-1 ring-gold/10">
+                              <img src={assetUrl(img.src)} alt={img.label} className="w-28 h-28 object-cover" loading="lazy" />
+                              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-chocolate/85 via-chocolate/40 to-transparent px-2 py-1.5">
+                                <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                      )}
+                      <div className={`px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-line ${isUser ? 'text-white' : 'text-chocolate'}`}>
+                        {formatBold(msg.text)}
                       </div>
-                    )}
-                    <div className={`px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-line ${isUser ? 'text-white' : 'text-chocolate'}`}>
-                      {formatBold(msg.text)}
                     </div>
-                  </div>
+                  )}
                 </div>
               )
             })}
