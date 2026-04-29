@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag } from 'lucide-react'
+import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag, Sparkles, Heart } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 import { generateOrderId } from '../services/emailService'
 
@@ -237,36 +237,40 @@ function formatBold(text) {
 // ─── Order Item Selector Component ───
 function OrderItemSelector({ items, cart, onUpdate, onDone }) {
   return (
-    <div className="bg-white rounded-2xl rounded-tl-sm shadow-sm overflow-hidden max-w-[90%]" style={{ animation: 'chat-msg-in 0.25s ease-out' }}>
-      <div className="px-3 py-2 bg-cream/60 border-b border-gray-100">
-        <p className="text-[11px] font-semibold text-chocolate">Tap + to add items</p>
+    <div
+      className="bg-white rounded-2xl rounded-tl-sm shadow-md overflow-hidden max-w-[90%] border border-gold/15"
+      style={{ animation: 'chat-msg-in 0.25s ease-out' }}
+    >
+      <div className="px-3.5 py-2.5 bg-gradient-to-r from-gold/15 via-cream/80 to-soft-pink/40 border-b border-gold/10 flex items-center gap-2">
+        <Sparkles size={12} className="text-gold" />
+        <p className="text-[11px] font-semibold text-chocolate tracking-wide">Tap + to add to your order</p>
       </div>
-      <div className="max-h-[250px] overflow-y-auto">
+      <div className="max-h-[260px] overflow-y-auto divide-y divide-cream-dark/40">
         {items.map((item) => {
           const qty = cart[item.name] || 0
           return (
-            <div key={item.name} className="flex items-center justify-between px-3 py-2 border-b border-gray-50 last:border-0">
-              <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-medium text-gray-800 truncate">{item.name}</p>
-                <p className="text-[11px] text-[#25D366] font-semibold">₹{item.price}</p>
+            <div key={item.name} className={`flex items-center justify-between px-3.5 py-2.5 transition-colors ${qty > 0 ? 'bg-berry/5' : ''}`}>
+              <div className="flex-1 min-w-0 pr-2">
+                <p className="text-[12.5px] font-medium text-chocolate truncate leading-tight">{item.name}</p>
+                <p className="text-[11px] text-berry font-bold mt-0.5">₹{item.price}</p>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 {qty > 0 && (
                   <>
                     <button
                       onClick={() => onUpdate(item.name, item.price, qty - 1)}
-                      className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 active:scale-90"
+                      className="w-7 h-7 rounded-full bg-cream border border-chocolate/10 flex items-center justify-center text-chocolate active:scale-90 transition-transform"
                     >
-                      <Minus size={11} />
+                      <Minus size={12} />
                     </button>
-                    <span className="w-5 text-center text-[12px] font-bold text-gray-800">{qty}</span>
+                    <span className="w-6 text-center text-[13px] font-bold text-chocolate">{qty}</span>
                   </>
                 )}
                 <button
                   onClick={() => onUpdate(item.name, item.price, qty + 1)}
-                  className="w-6 h-6 rounded-full bg-berry flex items-center justify-center text-white active:scale-90"
+                  className="w-7 h-7 rounded-full bg-berry flex items-center justify-center text-white active:scale-90 shadow-sm shadow-berry/30 transition-transform"
                 >
-                  <Plus size={11} />
+                  <Plus size={12} />
                 </button>
               </div>
             </div>
@@ -275,10 +279,10 @@ function OrderItemSelector({ items, cart, onUpdate, onDone }) {
       </div>
       <button
         onClick={onDone}
-        className="w-full py-2.5 bg-chocolate text-cream text-[12px] font-semibold flex items-center justify-center gap-1.5 active:bg-chocolate-light rounded-b-xl"
+        className="w-full py-3 bg-gradient-to-r from-chocolate to-chocolate-light text-cream text-[12px] font-semibold tracking-wide flex items-center justify-center gap-1.5 active:opacity-90 transition-opacity"
       >
         <ShoppingBag size={13} />
-        Done — Add More or Review Order
+        Done — Review or Add More
       </button>
     </div>
   )
@@ -673,15 +677,22 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Toggle Button */}
+      {/* Toggle Button — Bakery-style FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-500 active:scale-90 ${
-          open ? 'bg-chocolate text-cream rotate-90' : 'bg-berry text-white wa-btn-bounce'
+        aria-label={open ? 'Close chat' : 'Open Cake & Crumb chat'}
+        className={`fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 active:scale-90 ${
+          open
+            ? 'bg-cream text-chocolate rotate-90 shadow-lg'
+            : 'bg-gradient-to-br from-chocolate to-chocolate-light text-cream chat-fab-ring wa-btn-bounce'
         }`}
-        style={{ boxShadow: open ? undefined : '0 4px 20px rgba(198, 40, 40, 0.35)' }}
+        style={{
+          boxShadow: open
+            ? '0 6px 24px rgba(62, 39, 35, 0.18)'
+            : '0 8px 28px rgba(62, 39, 35, 0.35), inset 0 0 0 2px rgba(212, 165, 116, 0.45)',
+        }}
       >
-        {open ? <X size={22} /> : <MessageCircle size={24} />}
+        {open ? <X size={22} /> : <MessageCircle size={22} className="text-gold" />}
       </button>
 
       {/* Chat Window */}
@@ -690,26 +701,42 @@ export default function ChatBot() {
           bottom-0 right-0 left-0 sm:bottom-24 sm:right-6 sm:left-auto
           ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}
       >
-        <div className="bg-cream-light sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] sm:h-[520px] sm:w-[380px] border border-chocolate/10">
+        <div className="bg-cream-light sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] sm:h-[560px] sm:w-[380px] border border-gold/20">
 
-          {/* Header */}
-          <div className="bg-gradient-to-r from-chocolate to-chocolate-light px-4 py-3 flex items-center gap-3 shrink-0">
-            <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 rounded-full object-cover border-2 border-gold/30 shadow-md" />
-            <div className="flex-1">
-              <h3 className="text-cream text-sm font-heading font-bold">Cake & Crumb</h3>
-              <p className="text-[11px] text-gold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block animate-pulse" />
-                Online · Replies instantly
+          {/* Header — Bakery-Style */}
+          <div className="relative bg-gradient-to-br from-chocolate via-chocolate to-chocolate-light px-4 py-3.5 flex items-center gap-3 shrink-0">
+            {/* decorative gold corner accents */}
+            <div className="pointer-events-none absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+            <div className="pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full bg-gold/10 blur-2xl" />
+
+            <div className="relative shrink-0">
+              <img
+                src={assetUrl('/images/logo.png')}
+                alt="Cake & Crumb"
+                className="w-11 h-11 rounded-full object-cover border-2 border-gold/50 shadow-lg ring-2 ring-cream/10"
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-chocolate" />
+            </div>
+            <div className="flex-1 min-w-0 leading-tight">
+              <h3 className="font-script text-xl text-cream tracking-wide truncate">
+                Cake <span className="text-gold">&</span> Crumb
+              </h3>
+              <p className="text-[10px] text-cream/55 font-medium tracking-wider uppercase truncate">
+                Gourmet Chocolate & Berry
               </p>
             </div>
             {/* Cart badge */}
             {Object.keys(orderCart).length > 0 && (
-              <div className="bg-berry text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+              <div className="chat-pop bg-gradient-to-br from-berry to-berry-light text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-berry/30">
                 <ShoppingBag size={11} />
                 ₹{getCartTotal()}
               </div>
             )}
-            <button onClick={() => setOpen(false)} className="text-cream/60 hover:text-cream sm:hidden">
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close chat"
+              className="text-cream/70 hover:text-cream active:scale-90 transition-all sm:hidden"
+            >
               <X size={20} />
             </button>
           </div>
@@ -717,36 +744,46 @@ export default function ChatBot() {
           {/* Messages */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto px-3 py-4 space-y-2 bg-cream"
+            className="flex-1 overflow-y-auto px-3 py-4 space-y-2.5 bg-gradient-to-b from-cream-light via-cream to-soft-pink/30 chat-bg-pattern"
           >
-            {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-[85%] shadow-sm overflow-hidden ${
-                    msg.from === 'user'
-                      ? 'bg-berry/10 border border-berry/10 rounded-2xl rounded-tr-sm'
-                      : 'bg-white border border-chocolate/5 rounded-2xl rounded-tl-sm'
-                  }`}
-                  style={{ animation: 'chat-msg-in 0.25s ease-out' }}
-                >
-                  {msg.images && (
-                    <div className="flex overflow-x-auto gap-1 p-1 scrollbar-hide">
-                      {msg.images.map((img, j) => (
-                        <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative">
-                          <img src={assetUrl(img.src)} alt={img.label} className="w-28 h-28 object-cover" loading="lazy" />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
-                            <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
-                          </div>
-                        </div>
-                      ))}
+            {messages.map((msg, i) => {
+              const isUser = msg.from === 'user'
+              const prevSameSender = i > 0 && messages[i - 1].from === msg.from
+              return (
+                <div key={i} className={`flex items-end gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+                  {/* Bot avatar (only on first of consecutive bot messages) */}
+                  {!isUser && (
+                    <div className={`shrink-0 w-7 h-7 rounded-full overflow-hidden border border-gold/30 shadow-sm self-end mb-0.5 ${prevSameSender ? 'invisible' : ''}`}>
+                      <img src={assetUrl('/images/logo.png')} alt="" className="w-full h-full object-cover" />
                     </div>
                   )}
-                  <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-line text-chocolate">
-                    {formatBold(msg.text)}
+                  <div
+                    className={`max-w-[78%] shadow-sm overflow-hidden ${
+                      isUser
+                        ? 'bg-gradient-to-br from-berry to-berry-light text-white rounded-2xl rounded-br-md'
+                        : 'bg-white border border-cream-dark/40 rounded-2xl rounded-bl-md'
+                    }`}
+                    style={{ animation: 'chat-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }}
+                  >
+                    {msg.images && (
+                      <div className="flex overflow-x-auto gap-1.5 p-1.5 scrollbar-hide">
+                        {msg.images.map((img, j) => (
+                          <div key={j} className="shrink-0 w-28 rounded-lg overflow-hidden relative ring-1 ring-gold/10">
+                            <img src={assetUrl(img.src)} alt={img.label} className="w-28 h-28 object-cover" loading="lazy" />
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-chocolate/85 via-chocolate/40 to-transparent px-2 py-1.5">
+                              <p className="text-[10px] text-white font-medium truncate">{img.label}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className={`px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-line ${isUser ? 'text-white' : 'text-chocolate'}`}>
+                      {formatBold(msg.text)}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
 
             {/* Active order item selector */}
             {activeOrderCat && ORDER_ITEMS[activeOrderCat] && (
@@ -768,25 +805,28 @@ export default function ChatBot() {
             )}
 
             {typing && (
-              <div className="flex justify-start">
-                <div className="bg-white border border-chocolate/5 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm flex gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-berry animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-gold animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="flex items-end gap-2 justify-start">
+                <div className="shrink-0 w-7 h-7 rounded-full overflow-hidden border border-gold/30 shadow-sm self-end mb-0.5">
+                  <img src={assetUrl('/images/logo.png')} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="bg-white border border-cream-dark/40 rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm flex items-center gap-1.5">
+                  <span className="typing-dot w-2 h-2 rounded-full bg-chocolate" style={{ animationDelay: '0ms' }} />
+                  <span className="typing-dot w-2 h-2 rounded-full bg-berry" style={{ animationDelay: '180ms' }} />
+                  <span className="typing-dot w-2 h-2 rounded-full bg-gold" style={{ animationDelay: '360ms' }} />
                 </div>
               </div>
             )}
 
             {options.length > 0 && !typing && !activeOrderCat && (
-              <div className="flex flex-wrap gap-1.5 pt-2" style={{ animation: 'chat-msg-in 0.3s ease-out' }}>
+              <div className="flex flex-wrap gap-1.5 pt-2 pl-9" style={{ animation: 'chat-msg-in 0.3s ease-out' }}>
                 {options.map((opt) => (
                   <button
                     key={opt.action}
                     onClick={() => handleAction(opt.action, opt.label)}
-                    className="bg-white border border-chocolate/10 text-chocolate text-[12px] font-medium px-3 py-2 rounded-full hover:bg-berry/5 hover:border-berry/20 active:scale-95 transition-all shadow-sm flex items-center gap-1"
+                    className="group bg-white border border-gold/30 text-chocolate text-[12px] font-medium px-3.5 py-1.5 rounded-full hover:bg-chocolate hover:text-cream hover:border-chocolate active:scale-95 transition-all shadow-sm flex items-center gap-1.5"
                   >
                     {opt.label}
-                    <ChevronRight size={12} className="text-berry" />
+                    <ChevronRight size={12} className="text-gold group-hover:text-cream transition-colors" />
                   </button>
                 ))}
               </div>
@@ -794,22 +834,31 @@ export default function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="px-3 py-2.5 bg-white border-t border-chocolate/5 flex items-center gap-2 shrink-0">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter' && input.trim()) handleTextInput(input) }}
-              placeholder={orderStep ? 'Type here...' : 'Type a message...'}
-              className="flex-1 bg-cream/50 rounded-full px-4 py-2.5 text-sm text-chocolate outline-none border border-chocolate/10 focus:border-berry/30 focus:ring-1 focus:ring-berry/10 transition-all placeholder:text-chocolate-light/35"
-            />
+          <div className="px-3 pt-2.5 pb-1 bg-white border-t border-gold/15 flex items-center gap-2 shrink-0">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && input.trim()) handleTextInput(input) }}
+                placeholder={orderStep ? 'Type here…' : 'Ask about our menu…'}
+                className="w-full bg-cream-light rounded-full pl-4 pr-3 py-2.5 text-sm text-chocolate outline-none border border-cream-dark/60 focus:border-gold/50 focus:ring-2 focus:ring-gold/15 transition-all placeholder:text-chocolate-light/40"
+              />
+            </div>
             <button
               onClick={() => { if (input.trim()) handleTextInput(input) }}
               disabled={!input.trim()}
-              className="w-10 h-10 rounded-full bg-chocolate text-cream flex items-center justify-center shrink-0 disabled:opacity-30 active:scale-90 transition-all hover:bg-chocolate-light"
+              aria-label="Send message"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-chocolate to-chocolate-light text-gold flex items-center justify-center shrink-0 disabled:opacity-30 disabled:from-chocolate/40 active:scale-90 transition-all shadow-md shadow-chocolate/20"
             >
-              <Send size={18} />
+              <Send size={17} />
             </button>
+          </div>
+          <div className="bg-white px-3 pb-1.5 flex items-center justify-center gap-1 shrink-0">
+            <Heart size={9} className="text-berry fill-berry" />
+            <span className="text-[9.5px] text-chocolate-light/50 font-medium tracking-wider uppercase">
+              Baked with love · Cake & Crumb
+            </span>
           </div>
         </div>
       </div>
