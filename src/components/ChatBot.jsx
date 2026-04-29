@@ -236,13 +236,15 @@ function formatBold(text) {
 
 // ─── Price Card (structured menu display) ───
 function PriceCard({ cat }) {
+  const isSpecialName = (name) => /(special|dubai|premium)/i.test(name)
+
   // Render price cell(s) for an item — handles slice/whole, multi-column, or single price
   const renderPrices = (item) => {
     if (item.s && item.w) {
       return (
         <div className="flex gap-2.5 shrink-0">
-          <span className="w-12 text-right text-[12px] font-bold text-berry">{item.s}</span>
-          <span className="w-14 text-right text-[12px] font-bold text-chocolate">{item.w}</span>
+          <span className="w-11 text-right text-[12px] font-bold text-berry tabular-nums">{item.s}</span>
+          <span className="w-12 text-right text-[12px] font-bold text-chocolate tabular-nums">{item.w}</span>
         </div>
       )
     }
@@ -253,7 +255,7 @@ function PriceCard({ cat }) {
           {parts.map((price, i) => (
             <span
               key={i}
-              className={`w-11 text-right text-[12px] font-bold ${i === 0 ? 'text-berry' : 'text-chocolate'}`}
+              className={`w-11 text-right text-[12px] font-bold tabular-nums ${i === 0 ? 'text-berry' : 'text-chocolate'}`}
             >
               {price}
             </span>
@@ -261,7 +263,7 @@ function PriceCard({ cat }) {
         </div>
       )
     }
-    return <span className="text-[12px] font-bold text-berry shrink-0">{item.p}</span>
+    return <span className="text-[12px] font-bold text-berry shrink-0 tabular-nums">{item.p}</span>
   }
 
   // Column headers row — only for slice/whole or multi-price layouts
@@ -269,9 +271,9 @@ function PriceCard({ cat }) {
     const first = items[0]
     if (first.s && first.w) {
       return (
-        <div className="flex justify-end gap-2.5 px-3 pb-1.5 pt-0.5">
-          <span className="w-12 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">Slice</span>
-          <span className="w-14 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">Whole</span>
+        <div className="flex justify-end gap-2.5 px-3 pb-1 pt-0.5">
+          <span className="w-11 text-right text-[9px] font-bold tracking-[0.14em] uppercase text-chocolate-light/55">Slice</span>
+          <span className="w-12 text-right text-[9px] font-bold tracking-[0.14em] uppercase text-chocolate-light/55">Whole</span>
         </div>
       )
     }
@@ -279,9 +281,9 @@ function PriceCard({ cat }) {
       const parts = first.p.split('·').length
       const labels = parts === 3 ? ['Piece', 'Box 6', 'Box 12'] : ['Slice', 'Whole']
       return (
-        <div className="flex justify-end gap-2 px-3 pb-1.5 pt-0.5">
+        <div className="flex justify-end gap-2 px-3 pb-1 pt-0.5">
           {labels.slice(0, parts).map((label) => (
-            <span key={label} className="w-11 text-right text-[9px] font-bold tracking-[0.12em] uppercase text-chocolate-light/55">{label}</span>
+            <span key={label} className="w-11 text-right text-[9px] font-bold tracking-[0.14em] uppercase text-chocolate-light/55">{label}</span>
           ))}
         </div>
       )
@@ -289,34 +291,54 @@ function PriceCard({ cat }) {
     return null
   }
 
-  const renderGroup = (items, groupName, key) => (
-    <div key={key}>
-      {groupName && (
-        <div className="flex items-center gap-2 px-3 pt-3 pb-1">
-          <span className="w-1 h-3 rounded-full bg-gold" />
-          <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-chocolate">{groupName}</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-cream-dark/40 to-transparent" />
-        </div>
-      )}
-      {renderColumnHeaders(items)}
-      <div className="divide-y divide-cream-dark/30">
-        {items.map((item, i) => (
-          <div key={i} className="flex items-center justify-between px-3 py-1.5 gap-2">
-            <span className="text-[12.5px] text-chocolate truncate flex-1">{item.n}</span>
-            {renderPrices(item)}
+  const renderGroup = (items, groupName, key) => {
+    const isPremium = groupName && /premium/i.test(groupName)
+    return (
+      <div key={key}>
+        {groupName && (
+          <div className="flex items-center gap-2 px-3 pt-3 pb-1">
+            <span className={`w-1 h-3 rounded-full ${isPremium ? 'bg-gold' : 'bg-berry/60'}`} />
+            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-chocolate">{groupName}</span>
+            {isPremium && <Sparkles size={9} className="text-gold" />}
+            <div className="flex-1 h-px bg-gradient-to-r from-gold/25 via-cream-dark/40 to-transparent" />
           </div>
-        ))}
+        )}
+        {renderColumnHeaders(items)}
+        <div>
+          {items.map((item, i) => {
+            const showSpecial = isPremium || isSpecialName(item.n)
+            return (
+              <div
+                key={i}
+                className={`flex items-center justify-between px-3 py-1.5 gap-2 ${i % 2 === 1 ? 'bg-cream/40' : ''}`}
+              >
+                <span className="text-[12.5px] text-chocolate flex-1 min-w-0 flex items-center gap-1.5 truncate">
+                  {showSpecial && (
+                    <span className="text-gold shrink-0 leading-none" aria-hidden>✦</span>
+                  )}
+                  <span className="truncate">{item.n}</span>
+                  {/Dubai Special|Pistachio.*Rose Special/i.test(item.n) && (
+                    <span className="shrink-0 text-[8px] font-bold tracking-[0.1em] uppercase bg-gold/20 text-chocolate px-1.5 py-0.5 rounded-full border border-gold/30">
+                      Special
+                    </span>
+                  )}
+                </span>
+                {renderPrices(item)}
+              </div>
+            )
+          })}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div
-      className="bg-white rounded-2xl rounded-bl-md shadow-md overflow-hidden border border-gold/15 max-w-[88%] w-[88%]"
+      className="bg-white rounded-2xl rounded-bl-md shadow-md overflow-hidden border border-gold/15 max-w-[90%] w-[90%]"
       style={{ animation: 'chat-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }}
     >
       {/* Header */}
-      <div className="px-3 py-2.5 bg-gradient-to-r from-gold/15 via-cream/80 to-soft-pink/40 border-b border-gold/10">
+      <div className="px-3 py-2.5 bg-gradient-to-r from-gold/20 via-cream/80 to-soft-pink/40 border-b border-gold/15">
         <div className="flex items-center gap-1.5">
           <Sparkles size={11} className="text-gold" />
           <h4 className="font-heading text-[13px] font-bold text-chocolate">{cat.title}</h4>
