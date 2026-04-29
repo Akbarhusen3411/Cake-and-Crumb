@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { CreditCard, Banknote, ShieldCheck, AlertCircle } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Smartphone, Copy, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react'
+import QRCode from 'qrcode'
 import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
-import { openRazorpay } from '../../config/razorpay'
+import { UPI_ID, PAYEE_NAME, ACCOUNT_HOLDER_NAME, buildUpiLink } from '../../config/upiPayment'
+import { generateOrderId } from '../../services/emailService'
 
 export default function PaymentStep({ onNext, onBack }) {
   const checkout = useCheckoutStore()
@@ -12,44 +14,51 @@ export default function PaymentStep({ onNext, onBack }) {
   const deliveryFee = checkout.deliveryFee || 0
   const total = subtotal + deliveryFee
 
-  const [selectedMethod, setSelectedMethod] = useState(checkout.paymentMethod || '')
+  const orderId = useMemo(
+    () => checkout.orderId || generateOrderId(checkout.customerName),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
+  useEffect(() => {
+    if (!checkout.orderId) checkout.setOrderId(orderId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const upiLink = useMemo(() => buildUpiLink({ amount: total, orderId }), [total, orderId])
+
+  const [qrDataUrl, setQrDataUrl] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [txnRef, setTxnRef] = useState('')
   const [error, setError] = useState('')
-  const [processing, setProcessing] = useState(false)
 
-  const codAllowed = total <= 1000
+  useEffect(() => {
+    QRCode.toDataURL(upiLink, { width: 280, margin: 1, color: { dark: '#3E2723', light: '#FFFFFF' } })
+      .then(setQrDataUrl)
+      .catch(() => setQrDataUrl(''))
+  }, [upiLink])
 
-  const handlePayment = () => {
-    if (!selectedMethod) { setError('Please select a payment method'); return }
-    setError('')
-
-    if (selectedMethod === 'online') {
-      setProcessing(true)
-      openRazorpay({
-        amount: total,
-        customerName: checkout.customerName,
-        email: checkout.email,
-        phone: checkout.phone,
-        onSuccess: (paymentId) => {
-          checkout.setPayment('online', 'success', paymentId)
-          setProcessing(false)
-          onNext()
-        },
-        onFailure: (reason) => {
-          setProcessing(false)
-          setError(`Payment failed: ${reason}`)
-        },
-      })
-    } else {
-      checkout.setPayment('cod', 'success')
-      onNext()
+  const copyUpiId = async () => {
+    try {
+      await navigator.clipboard.writeText(UPI_ID)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
     }
+  }
+
+  const handlePaid = () => {
+    setError('')
+    checkout.setPaymentClaimed(txnRef.trim())
+    onNext()
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-5">
-        <CreditCard size={18} className="text-berry" />
-        <h3 className="font-heading text-base font-semibold text-chocolate">Payment</h3>
+        <Smartphone size={18} className="text-berry" />
+        <h3 className="font-heading text-base font-semibold text-chocolate">UPI Payment</h3>
       </div>
 
       {/* Order Summary */}
@@ -72,57 +81,88 @@ export default function PaymentStep({ onNext, onBack }) {
           </span>
         </div>
         <div className="border-t border-chocolate/8 pt-2 flex justify-between">
-          <span className="font-semibold text-chocolate">Total</span>
+          <span className="font-semibold text-chocolate">Total to Pay</span>
           <span className="font-bold text-chocolate text-lg">₹{total}</span>
         </div>
       </div>
 
-      {/* Payment Options */}
-      <div className="space-y-3">
-        <p className="text-xs font-medium text-chocolate-light/50 uppercase tracking-wider">Choose Payment Method</p>
+      {/* QR + UPI block */}
+      <div className="bg-white border border-chocolate/8 rounded-2xl p-5 shadow-sm">
+        <div className="text-center mb-4">
+          <p className="text-xs font-medium text-chocolate-light/50 uppercase tracking-wider mb-1">Scan to Pay</p>
+          <p className="text-sm text-chocolate-light/70">
+            Pay <span className="font-bold text-chocolate">₹{total}</span> to <span className="font-semibold text-chocolate">{PAYEE_NAME}</span>
+          </p>
+          <p className="text-[11px] text-chocolate-light/50 mt-1">
+            Account: <span className="font-medium">{ACCOUNT_HOLDER_NAME}</span>
+          </p>
+        </div>
 
+        {/* QR */}
+        <div className="flex justify-center mb-4">
+          {qrDataUrl ? (
+            <img
+              src={qrDataUrl}
+              alt={`UPI QR for ₹${total}`}
+              className="w-56 h-56 rounded-xl border border-chocolate/8"
+            />
+          ) : (
+            <div className="w-56 h-56 rounded-xl border border-chocolate/8 bg-cream/40 flex items-center justify-center">
+              <span className="text-xs text-chocolate-light/40">Generating QR…</span>
+            </div>
+          )}
+        </div>
+
+        {/* UPI ID with copy */}
         <button
-          onClick={() => { setSelectedMethod('online'); setError('') }}
-          className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${
-            selectedMethod === 'online'
-              ? 'border-berry/30 bg-berry/5 shadow-md'
-              : 'border-chocolate/8 hover:border-chocolate/20'
-          }`}
+          onClick={copyUpiId}
+          className="w-full flex items-center justify-between bg-cream/60 rounded-xl px-4 py-3 hover:bg-cream transition-colors mb-3"
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-            selectedMethod === 'online' ? 'bg-berry/10' : 'bg-cream'
-          }`}>
-            <CreditCard size={18} className={selectedMethod === 'online' ? 'text-berry' : 'text-chocolate-light/50'} />
+          <div className="text-left">
+            <p className="text-[10px] uppercase tracking-wider text-chocolate-light/45">UPI ID</p>
+            <p className="text-sm font-semibold text-chocolate font-mono">{UPI_ID}</p>
           </div>
-          <div className="text-left flex-1">
-            <p className="text-sm font-semibold text-chocolate">Pay Online</p>
-            <p className="text-xs text-chocolate-light/50">UPI, Cards, Wallets, Netbanking</p>
-          </div>
-          <ShieldCheck size={16} className="text-green-500/50" />
+          {copied ? (
+            <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+              <CheckCircle size={14} /> Copied
+            </span>
+          ) : (
+            <span className="flex items-center gap-1 text-xs text-chocolate-light/60">
+              <Copy size={14} /> Copy
+            </span>
+          )}
         </button>
 
-        <button
-          onClick={() => { if (codAllowed) { setSelectedMethod('cod'); setError('') } }}
-          disabled={!codAllowed}
-          className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${
-            !codAllowed ? 'opacity-40 cursor-not-allowed' :
-            selectedMethod === 'cod'
-              ? 'border-berry/30 bg-berry/5 shadow-md'
-              : 'border-chocolate/8 hover:border-chocolate/20'
-          }`}
+        {/* Open UPI app button (mobile deep link) */}
+        <a
+          href={upiLink}
+          className="w-full flex items-center justify-center gap-2 bg-berry text-white py-3 rounded-xl font-medium text-sm hover:bg-berry-light transition-colors"
         >
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-            selectedMethod === 'cod' ? 'bg-berry/10' : 'bg-cream'
-          }`}>
-            <Banknote size={18} className={selectedMethod === 'cod' ? 'text-berry' : 'text-chocolate-light/50'} />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-sm font-semibold text-chocolate">Cash on Delivery</p>
-            <p className="text-xs text-chocolate-light/50">
-              {codAllowed ? 'Pay when you receive' : 'Available for orders under ₹1000'}
-            </p>
-          </div>
-        </button>
+          <ExternalLink size={16} />
+          Open UPI App (GPay / PhonePe / Paytm)
+        </a>
+
+        <p className="text-[11px] text-chocolate-light/45 text-center mt-3 leading-relaxed">
+          Order ID <span className="font-mono">{orderId}</span> is auto-filled in the payment note.
+        </p>
+      </div>
+
+      {/* Optional UPI ref */}
+      <div>
+        <label className="block text-sm font-medium text-chocolate mb-2">
+          UPI Transaction Ref <span className="text-chocolate-light/40 font-normal">(optional)</span>
+        </label>
+        <input
+          type="text"
+          value={txnRef}
+          onChange={(e) => setTxnRef(e.target.value)}
+          placeholder="e.g. 412345678901"
+          maxLength={30}
+          className="w-full px-4 py-3 rounded-xl border border-chocolate/15 bg-cream-light/50 text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/40 focus:ring-1 focus:ring-berry/20 transition-colors"
+        />
+        <p className="text-[11px] text-chocolate-light/45 mt-1.5">
+          Helps us match your payment faster. You'll find this in your UPI app after paying.
+        </p>
       </div>
 
       {error && (
@@ -141,13 +181,16 @@ export default function PaymentStep({ onNext, onBack }) {
           Back
         </button>
         <button
-          onClick={handlePayment}
-          disabled={processing}
-          className="btn-shimmer flex-[2] bg-berry text-white py-3.5 rounded-xl font-medium text-sm hover:bg-berry-light transition-all duration-300 disabled:opacity-60"
+          onClick={handlePaid}
+          className="btn-shimmer flex-[2] bg-chocolate text-cream py-3.5 rounded-xl font-medium text-sm hover:bg-chocolate-light transition-all duration-300"
         >
-          {processing ? 'Processing...' : selectedMethod === 'cod' ? 'Place Order' : `Pay ₹${total}`}
+          I've Paid — Submit Order
         </button>
       </div>
+
+      <p className="text-[11px] text-chocolate-light/45 text-center leading-relaxed">
+        Your order will be confirmed once we verify the payment in our bank app. You'll receive a WhatsApp message with the approval.
+      </p>
     </div>
   )
 }

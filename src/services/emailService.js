@@ -41,8 +41,7 @@ export async function sendOrderConfirmation({
     delivery_address: `${address}, ${area}`,
     delivery_date: date,
     time_slot: timeSlot,
-    payment_method:
-      paymentMethod === "online" ? "Paid Online" : "Cash on Delivery",
+    payment_method: "UPI (pending verification)",
     payment_id: paymentId || "N/A",
   };
 

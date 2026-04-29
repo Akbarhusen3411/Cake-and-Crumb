@@ -20,10 +20,10 @@ const useCheckoutStore = create((set) => ({
   selectedDate: '',
   selectedSlot: '',
 
-  // Payment
-  paymentMethod: '',
+  // Payment (UPI only)
+  paymentMethod: 'upi',
   paymentStatus: '',
-  razorpayOrderId: '',
+  upiTxnRef: '',
 
   // Order
   orderId: '',
@@ -37,10 +37,10 @@ const useCheckoutStore = create((set) => ({
   setAddress: (data) => set(data),
   setDelivery: (distanceKm, fee) => set({ deliveryDistanceKm: distanceKm, deliveryFee: fee }),
   setSchedule: (date, slot) => set({ selectedDate: date, selectedSlot: slot }),
-  setPayment: (method, status, razorpayId) => set({
-    paymentMethod: method,
-    paymentStatus: status || 'pending',
-    razorpayOrderId: razorpayId || '',
+  setPaymentClaimed: (upiTxnRef) => set({
+    paymentMethod: 'upi',
+    paymentStatus: 'claimed',
+    upiTxnRef: upiTxnRef || '',
   }),
   setOrderId: (id) => set({ orderId: id }),
 
@@ -57,9 +57,9 @@ const useCheckoutStore = create((set) => ({
     deliveryFee: 0,
     selectedDate: '',
     selectedSlot: '',
-    paymentMethod: '',
+    paymentMethod: 'upi',
     paymentStatus: '',
-    razorpayOrderId: '',
+    upiTxnRef: '',
     orderId: '',
   }),
 }))

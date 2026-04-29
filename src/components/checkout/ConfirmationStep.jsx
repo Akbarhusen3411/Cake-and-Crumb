@@ -75,14 +75,16 @@ export default function ConfirmationStep({ onClose }) {
       date: formatDate(checkout.selectedDate),
       timeSlot: TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot,
       paymentMethod: checkout.paymentMethod,
-      paymentId: checkout.razorpayOrderId,
+      paymentId: checkout.upiTxnRef,
     })
 
     // Send WhatsApp order to admin
     const itemsList = cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity} = ₹${i.price * i.quantity}`).join('\n')
     const timeLabel = TIME_SLOT_LABELS[checkout.selectedSlot] || checkout.selectedSlot
-    const payLabel = checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'
     const orderTime = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+    const upiRefLine = checkout.upiTxnRef
+      ? `*🧾 UPI Ref:* ${checkout.upiTxnRef}\n`
+      : `*🧾 UPI Ref:* not provided\n`
 
     const msg = `🎂 *NEW ORDER — ${orderId}*\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
@@ -90,7 +92,6 @@ export default function ConfirmationStep({ onClose }) {
       `*📞 Phone:* ${checkout.phone}\n` +
       `*📍 Address:* ${checkout.fullAddress}, ${checkout.deliveryArea}\n` +
       `*📅 Delivery:* ${formatDate(checkout.selectedDate)} | ${timeLabel}\n` +
-      `*💳 Payment:* ${payLabel}\n` +
       `*🕐 Order Time:* ${orderTime}\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `*📋 Order Items:*\n${itemsList}\n\n` +
@@ -98,8 +99,12 @@ export default function ConfirmationStep({ onClose }) {
       `*Delivery:* ${deliveryFee === 0 ? 'FREE ✅' : '₹' + deliveryFee}\n` +
       `*💰 Total: ₹${total}*\n\n` +
       `━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*💳 Payment:* UPI — claimed by customer\n` +
+      upiRefLine +
+      `*✅ Amount to verify:* ₹${total}\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n\n` +
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
-      `Please confirm my order. Thank you! 🙏`
+      `Please verify the payment in your bank app and approve. Thank you! 🙏`
 
     window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -133,12 +138,12 @@ export default function ConfirmationStep({ onClose }) {
 
       <div>
         <h3 className="font-heading text-xl font-bold text-chocolate mb-2">
-          {orderCancelled ? 'Order Cancelled' : 'Order Placed!'}
+          {orderCancelled ? 'Order Cancelled' : 'Order Submitted'}
         </h3>
         <p className="text-sm text-chocolate-light/60">
           {orderCancelled
             ? 'Your order has been cancelled. Admin has been notified via WhatsApp.'
-            : 'Thank you for ordering from Cake & Crumb'
+            : 'Awaiting payment verification. We\'ll confirm via WhatsApp shortly.'
           }
         </p>
       </div>
@@ -164,12 +169,13 @@ export default function ConfirmationStep({ onClose }) {
         <div className="text-xs text-chocolate-light/50 space-y-1 pt-1">
           <p>📅 {formatDate(checkout.selectedDate)} | {TIME_SLOT_LABELS[checkout.selectedSlot] || ''}</p>
           <p>📍 {checkout.deliveryArea}</p>
-          <p>💳 {checkout.paymentMethod === 'online' ? 'Paid Online' : 'Cash on Delivery'}</p>
+          <p>💳 UPI — pending verification</p>
+          {checkout.upiTxnRef && <p>🧾 Ref: {checkout.upiTxnRef}</p>}
         </div>
       </div>
 
       <p className="text-xs text-chocolate-light/40 max-w-[260px] mx-auto">
-        Order details sent to WhatsApp. We'll confirm shortly!
+        Order details sent to WhatsApp. We'll verify your UPI payment and approve shortly.
       </p>
 
       {/* Cancellation notice with countdown */}
