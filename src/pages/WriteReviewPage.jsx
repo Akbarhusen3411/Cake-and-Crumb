@@ -1,8 +1,19 @@
 import { useState, useRef, useMemo } from 'react'
-import { Star, Send, CheckCircle, Sparkles, Camera, X, ChevronDown } from 'lucide-react'
+import { Star, Send, CheckCircle, Sparkles, Camera, X, ChevronDown, MessageCircle } from 'lucide-react'
 import { isFirebaseConfigured } from '../config/firebase'
 import { products, productCategories } from '../data/products'
 import { addReviewToCache, submitReview } from '../hooks/useReviews'
+import { WHATSAPP_NUMBER } from '../config/constants'
+
+function buildWhatsAppFallback({ product, name, rating, text }) {
+  const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating)
+  const msg = `Hi Cake & Crumb! I'd like to leave a review:\n\n` +
+    `*Product:* ${product}\n` +
+    `*Name:* ${name}\n` +
+    `*Rating:* ${stars} (${rating}/5)\n` +
+    `*Review:* ${text}`
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`
+}
 
 // Build unique reviewable product list grouped by category
 function getReviewableProducts() {
@@ -72,6 +83,7 @@ export default function WriteReviewPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [submitFailed, setSubmitFailed] = useState(false)
   const fileRef = useRef(null)
 
   const reviewableProducts = useMemo(() => getReviewableProducts(), [])
@@ -100,6 +112,7 @@ export default function WriteReviewPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSubmitFailed(false)
     if (!product) return setError('Please select which item you are reviewing')
     if (!name.trim()) return setError('Please enter your name')
     if (rating === 0) return setError('Please select a star rating')
@@ -108,6 +121,7 @@ export default function WriteReviewPage() {
 
     if (!isFirebaseConfigured()) {
       setError('Review system is not configured yet. Please contact the bakery.')
+      setSubmitFailed(true)
       return
     }
 
@@ -126,7 +140,13 @@ export default function WriteReviewPage() {
       addReviewToCache(reviewData)
       setSubmitted(true)
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      const blocked = /blocked|fetch|network|unavailable|offline/i.test(err?.message || '') || err?.code === 'unavailable'
+      setError(
+        blocked
+          ? 'Could not reach our review server — this is usually caused by an ad blocker or privacy extension. Please disable it for this site, or send your review on WhatsApp instead.'
+          : (err?.message || 'Something went wrong. Please try sending your review on WhatsApp.')
+      )
+      setSubmitFailed(true)
     } finally {
       setSubmitting(false)
     }
@@ -274,8 +294,19 @@ export default function WriteReviewPage() {
 
           {/* Error */}
           {error && (
-            <div className="bg-berry/5 border border-berry/15 rounded-xl px-4 py-3">
+            <div className="bg-berry/5 border border-berry/15 rounded-xl px-4 py-3 space-y-3">
               <p className="text-sm text-berry">{error}</p>
+              {submitFailed && product && name.trim() && rating > 0 && text.trim().length >= 10 && (
+                <a
+                  href={buildWhatsAppFallback({ product, name: name.trim(), rating, text: text.trim() })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] text-white py-2.5 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
+                >
+                  <MessageCircle size={15} />
+                  Send Review via WhatsApp
+                </a>
+              )}
             </div>
           )}
 
