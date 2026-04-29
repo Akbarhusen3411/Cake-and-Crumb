@@ -163,48 +163,52 @@ export default function Testimonials({ highlightProduct = '' }) {
 function PhotoLightbox({ review, onClose }) {
   return (
     <div
-      className="fixed inset-0 z-[100] bg-chocolate/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={`Photo from ${review.name}`}
       style={{ animation: 'fadeIn 0.2s ease-out' }}
     >
+      {/* Close button */}
       <button
         onClick={onClose}
         aria-label="Close photo"
-        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white flex items-center justify-center transition-colors"
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white flex items-center justify-center transition-colors"
       >
         <X size={22} />
       </button>
 
+      {/* Full-screen image */}
+      <img
+        src={review.photo}
+        alt={`Review photo by ${review.name}`}
+        className="max-w-[100vw] max-h-[100vh] w-auto h-auto object-contain"
+        onClick={(e) => e.stopPropagation()}
+        style={{ animation: 'chat-msg-in 0.32s cubic-bezier(0.16, 1, 0.3, 1)' }}
+      />
+
+      {/* Caption overlay at the bottom */}
       <div
-        className="relative max-w-3xl w-full max-h-full flex flex-col items-center gap-4"
+        className="fixed left-0 right-0 bottom-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-5 sm:px-8 pt-12 pb-6 sm:pb-8 pointer-events-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={review.photo}
-          alt={`Review photo by ${review.name}`}
-          className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl"
-        />
-
-        {/* Caption */}
-        <div className="bg-white/95 backdrop-blur rounded-2xl px-5 py-3.5 max-w-lg w-full">
+        <div className="max-w-3xl mx-auto pointer-events-auto">
           <div className="flex items-center justify-between gap-3 mb-2">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold/30 to-berry/15 flex items-center justify-center shrink-0">
-                <span className="text-xs font-bold text-chocolate">{review.name.charAt(0)}</span>
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold/40 to-berry/30 flex items-center justify-center shrink-0 border border-white/20">
+                <span className="text-sm font-bold text-white">{review.name.charAt(0)}</span>
               </div>
-              <p className="text-sm font-semibold text-chocolate truncate">{review.name}</p>
+              <p className="text-sm sm:text-base font-semibold text-white truncate">{review.name}</p>
             </div>
-            <Stars rating={review.rating} size={14} />
+            <Stars rating={review.rating} size={15} />
           </div>
           {review.product && (
-            <span className="inline-block text-[10px] font-bold text-berry bg-berry/5 border border-berry/10 px-2 py-0.5 rounded-full mb-2">
+            <span className="inline-block text-[10px] font-bold text-white bg-berry/80 px-2.5 py-0.5 rounded-full mb-2">
               {review.product}
             </span>
           )}
-          <p className="text-[13px] text-chocolate-light/80 leading-relaxed">"{review.text}"</p>
+          <p className="text-[13px] sm:text-sm text-white/85 leading-relaxed line-clamp-3">"{review.text}"</p>
         </div>
       </div>
     </div>
