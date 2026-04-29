@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ShoppingBag, Sparkles, Star, Heart, Cookie } from 'lucide-react'
+import { ArrowRight, ShoppingBag, ChevronDown } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 import { WHATSAPP_URL } from '../config/constants'
 
@@ -12,172 +12,115 @@ export default function Hero() {
     return () => clearTimeout(timer)
   }, [])
 
+  const scrollToMenu = () => {
+    const menu = document.getElementById('cakes')
+    if (menu) menu.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Layered Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cream via-soft-pink/30 to-cream-light" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(248,232,224,0.8)_0%,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(212,165,116,0.15)_0%,transparent_50%)]" />
-
-      {/* Animated floating shapes */}
-      <div className="absolute top-[15%] right-[8%] w-80 h-80 bg-soft-pink/30 rounded-full blur-[80px] animate-float-slow" />
-      <div className="absolute bottom-[10%] left-[5%] w-96 h-96 bg-gold/10 rounded-full blur-[100px] animate-float-reverse" />
-      <div className="absolute top-[50%] left-[50%] w-64 h-64 bg-berry/5 rounded-full blur-[60px] animate-float" />
-
-      {/* Subtle grain texture overlay */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }}
+    <section id="home" className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+      {/* Full-bleed hero image */}
+      <img
+        src={assetUrl('/images/strawberry-cheesecake.jpg')}
+        alt="Strawberry Cheesecake by Cake & Crumb"
+        className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] ease-out ${loaded ? 'scale-100' : 'scale-105'}`}
+        fetchpriority="high"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 w-full">
-        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+      {/* Cinematic dark overlay — chocolate-tinted, gradient bottom-fade */}
+      <div className="absolute inset-0 bg-chocolate/55" />
+      <div className="absolute inset-0 bg-gradient-to-b from-chocolate/40 via-chocolate/20 to-chocolate/70" />
 
-          {/* Text Content */}
-          <div className="text-center lg:text-left">
-            <div
-              className={`inline-flex items-center gap-2 mb-7 px-4 py-2 bg-chocolate/5 border border-chocolate/10 rounded-full transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            >
-              <Sparkles size={14} className="text-gold" />
-              <span className="text-xs font-medium text-chocolate-light tracking-widest uppercase">
-                Handcrafted in Vaso, Gujarat
-              </span>
-            </div>
+      {/* Subtle vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(62,39,35,0.45)_100%)]" />
 
-            <h1
-              className={`font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-chocolate leading-[1.15] mb-4 transition-all duration-1000 delay-200 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-            >
-              <span className="font-script text-4xl sm:text-5xl lg:text-6xl">Cake</span> <span className="text-gradient">&</span> <span className="font-script text-4xl sm:text-5xl lg:text-6xl">Crumb</span>
-            </h1>
+      {/* Content — perfectly centered */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
 
-            <p
-              className={`font-heading text-base sm:text-lg lg:text-xl text-chocolate-light/80 italic mb-3 transition-all duration-1000 delay-300 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-            >
-              The Gourmet Chocolate & Berry Boutique
-            </p>
+        {/* Tagline strip — top */}
+        <div
+          className={`inline-flex items-center gap-3 mb-8 sm:mb-10 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+        >
+          <span className="w-8 h-px bg-gold/80" />
+          <span className="text-[10px] sm:text-xs font-medium text-gold tracking-[0.35em] uppercase">
+            Handcrafted in Vaso
+          </span>
+          <span className="w-8 h-px bg-gold/80" />
+        </div>
 
-            <div
-              className={`w-16 h-[2px] bg-gradient-to-r from-berry to-gold mx-auto lg:mx-0 mb-6 transition-all duration-1000 delay-400 ${loaded ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
-            />
+        {/* Massive headline — Wix-template style */}
+        <h1
+          className={`font-heading font-black text-white leading-[0.9] tracking-tight transition-all duration-1000 delay-200 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          style={{ fontSize: 'clamp(4rem, 16vw, 12rem)' }}
+        >
+          Cake.
+        </h1>
 
-            <p
-              className={`text-sm sm:text-base text-chocolate-light/70 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed transition-all duration-1000 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-            >
-              Small-batch, handcrafted cakes made with premium chocolate and the freshest seasonal
-              berries. Every creation is made to order — limited daily, so each one stays special.
-            </p>
+        {/* Brand wordmark in script */}
+        <div
+          className={`mt-2 sm:mt-4 transition-all duration-1000 delay-400 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          <p className="font-script text-3xl sm:text-5xl lg:text-6xl text-cream">
+            Cake <span className="text-gold">&</span> Crumb
+          </p>
+        </div>
 
-            <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start transition-all duration-1000 delay-600 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-            >
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-shimmer btn-glow group inline-flex items-center justify-center gap-2 bg-chocolate text-cream px-7 py-3 rounded-full font-medium text-sm hover:bg-chocolate-light transition-all duration-500 hover:-translate-y-1 shadow-lg hover:shadow-2xl"
-              >
-                <ShoppingBag size={18} />
-                Order Now
-                <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-500" />
-              </a>
-              <Link
-                to="/menu"
-                className="group inline-flex items-center justify-center gap-2 border-2 border-chocolate/15 text-chocolate px-7 py-3 rounded-full font-medium text-sm hover:border-berry/40 hover:text-berry hover:bg-berry/5 transition-all duration-500"
-              >
-                View Menu
-                <Star size={14} className="opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </Link>
-            </div>
+        {/* Subtitle */}
+        <p
+          className={`font-heading italic text-sm sm:text-base lg:text-lg text-cream/85 mt-3 sm:mt-4 tracking-wide transition-all duration-1000 delay-500 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          The Gourmet Chocolate <span className="text-gold">&</span> Berry Boutique
+        </p>
 
-            {/* Trust Badges */}
-            <div
-              className={`flex flex-wrap gap-x-8 gap-y-3 mt-12 justify-center lg:justify-start transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
-            >
-              {[
-                { label: 'Fresh Daily', Icon: Sparkles },
-                { label: 'Made to Order', Icon: Heart },
-                { label: 'Premium Ingredients', Icon: Cookie },
-              ].map(({ label, Icon }) => (
-                <div key={label} className="flex items-center gap-2 text-sm text-chocolate-light/60">
-                  <Icon size={14} className="text-gold" />
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Gold separator */}
+        <div
+          className={`mx-auto mt-6 sm:mt-8 w-20 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent transition-all duration-1000 delay-600 ${loaded ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
+        />
 
-          {/* Hero Image Composition */}
-          <div
-            className={`relative transition-all duration-1200 delay-500 ${loaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
+        {/* Body copy */}
+        <p
+          className={`text-sm sm:text-base text-cream/75 max-w-md mx-auto mt-6 sm:mt-8 leading-relaxed transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          Small-batch cakes baked fresh in Vaso, Gujarat. Premium chocolate, seasonal berries — limited daily.
+        </p>
+
+        {/* CTAs — centered */}
+        <div
+          className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-8 sm:mt-10 transition-all duration-1000 delay-[800ms] ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-shimmer group inline-flex items-center justify-center gap-2 bg-cream text-chocolate px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide hover:bg-white transition-all duration-500 hover:-translate-y-0.5 shadow-2xl shadow-chocolate/40"
           >
-            <div className="relative w-full max-w-lg mx-auto">
-              {/* Background decorative ring */}
-              <div className="absolute inset-0 -m-8 rounded-full border border-chocolate/5 animate-[spin_30s_linear_infinite]" />
-
-              {/* Main image */}
-              <div className="relative rounded-[2rem] overflow-hidden shadow-2xl aspect-[4/5] group" data-parallax="0.06">
-                <img
-                  src={assetUrl('/images/strawberry-cheesecake.jpg')}
-                  alt="Strawberry Cheesecake by Cake & Crumb"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s] ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-chocolate/25 via-transparent to-cream/10" />
-              </div>
-
-              {/* Floating secondary image - top right */}
-              <div
-                className="absolute -top-6 -right-6 lg:-right-10 w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden shadow-xl animate-float hidden sm:block"
-                data-parallax="-0.1"
-              >
-                <img
-                  src={assetUrl('/images/real-mint-cupcakes.jpg')}
-                  alt="Mint cupcakes with gold leaf"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 to-transparent" />
-              </div>
-
-              {/* Floating secondary image - bottom left */}
-              <div
-                className="absolute -bottom-4 -left-6 lg:-left-10 w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden shadow-xl animate-float-reverse hidden sm:block"
-                data-parallax="-0.08"
-              >
-                <img
-                  src={assetUrl('/images/real-biscoff-cups.jpg')}
-                  alt="Biscoff dessert cups"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-chocolate/10 to-transparent" />
-              </div>
-
-              {/* Glass card - Limited Daily */}
-              <div
-                className="absolute bottom-8 -left-4 sm:-left-12 bg-white/80 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-lg border border-white/50 animate-float-slow"
-              >
-                <p className="font-heading text-sm font-bold text-chocolate">Limited Daily</p>
-                <p className="text-[10px] text-chocolate-light/60">Only a few cakes each day</p>
-              </div>
-
-              {/* Price badge */}
-              <div className="absolute -top-3 right-8 sm:right-16 bg-berry text-white px-4 py-2 rounded-full shadow-xl animate-float-reverse badge-glow">
-                <p className="text-xs font-semibold">Slices from ₹120</p>
-              </div>
-
-              {/* Rating badge */}
-              <div className="absolute top-[40%] -right-2 sm:-right-6 bg-white/80 backdrop-blur-md p-3 rounded-xl shadow-lg border border-white/50 hidden sm:block animate-float">
-                <div className="flex gap-0.5 mb-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={11} className="fill-gold text-gold" />
-                  ))}
-                </div>
-                <p className="text-[10px] text-chocolate-light/60 font-medium">Loved by Many</p>
-              </div>
-            </div>
-          </div>
+            <ShoppingBag size={17} />
+            Order Now
+            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-500" />
+          </a>
+          <Link
+            to="/menu"
+            className="group inline-flex items-center justify-center gap-2 border border-cream/40 text-cream px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide hover:bg-cream/10 hover:border-cream/70 transition-all duration-500 backdrop-blur-sm"
+          >
+            View Menu
+            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-500" />
+          </Link>
         </div>
       </div>
 
-      {/* Bottom fade to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-cream-light to-transparent" />
+      {/* Scroll indicator */}
+      <button
+        onClick={scrollToMenu}
+        aria-label="Scroll to menu"
+        className={`absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-10 group transition-all duration-1000 delay-[1100ms] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <div className="flex flex-col items-center gap-1.5">
+          <span className="text-[10px] text-cream/60 tracking-[0.25em] uppercase font-medium group-hover:text-cream transition-colors">
+            Discover
+          </span>
+          <ChevronDown size={20} className="text-cream/70 animate-bounce group-hover:text-cream transition-colors" />
+        </div>
+      </button>
     </section>
   )
 }
