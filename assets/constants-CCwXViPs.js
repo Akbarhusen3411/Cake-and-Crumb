@@ -1,1 +1,0 @@
-const t="919081668490",e="919173183440",o="cake_and_crumb_1",a=`https://wa.me/${t}?text=${encodeURIComponent("Hi Cake & Crumb! I'd like to place an order.")}`,n=`https://wa.me/${e}?text=${encodeURIComponent("Hi Cake & Crumb!")}`,A=`https://instagram.com/${o}`;export{A as I,a as W,n as a,t as b};
