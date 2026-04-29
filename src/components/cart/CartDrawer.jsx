@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2, AlertCircle } from 'lucide-react'
+import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash2 } from 'lucide-react'
 import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { getCoordinatesFromPincode, calculateDistance, getDeliveryInfo } from '../../utils/deliveryCalculator'
@@ -27,7 +27,6 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   const [pincode, setPincode] = useState('')
   const [pincodeLoading, setPincodeLoading] = useState(false)
   const [pincodeResult, setPincodeResult] = useState(null) // { fee, text, error }
-  const minOrderMet = subtotal >= 200
 
   const estimatedFee = pincodeResult && !pincodeResult.error ? pincodeResult.fee : deliveryFee
   const estimatedTotal = subtotal + estimatedFee
@@ -237,20 +236,11 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </div>
                 </div>
 
-                {/* Min order warning */}
-                {!minOrderMet && (
-                  <div className="flex items-center gap-2 bg-berry/5 border border-berry/15 rounded-lg px-3 py-2">
-                    <AlertCircle size={14} className="text-berry shrink-0" />
-                    <p className="text-[11px] text-berry font-medium">Minimum order is ₹200. Add ₹{200 - subtotal} more.</p>
-                  </div>
-                )}
-
                 {/* Order Policy & Agreement */}
                 <div className="bg-cream/60 rounded-xl px-3 py-2.5 space-y-1.5">
                   <p className="text-[10px] font-semibold text-chocolate/70 uppercase tracking-wider">Before you order</p>
                   <ul className="space-y-1 text-[11px] text-chocolate-light/60 leading-snug">
                     <li>• Pre-order required — please order <strong className="text-chocolate/70">1 day in advance</strong></li>
-                    <li>• Minimum order: <strong className="text-chocolate/70">₹200</strong></li>
                     <li>• Payment: <strong className="text-chocolate/70">GPay · PhonePe · Paytm · Cash</strong></li>
                     <li>• Home delivery (charges apply) or self-pickup</li>
                     <li>• Cancellation within <strong className="text-chocolate/70">30 minutes only</strong></li>
@@ -272,9 +262,9 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                 <div className="flex gap-2">
                   <button
                     onClick={handleWhatsAppOrder}
-                    disabled={!agreedToTerms || !minOrderMet}
+                    disabled={!agreedToTerms}
                     className={`flex-1 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 transition-all ${
-                      agreedToTerms && minOrderMet
+                      agreedToTerms
                         ? 'bg-[#25D366] text-white active:scale-[0.97]'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
@@ -284,9 +274,9 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </button>
                   <button
                     onClick={() => { onClose(); onCheckout() }}
-                    disabled={!agreedToTerms || !minOrderMet}
+                    disabled={!agreedToTerms}
                     className={`flex-[1.5] py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-1.5 transition-all ${
-                      agreedToTerms && minOrderMet
+                      agreedToTerms
                         ? 'bg-chocolate text-cream active:scale-[0.97]'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}

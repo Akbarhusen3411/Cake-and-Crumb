@@ -13,7 +13,6 @@ export const WHATSAPP_URL_ALT = `https://wa.me/${WHATSAPP_NUMBER_ALT}`
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`
 
 // ─── Order Policies ──────────────────────────────────────
-export const MIN_ORDER_AMOUNT = 150           // Minimum order in ₹
 export const CANCEL_WINDOW_MINUTES = 30       // Cancellation window
 export const ADVANCE_ORDER_DAYS = 1           // Days in advance to order
 

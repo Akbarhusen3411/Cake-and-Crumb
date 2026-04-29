@@ -10,12 +10,12 @@ import { getStorage } from 'firebase/storage'
 // 4. Enable Firestore Database (start in test mode, then add security rules)
 // 5. Enable Storage (for review photos)
 const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
+  apiKey: 'AIzaSyCP9LGrADnVhV3TeLs3oegKwgn4WWmNXAA',
+  authDomain: 'cake-and-crumb.firebaseapp.com',
+  projectId: 'cake-and-crumb',
+  storageBucket: 'cake-and-crumb.firebasestorage.app',
+  messagingSenderId: '382369982078',
+  appId: '1:382369982078:web:e676086330b58f0001da2f',
 }
 
 // Check if Firebase is configured

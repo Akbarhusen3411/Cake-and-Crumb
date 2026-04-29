@@ -7,10 +7,6 @@ const faqs = [
     answer: 'All orders require at least 1 day advance notice. Please place your order at least 24 hours before your desired delivery date.',
   },
   {
-    question: 'What is the minimum order amount?',
-    answer: 'The minimum order is \u20B9200.',
-  },
-  {
     question: 'What payment methods do you accept?',
     answer: 'We accept GPay, PhonePe, Paytm, and Cash on Delivery.',
   },
