@@ -4,8 +4,7 @@ import { Instagram, MessageCircle, Phone, MapPin, Home, Cake, Heart, Star, Send,
 import useCartStore from '../store/useCartStore'
 import { assetUrl } from '../utils/assetPath'
 
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
-const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
+import { WHATSAPP_URL, INSTAGRAM_URL } from '../config/constants'
 
 const navLinks = [
   { label: 'Home', to: '/', icon: Home },

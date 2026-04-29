@@ -3,6 +3,7 @@ import { CheckCircle, Home, MessageCircle, XCircle, Clock } from 'lucide-react'
 import useCartStore, { getCartItems, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { sendOrderConfirmation, generateOrderId } from '../../services/emailService'
+import { WHATSAPP_NUMBER } from '../../config/constants'
 
 const TIME_SLOT_LABELS = {
   '10-12': '10 AM – 12 PM',
@@ -106,7 +107,7 @@ export default function ConfirmationStep({ onClose }) {
       `⚠️ *Cancel window:* 30 min from order time.\n\n` +
       `Please verify the payment in your bank app and approve. Thank you! 🙏`
 
-    window.open(`https://wa.me/919081668490?text=${encodeURIComponent(msg)}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoHome = () => {
@@ -120,7 +121,7 @@ export default function ConfirmationStep({ onClose }) {
     if (cancelExpired || orderCancelled) return
     setOrderCancelled(true)
     const cancelReq = `🚫 *ORDER CANCELLED*\n\nOrder ID: *${orderId}*\nCustomer: ${checkout.customerName}\nPhone: ${checkout.phone}\n\nThis order has been cancelled by the customer within the 30-minute window.\n\n📋 Items were:\n${cartItems.map((i) => `• ${i.shortName || i.name} x${i.quantity}`).join('\n')}\n\nTotal was: ₹${total}`
-    window.open(`https://wa.me/919081668490?text=${encodeURIComponent(cancelReq)}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(cancelReq)}`, '_blank')
   }
 
   return (

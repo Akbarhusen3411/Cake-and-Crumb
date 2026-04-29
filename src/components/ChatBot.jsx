@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, ChevronRight, Plus, Minus, ShoppingBag, Sparkles, Heart } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 import { generateOrderId } from '../services/emailService'
-
-const WHATSAPP_NUMBER = '919081668490'
+import { WHATSAPP_NUMBER } from '../config/constants'
 
 // ─── Category images ───
 const CAT_IMAGES = {
@@ -195,10 +194,23 @@ const MENU_DATA = {
   },
 }
 
-const INITIAL_MESSAGES = [
-  { from: 'bot', text: "Hello! Welcome to *Cake & Crumb* — The Gourmet Chocolate & Berry Boutique! 🎂", delay: 0 },
-  { from: 'bot', text: "I'm here to help you explore our menu, check prices, or place an order. How can I help?", delay: 600 },
-]
+const VISITED_KEY = 'cake-crumb-chatbot-visited'
+
+function getInitialMessages() {
+  let isReturning = false
+  try { isReturning = localStorage.getItem(VISITED_KEY) === '1' } catch {}
+  try { localStorage.setItem(VISITED_KEY, '1') } catch {}
+  if (isReturning) {
+    return [
+      { from: 'bot', text: "Welcome back to *Cake & Crumb*! 🎂", delay: 0 },
+      { from: 'bot', text: "Craving something sweet today? I can show you our menu, check prices, or take your order.", delay: 500 },
+    ]
+  }
+  return [
+    { from: 'bot', text: "Hello! Welcome to *Cake & Crumb* — The Gourmet Chocolate & Berry Boutique! 🎂", delay: 0 },
+    { from: 'bot', text: "I'm here to help you explore our menu, check prices, or place an order. How can I help?", delay: 600 },
+  ]
+}
 
 const MAIN_OPTIONS = [
   { label: '📋 View Menu', action: 'menu' },
@@ -792,7 +804,8 @@ export default function ChatBot() {
     if (open && !initialized) {
       setInitialized(true)
       const init = async () => {
-        for (const msg of INITIAL_MESSAGES) await addBotMessage(msg.text, msg.delay)
+        const initialMessages = getInitialMessages()
+        for (const msg of initialMessages) await addBotMessage(msg.text, msg.delay)
         setOptions(MAIN_OPTIONS)
       }
       init()

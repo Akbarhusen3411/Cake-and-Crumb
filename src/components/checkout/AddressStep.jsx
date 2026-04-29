@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MapPin, Loader2, CheckCircle, XCircle, Truck } from 'lucide-react'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { getCoordinatesFromPincode, calculateDistance, calculateDeliveryFee, getDeliveryInfo, BAKERY_LOCATION, FREE_RADIUS_KM, RATE_PER_KM } from '../../utils/deliveryCalculator'
+import { WHATSAPP_NUMBER } from '../../config/constants'
 
 export default function AddressStep({ onNext }) {
   const checkout = useCheckoutStore()
@@ -265,7 +266,7 @@ export default function AddressStep({ onNext }) {
               This pincode is in {pincodeInfo.district}, {pincodeInfo.state}. We currently deliver only within Gujarat.
             </p>
             <a
-              href="https://wa.me/919081668490?text=Hi!%20I'm%20outside%20Gujarat.%20Can%20you%20deliver%20to%20my%20area?"
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi! I'm outside Gujarat. Can you deliver to my area?")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-2 text-xs font-medium text-red-700 underline"

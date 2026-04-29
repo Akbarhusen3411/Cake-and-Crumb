@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Phone, Instagram, MessageCircle, MapPin, Send, Clock, ArrowUpRight, Sparkles, CheckCircle, Heart } from 'lucide-react'
-import { WHATSAPP_URL, WHATSAPP_URL_ALT, INSTAGRAM_URL } from '../config/constants'
+import { WHATSAPP_URL, WHATSAPP_URL_ALT, WHATSAPP_NUMBER, INSTAGRAM_URL } from '../config/constants'
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
@@ -17,7 +17,7 @@ export default function Contact() {
     }
     setPhoneError('')
     const text = `Hi! I'm ${formData.name}. ${formData.message} (Phone: ${formData.phone})`
-    window.open(`https://wa.me/919081668490?text=${encodeURIComponent(text)}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, '_blank')
     setSubmitted(true)
     setTimeout(() => setSubmitted(false), 4000)
     setFormData({ name: '', phone: '', message: '' })

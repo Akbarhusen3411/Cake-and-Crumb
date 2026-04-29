@@ -77,8 +77,8 @@ export default function AboutUs() {
             {/* Highlights */}
             <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-chocolate/8">
               {[
-                { value: '500+', label: 'Happy Customers' },
-                { value: '21+', label: 'Flavours' },
+                { value: 'Many', label: 'Happy Customers' },
+                { value: '23+', label: 'Cheesecake Flavours' },
                 { value: '100%', label: 'Handcrafted' },
               ].map((stat) => (
                 <div key={stat.label} className="text-center group cursor-default">

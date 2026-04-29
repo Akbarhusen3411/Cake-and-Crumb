@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Phone, MessageCircle, Heart, ArrowUp } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
-
-const INSTAGRAM_URL = 'https://instagram.com/cake_and_crumb_1'
-const WHATSAPP_URL = 'https://wa.me/919081668490'
+import { WHATSAPP_URL, INSTAGRAM_URL } from '../config/constants'
 
 const quickLinks = [
   { label: 'Home', to: '/' },

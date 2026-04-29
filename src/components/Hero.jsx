@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ShoppingBag, Sparkles, Star } from 'lucide-react'
+import { ArrowRight, ShoppingBag, Sparkles, Star, Heart, Cookie } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
-
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
+import { WHATSAPP_URL } from '../config/constants'
 
 export default function Hero() {
   const [loaded, setLoaded] = useState(false)
@@ -91,16 +90,16 @@ export default function Hero() {
 
             {/* Trust Badges */}
             <div
-              className={`flex flex-wrap gap-8 mt-12 justify-center lg:justify-start transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+              className={`flex flex-wrap gap-x-8 gap-y-3 mt-12 justify-center lg:justify-start transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
             >
               {[
-                { label: 'Fresh Daily', icon: '~' },
-                { label: 'Made to Order', icon: '~' },
-                { label: 'Premium Ingredients', icon: '~' },
-              ].map((badge) => (
-                <div key={badge.label} className="flex items-center gap-2.5 text-sm text-chocolate-light/60">
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-berry to-gold" />
-                  {badge.label}
+                { label: 'Fresh Daily', Icon: Sparkles },
+                { label: 'Made to Order', Icon: Heart },
+                { label: 'Premium Ingredients', Icon: Cookie },
+              ].map(({ label, Icon }) => (
+                <div key={label} className="flex items-center gap-2 text-sm text-chocolate-light/60">
+                  <Icon size={14} className="text-gold" />
+                  {label}
                 </div>
               ))}
             </div>
@@ -160,7 +159,7 @@ export default function Hero() {
 
               {/* Price badge */}
               <div className="absolute -top-3 right-8 sm:right-16 bg-berry text-white px-4 py-2 rounded-full shadow-xl animate-float-reverse badge-glow">
-                <p className="text-xs font-semibold">From ₹55</p>
+                <p className="text-xs font-semibold">Slices from ₹120</p>
               </div>
 
               {/* Rating badge */}
@@ -170,7 +169,7 @@ export default function Hero() {
                     <Star key={i} size={11} className="fill-gold text-gold" />
                   ))}
                 </div>
-                <p className="text-[10px] text-chocolate-light/60 font-medium">Loved by 500+</p>
+                <p className="text-[10px] text-chocolate-light/60 font-medium">Loved by Many</p>
               </div>
             </div>
           </div>

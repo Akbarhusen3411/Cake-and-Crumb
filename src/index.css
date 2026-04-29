@@ -105,6 +105,24 @@ body {
 .stagger-children > *:nth-child(5) { transition-delay: 480ms; }
 .stagger-children > *:nth-child(6) { transition-delay: 600ms; }
 
+/* ===== Card Grid Stagger Entrance ===== */
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card-grid > * {
+  animation: card-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.card-grid > *:nth-child(1)  { animation-delay: 0ms; }
+.card-grid > *:nth-child(2)  { animation-delay: 60ms; }
+.card-grid > *:nth-child(3)  { animation-delay: 120ms; }
+.card-grid > *:nth-child(4)  { animation-delay: 180ms; }
+.card-grid > *:nth-child(5)  { animation-delay: 240ms; }
+.card-grid > *:nth-child(6)  { animation-delay: 300ms; }
+.card-grid > *:nth-child(7)  { animation-delay: 360ms; }
+.card-grid > *:nth-child(8)  { animation-delay: 420ms; }
+.card-grid > *:nth-child(n+9) { animation-delay: 480ms; }
+
 /* ===== Parallax Layer ===== */
 .parallax-layer {
   will-change: transform;

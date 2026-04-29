@@ -6,8 +6,7 @@ import useCartStore from '../store/useCartStore'
 import useToastStore from '../store/useToastStore'
 import QuantitySelector from './ui/QuantitySelector'
 import useReviews, { getProductReviews, getAverageRating } from '../hooks/useReviews'
-
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi!%20I%27d%20like%20to%20order%20from%20Cake%20%26%20Crumb.'
+import { WHATSAPP_URL } from '../config/constants'
 
 const SHOP_CATEGORY_IDS = productCategories.map((c) => c.id)
 
@@ -417,7 +416,7 @@ function CheesecakeContent({ menuCat, reviews }) {
             </div>
 
             {/* Flavour Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 card-grid">
               {flavours.map(({ slice, banto }) => (
                 <CheesecakeFlavourCard key={slice.flavourKey} sliceProduct={slice} bantoProduct={banto} reviews={reviews} />
               ))}
@@ -471,7 +470,7 @@ function CategoryContent({ category, reviews }) {
         )}
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 card-grid">
           {categoryProducts.map((product) => (
             <ProductCard key={product.id} product={product} reviews={reviews} />
           ))}
@@ -622,7 +621,7 @@ export default function FeaturedCakes() {
         {searchResults ? (
           <div className="mb-10">
             {searchResults.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 card-grid">
                 {searchResults.map((product) => (
                   <ProductCard key={product.id} product={product} reviews={reviews} />
                 ))}

@@ -3,6 +3,7 @@ import { ShoppingBag, X, ArrowRight, Sparkles, MessageCircle, Minus, Plus, Trash
 import useCartStore, { getCartItems, getItemCount, getSubtotal } from '../../store/useCartStore'
 import useCheckoutStore from '../../store/useCheckoutStore'
 import { getCoordinatesFromPincode, calculateDistance, getDeliveryInfo } from '../../utils/deliveryCalculator'
+import { WHATSAPP_NUMBER } from '../../config/constants'
 
 export default function CartDrawer({ isOpen, onClose, onCheckout }) {
   // Lock body scroll when cart is open (overflow:hidden prevents background scroll)
@@ -60,7 +61,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
       `- ${item.shortName} x${item.quantity} = ₹${item.price * item.quantity}`
     ).join('%0A')
     const msg = `Hi Cake %26 Crumb!%0A%0AI'd like to order:%0A${itemLines}%0A%0ATotal: ₹${subtotal}%0A%0APlease confirm availability!`
-    window.open(`https://wa.me/919081668490?text=${msg}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank')
   }
 
   return (

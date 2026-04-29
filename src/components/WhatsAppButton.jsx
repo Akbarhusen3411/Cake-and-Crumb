@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MessageCircle } from 'lucide-react'
-
-const WHATSAPP_URL = 'https://wa.me/919081668490?text=Hi%20Cake%20%26%20Crumb!%20I%27d%20like%20to%20place%20an%20order.'
+import { WHATSAPP_URL } from '../config/constants'
 
 export default function WhatsAppButton() {
   const [visible, setVisible] = useState(false)
