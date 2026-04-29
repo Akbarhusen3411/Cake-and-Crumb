@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Sparkles, MessageCircle, ExternalLink, ChevronRight, Clock, Plus, Star, Search, X, Quote } from 'lucide-react'
-import { menuCategories, featuredItems } from '../data/cakes'
+import { menuCategories } from '../data/cakes'
 import { getProductsByCategory, productCategories, cheesecakeSubgroups, products } from '../data/products'
 import useCartStore from '../store/useCartStore'
 import useToastStore from '../store/useToastStore'
@@ -9,45 +9,6 @@ import useReviews, { getProductReviews, getAverageRating } from '../hooks/useRev
 import { WHATSAPP_URL } from '../config/constants'
 
 const SHOP_CATEGORY_IDS = productCategories.map((c) => c.id)
-
-/* ─── Featured Hero Cards ─── */
-function FeaturedCard({ item, index, onNavigate }) {
-  const categoryMap = { 1: 'cheesecake', 2: 'cookies', 3: 'desserts' }
-  return (
-    <div
-      onClick={() => onNavigate?.(categoryMap[item.id])}
-      className="fade-up group relative bg-white rounded-2xl overflow-hidden card-hover cursor-pointer"
-      style={{ transitionDelay: `${index * 130}ms` }}
-    >
-      <div className="relative overflow-hidden aspect-[4/5]">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.2s] ease-out"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/50 via-chocolate/10 to-transparent" />
-        {item.badge && (
-          <span className="absolute top-4 left-4 bg-berry/90 backdrop-blur-sm text-white text-xs font-medium px-3.5 py-1.5 rounded-full shadow-md">
-            {item.badge}
-          </span>
-        )}
-        <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-          <h3 className="font-heading text-xl font-bold mb-1">{item.name}</h3>
-          <p className="text-sm text-white/80 mb-3 leading-relaxed">{item.description}</p>
-          <div className="flex items-center gap-3">
-            <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-sm font-semibold px-4 py-1.5 rounded-full">
-              {item.priceRange}
-            </span>
-            <span className="inline-block bg-white/0 text-white/0 group-hover:bg-berry/80 group-hover:text-white text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-500 backdrop-blur-sm">
-              View Menu
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function formatDate(dateStr) {
   try {
@@ -82,7 +43,7 @@ function ReviewBadge({ count, avg, productReviews, productName }) {
                 <p className="text-[11px] text-chocolate-light/70 leading-relaxed line-clamp-2">"{review.text}"</p>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-[10px] font-medium text-chocolate">— {review.name}</span>
-                  {review.date && <span className="text-[10px] text-chocolate-light/40">{formatDate(review.date)}</span>}
+                  {review.date && <span className="text-[10px] text-chocolate-light/55">{formatDate(review.date)}</span>}
                 </div>
               </div>
             ))}
@@ -98,61 +59,6 @@ function ReviewBadge({ count, avg, productReviews, productName }) {
           <div className="absolute -bottom-1 left-4 w-2 h-2 bg-white border-r border-b border-chocolate/8 rotate-45" />
         </div>
       )}
-    </div>
-  )
-}
-
-/* ─── Product Reviews Section (below product grid) ─── */
-function ProductReviewsSection({ reviews, categoryProducts }) {
-  // Get reviews that match any product in this category
-  const categoryReviews = useMemo(() => {
-    if (!reviews.length || !categoryProducts.length) return []
-    const names = new Set(categoryProducts.map((p) => p.shortName.toLowerCase()))
-    return reviews.filter((r) => r.product && names.has(r.product.toLowerCase()))
-  }, [reviews, categoryProducts])
-
-  if (!categoryReviews.length) return null
-
-  return (
-    <div className="mt-8 mb-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Star size={16} className="text-gold fill-gold" />
-        <h4 className="font-heading text-base font-bold text-chocolate">Customer Reviews</h4>
-        <span className="text-xs text-chocolate-light/40">({categoryReviews.length})</span>
-      </div>
-      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-        {categoryReviews.map((review, i) => (
-          <div key={i} className="shrink-0 w-[280px] sm:w-[300px] bg-white rounded-xl border border-chocolate/5 overflow-hidden">
-            {review.photo && (
-              <div className="w-full h-40 overflow-hidden">
-                <img src={review.photo} alt="" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.target.parentElement.style.display = 'none' }} />
-              </div>
-            )}
-            <div className="p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-semibold text-berry bg-berry/5 px-2 py-0.5 rounded-full">{review.product}</span>
-              </div>
-              <div className="flex gap-0.5 my-2">
-                {Array.from({ length: Number(review.rating) }).map((_, j) => (
-                  <Star key={j} size={12} className="fill-gold text-gold" />
-                ))}
-              </div>
-              <p className="text-sm text-chocolate-light/70 leading-relaxed line-clamp-3">"{review.text}"</p>
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-cream-dark/20">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-soft-pink to-cream-dark flex items-center justify-center">
-                  <span className="font-heading text-xs font-bold text-berry">{review.name.charAt(0)}</span>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-chocolate">{review.name}</p>
-                  {review.date && (
-                    <p className="text-[10px] text-chocolate-light/40">{formatDate(review.date)}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
@@ -177,10 +83,10 @@ function ProductCard({ product, reviews }) {
 
   return (
     <div
-      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/10 ${
+      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/12 ${
         product.isBestseller
-          ? 'border border-gold/30 shadow-md shadow-gold/10 ring-1 ring-gold/15'
-          : 'border border-chocolate/5 shadow-sm'
+          ? 'border border-gold/35 shadow-md shadow-gold/10 ring-1 ring-gold/15'
+          : 'border border-chocolate/6 shadow-sm'
       } ${!product.inStock ? 'opacity-50' : ''}`}
     >
       {/* Image */}
@@ -191,10 +97,9 @@ function ProductCard({ product, reviews }) {
           className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[900ms] ease-out"
           loading="lazy"
         />
-        {/* Soft cream sweep on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/25 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/20 ring-1 ring-white/30">
+          <span className="absolute top-2.5 left-2.5 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/25 ring-1 ring-white/30">
             <Sparkles size={10} className="fill-white" /> Best
           </span>
         )}
@@ -206,30 +111,35 @@ function ProductCard({ product, reviews }) {
         <ReviewBadge count={productReviews.length} avg={avgRating} productReviews={productReviews} productName={product.shortName} />
       </div>
 
-      {/* Info */}
-      <div className="p-3">
-        <h4 className="text-sm font-semibold text-chocolate truncate">{product.shortName}</h4>
-        <p className="text-xs text-chocolate-light/50 mt-0.5 flex items-center gap-1">
-          <span className="text-berry font-bold tabular-nums">₹{product.price}</span>
-          <span>/ {product.unit}</span>
+      {/* Caption — left-aligned bakery-template style */}
+      <div className="px-4 pt-4 pb-4">
+        <h4 className="font-heading text-base sm:text-lg font-bold text-chocolate leading-tight truncate">
+          {product.shortName}
+        </h4>
+        <p className="text-[10px] text-chocolate-light/55 italic mt-0.5 truncate">
+          {product.description}
+        </p>
+        <p className="text-[13px] sm:text-sm text-chocolate font-semibold mt-2 tabular-nums">
+          ₹{product.price}
+          <span className="text-[11px] text-chocolate-light/55 font-normal italic"> / {product.unit}</span>
         </p>
 
-        {/* Add / Quantity */}
-        <div className="mt-2.5">
+        <div className="mt-3">
           {!product.inStock ? (
-            <button disabled className="w-full py-1.5 rounded-lg bg-cream text-chocolate-light/30 text-xs font-medium cursor-not-allowed">
+            <button disabled className="px-4 py-2 rounded-full bg-cream text-chocolate-light/30 text-[10px] font-bold tracking-[0.18em] uppercase cursor-not-allowed">
               Unavailable
             </button>
           ) : quantity === 0 ? (
             <button
               onClick={handleAdd}
-              className="btn-ripple btn-touch group/add w-full py-2 rounded-lg bg-gradient-to-br from-chocolate to-chocolate-light text-cream text-xs font-medium transition-all duration-300 flex items-center justify-center gap-1.5 hover:shadow-lg hover:shadow-chocolate/25 active:scale-95"
+              aria-label={`Add ${product.shortName} to cart`}
+              className="btn-ripple group/add inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-soft-pink text-chocolate text-[10px] font-bold tracking-[0.18em] uppercase hover:bg-berry hover:text-white active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-berry/20"
             >
-              <Plus size={13} className="group-hover/add:rotate-90 transition-transform duration-300" />
+              <Plus size={10} className="group-hover/add:rotate-90 transition-transform duration-300" />
               Add to Cart
             </button>
           ) : (
-            <div className="flex justify-center count-animate">
+            <div className="count-animate">
               <QuantitySelector
                 quantity={quantity}
                 onIncrease={() => updateQuantity(product.id, quantity + 1)}
@@ -275,12 +185,15 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
   })
   const addToast = useToastStore((s) => s.addToast)
 
+  // Show the lower (slice) price as the headline; banto is the upgrade
+  const displayPrice = sliceProduct?.price || bantoProduct?.price
+
   return (
     <div
-      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/10 ${
+      className={`product-card group/card bg-white rounded-2xl overflow-hidden relative transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-chocolate/12 ${
         product.isBestseller
-          ? 'border border-gold/30 shadow-md shadow-gold/10 ring-1 ring-gold/15'
-          : 'border border-chocolate/5 shadow-sm'
+          ? 'border border-gold/35 shadow-md shadow-gold/10 ring-1 ring-gold/15'
+          : 'border border-chocolate/6 shadow-sm'
       }`}
     >
       {/* Image */}
@@ -291,81 +204,75 @@ function CheesecakeFlavourCard({ sliceProduct, bantoProduct, reviews }) {
           className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-[900ms] ease-out"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/20 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-chocolate/25 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
         {product.isBestseller && (
-          <span className="absolute top-2 left-2 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/20 ring-1 ring-white/30">
+          <span className="absolute top-2.5 left-2.5 bg-gradient-to-br from-gold to-[#B8915F] text-white text-[10px] font-bold px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-gold/25 ring-1 ring-white/30">
             <Sparkles size={10} className="fill-white" /> Best
           </span>
         )}
         <ReviewBadge count={productReviews.length} avg={avgRating} productReviews={productReviews} productName={product.shortName} />
       </div>
 
-      {/* Info */}
-      <div className="p-2.5 sm:p-3 space-y-1.5 sm:space-y-2">
-        <h4 className="text-[13px] sm:text-sm font-semibold text-chocolate truncate">{sliceProduct?.shortName || bantoProduct?.shortName}</h4>
+      {/* Info — left-aligned bakery-template style */}
+      <div className="px-4 pt-4 pb-4">
+        <h4 className="font-heading text-base sm:text-lg font-bold text-chocolate leading-tight truncate">
+          {sliceProduct?.shortName || bantoProduct?.shortName}
+        </h4>
+        <p className="text-[10px] text-chocolate-light/55 italic mt-0.5">
+          Cheesecake · slice & banto
+        </p>
+        <p className="text-[13px] sm:text-sm text-chocolate font-semibold mt-2 tabular-nums">
+          ₹{displayPrice}
+          <span className="text-[11px] text-chocolate-light/55 font-normal italic"> / slice</span>
+        </p>
 
-        {/* Per Slice option — everyday cream pill */}
-        {sliceProduct && (
-          <div className="flex items-center justify-between gap-1.5 bg-cream/60 border border-cream-dark/50 rounded-lg px-2.5 py-2 transition-colors hover:bg-cream">
-            <div className="min-w-0">
-              <p className="text-[10px] font-medium text-chocolate-light/55 uppercase tracking-wider">Per Slice</p>
-              <p className="text-sm text-chocolate font-bold tabular-nums">₹{sliceProduct.price}</p>
-            </div>
-            <div className="shrink-0">
-              {sliceQty === 0 ? (
-                <button
-                  onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
-                  className="add-btn-animate group/add h-8 px-3.5 rounded-full bg-gradient-to-br from-chocolate to-chocolate-light text-cream text-[11px] font-semibold transition-all duration-300 flex items-center gap-1 hover:shadow-md hover:shadow-chocolate/25 active:scale-95"
-                >
-                  <Plus size={12} className="group-hover/add:rotate-90 transition-transform duration-300" /> Add
-                </button>
-              ) : (
-                <QuantitySelector
-                  quantity={sliceQty}
-                  onIncrease={() => updateQuantity(sliceProduct.id, sliceQty + 1)}
-                  onDecrease={() => {
-                    updateQuantity(sliceProduct.id, sliceQty - 1)
-                    if (sliceQty === 1) addToast(`${sliceProduct.shortName} slice removed`, 'info')
-                  }}
-                  size="sm"
-                />
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Banto Cake option — premium gold-tinted upsell */}
-        {bantoProduct && (
-          <div className="relative flex items-center justify-between gap-1.5 bg-gradient-to-br from-gold/8 via-soft-pink/30 to-berry/5 border border-gold/25 rounded-lg px-2.5 py-2 transition-shadow hover:shadow-md hover:shadow-gold/10">
-            <div className="min-w-0">
-              <p className="text-[10px] font-medium text-chocolate-light/55 uppercase tracking-wider flex items-center gap-1">
-                <Sparkles size={8} className="text-gold" />
-                Banto 4" <span className="text-chocolate-light/35 normal-case font-normal">(300–350 gm)</span>
-              </p>
-              <p className="text-sm text-berry font-bold tabular-nums">₹{bantoProduct.price}</p>
-            </div>
-            <div className="shrink-0">
-              {bantoQty === 0 ? (
-                <button
-                  onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
-                  className="add-btn-animate group/add h-8 px-3.5 rounded-full bg-gradient-to-br from-berry to-berry-light text-white text-[11px] font-semibold transition-all duration-300 flex items-center gap-1 hover:shadow-md hover:shadow-berry/30 active:scale-95"
-                >
-                  <Plus size={12} className="group-hover/add:rotate-90 transition-transform duration-300" /> Add
-                </button>
-              ) : (
-                <QuantitySelector
-                  quantity={bantoQty}
-                  onIncrease={() => updateQuantity(bantoProduct.id, bantoQty + 1)}
-                  onDecrease={() => {
-                    updateQuantity(bantoProduct.id, bantoQty - 1)
-                    if (bantoQty === 1) addToast(`${bantoProduct.shortName} removed`, 'info')
-                  }}
-                  size="sm"
-                />
-              )}
-            </div>
-          </div>
-        )}
+        {/* Two compact add buttons — left-aligned, soft-pink primary */}
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {sliceProduct && (
+            sliceQty === 0 ? (
+              <button
+                onClick={() => { addItem(sliceProduct.id); addToast(`${sliceProduct.shortName} slice added!`) }}
+                className="group/add inline-flex items-center gap-1 px-3 py-2 rounded-full bg-soft-pink text-chocolate text-[10px] font-bold tracking-[0.15em] uppercase hover:bg-berry hover:text-white active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-berry/20"
+                aria-label="Add slice"
+              >
+                <Plus size={10} className="group-hover/add:rotate-90 transition-transform duration-300" />
+                Slice ₹{sliceProduct.price}
+              </button>
+            ) : (
+              <QuantitySelector
+                quantity={sliceQty}
+                onIncrease={() => updateQuantity(sliceProduct.id, sliceQty + 1)}
+                onDecrease={() => {
+                  updateQuantity(sliceProduct.id, sliceQty - 1)
+                  if (sliceQty === 1) addToast(`${sliceProduct.shortName} slice removed`, 'info')
+                }}
+                size="sm"
+              />
+            )
+          )}
+          {bantoProduct && (
+            bantoQty === 0 ? (
+              <button
+                onClick={() => { addItem(bantoProduct.id); addToast(`${bantoProduct.shortName} added!`) }}
+                className="group/add inline-flex items-center gap-1 px-3 py-2 rounded-full bg-gold/15 border border-gold/40 text-chocolate text-[10px] font-bold tracking-[0.15em] uppercase hover:bg-gold hover:text-white hover:border-gold active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-gold/20"
+                aria-label="Add banto cake"
+              >
+                <Sparkles size={9} className="group-hover/add:text-white" />
+                Banto ₹{bantoProduct.price}
+              </button>
+            ) : (
+              <QuantitySelector
+                quantity={bantoQty}
+                onIncrease={() => updateQuantity(bantoProduct.id, bantoQty + 1)}
+                onDecrease={() => {
+                  updateQuantity(bantoProduct.id, bantoQty - 1)
+                  if (bantoQty === 1) addToast(`${bantoProduct.shortName} removed`, 'info')
+                }}
+                size="sm"
+              />
+            )
+          )}
+        </div>
       </div>
     </div>
   )
@@ -407,12 +314,19 @@ function CheesecakeContent({ menuCat, reviews }) {
         })
 
         return (
-          <div key={subgroup.id} className="mb-10 cheesecake-subgroup">
-            {/* Subgroup Header */}
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-berry text-sm">✦</span>
-              <h4 className="font-heading text-lg sm:text-xl font-bold text-chocolate">{subgroup.label}</h4>
-              <div className="flex-1 h-px bg-chocolate/8" />
+          <div key={subgroup.id} className="mb-12 cheesecake-subgroup">
+            {/* Subgroup Header — refined */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-2.5">
+                <span className={`text-sm leading-none ${subgroup.id === 'premium' ? 'text-gold' : 'text-berry'}`}>✦</span>
+                <h4 className="font-heading text-lg sm:text-xl font-bold text-chocolate tracking-tight">
+                  {subgroup.label}
+                </h4>
+                <span className="text-[10px] font-semibold text-chocolate-light/55 tracking-[0.2em] uppercase italic">
+                  {subgroup.label === 'Premium' ? 'Limited' : 'Collection'}
+                </span>
+              </div>
+              <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-chocolate/10 to-transparent" />
             </div>
 
             {/* Flavour Cards Grid */}
@@ -430,8 +344,6 @@ function CheesecakeContent({ menuCat, reviews }) {
         <p className="text-sm text-chocolate-light/50 italic text-center mt-6">{menuCat.note}</p>
       )}
 
-      {/* Reviews for this category */}
-      <ProductReviewsSection reviews={reviews} categoryProducts={allProducts} />
     </div>
   )
 }
@@ -481,8 +393,6 @@ function CategoryContent({ category, reviews }) {
           <p className="text-sm text-chocolate-light/50 italic text-center mt-6">{menuCat.note}</p>
         )}
 
-        {/* Reviews for this category */}
-        <ProductReviewsSection reviews={reviews} categoryProducts={categoryProducts} />
       </div>
     )
   }
@@ -555,64 +465,62 @@ export default function FeaturedCakes() {
   const activeCategory = menuCategories.find((c) => c.id === activeTab)
 
   return (
-    <section id="cakes" className="py-20 bg-cream-light relative">
+    <section id="cakes" className="py-20 bg-gradient-to-b from-cream-light to-cream relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
         <div className="text-center mb-14">
-          <div className="fade-up inline-flex items-center gap-2 mb-4 px-4 py-2 bg-berry/5 border border-berry/10 rounded-full">
-            <Sparkles size={14} className="text-berry" />
-            <span className="text-xs font-medium text-berry tracking-widest uppercase">
+          <div className="fade-up flex items-center justify-center gap-3 mb-4">
+            <span className="w-8 h-px bg-gold/60" />
+            <span className="text-[10px] sm:text-xs font-semibold text-berry tracking-[0.3em] uppercase">
               Our Menu
             </span>
+            <span className="w-8 h-px bg-gold/60" />
           </div>
-          <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
+          <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate leading-tight">
             <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Handcrafted</span> with Love
           </h2>
-          <p className="fade-up text-chocolate-light/60 max-w-2xl mx-auto leading-relaxed">
+          <div className="fade-up mx-auto mt-5 w-16 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent" />
+          <p className="fade-up text-chocolate-light/60 max-w-2xl mx-auto leading-relaxed mt-5 text-sm sm:text-base">
             From 23 cheesecake flavours to fresh-baked cookies, creamy dessert cups and refreshing drinks —
             everything is made to order using premium ingredients.
           </p>
         </div>
 
-        {/* Featured Hero Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {featuredItems.map((item, i) => (
-            <FeaturedCard key={item.id} item={item} index={i} onNavigate={setActiveTab} />
-          ))}
-        </div>
-
         {/* Full Menu Title */}
-        <div className="text-center mb-8 fade-up">
-          <h3 className="font-heading text-xl sm:text-2xl font-bold text-chocolate mb-2">
+        <div className="text-center mb-10 fade-up">
+          <h3 className="font-script text-3xl sm:text-4xl text-chocolate leading-none">
             Full Menu
           </h3>
-          <div className="w-12 h-[2px] bg-gradient-to-r from-berry to-gold mx-auto" />
+          <div className="mt-3 mx-auto w-20 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent" />
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-md mx-auto mb-8 fade-up">
-          <div className="relative">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-chocolate-light/40" />
+        {/* Search Bar — gold accented */}
+        <div className="max-w-md mx-auto mb-10 fade-up">
+          <div className="relative group">
+            <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-gold transition-colors" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search menu... (e.g. Nutella, Biscoff, Mojito)"
-              className="w-full bg-white border border-chocolate/8 rounded-full pl-11 pr-10 py-3 text-sm text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 transition-all"
+              placeholder="Search menu… try Nutella, Biscoff, Mojito"
+              className="w-full bg-white border border-gold/25 rounded-full pl-12 pr-11 py-3.5 text-sm text-chocolate placeholder:text-chocolate-light/55 italic focus:outline-none focus:border-gold/60 focus:ring-2 focus:ring-gold/15 hover:border-gold/40 shadow-sm focus:shadow-md transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light/50 hover:text-chocolate transition-colors"
+                aria-label="Clear search"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cream-dark/30 flex items-center justify-center text-chocolate-light/60 hover:bg-chocolate hover:text-cream transition-all"
               >
-                <X size={12} />
+                <X size={13} />
               </button>
             )}
           </div>
           {searchResults && (
-            <p className="text-xs text-chocolate-light/50 text-center mt-2">
-              {searchResults.length} {searchResults.length === 1 ? 'item' : 'items'} found
+            <p className="text-xs text-chocolate-light/50 text-center mt-3 italic">
+              {searchResults.length === 0
+                ? 'No items found — try a different term'
+                : `${searchResults.length} ${searchResults.length === 1 ? 'delicious item' : 'delicious items'} found`}
             </p>
           )}
         </div>
@@ -644,8 +552,8 @@ export default function FeaturedCakes() {
               onClick={() => setActiveTab(cat.id)}
               className={`shrink-0 px-5 sm:px-7 py-2.5 rounded-full font-medium text-sm transition-all duration-500 whitespace-nowrap ${
                 activeTab === cat.id
-                  ? 'bg-chocolate text-cream shadow-xl shadow-chocolate/15 scale-105'
-                  : 'bg-white text-chocolate-light border border-chocolate/8 hover:border-chocolate/20 hover:shadow-md'
+                  ? 'bg-gradient-to-br from-chocolate to-chocolate-light text-cream shadow-xl shadow-chocolate/25 ring-2 ring-gold/40 scale-105'
+                  : 'bg-white text-chocolate-light border border-gold/20 hover:border-gold/50 hover:shadow-md hover:text-chocolate'
               }`}
             >
               {cat.label}

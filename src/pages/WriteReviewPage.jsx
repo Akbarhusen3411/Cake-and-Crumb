@@ -47,7 +47,7 @@ function getReviewableProducts() {
     .map(([id, g]) => ({ id, label: g.label, items: g.items }))
 }
 
-function resizeImage(file, maxSize = 300) {
+function resizeImage(file, maxSize = 800) {
   return new Promise((resolve) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -62,9 +62,14 @@ function resizeImage(file, maxSize = 300) {
         }
         canvas.width = w
         canvas.height = h
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h)
-        // Return full data URL (stored directly in sheet, no Google Drive needed)
-        resolve(canvas.toDataURL('image/jpeg', 0.5))
+        const ctx = canvas.getContext('2d')
+        // High-quality scaling
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+        ctx.drawImage(img, 0, 0, w, h)
+        // Return full data URL — 800px @ 0.78 quality keeps the file
+        // comfortably under Firestore's 1 MB document limit (≈150–250 KB after base64)
+        resolve(canvas.toDataURL('image/jpeg', 0.78))
       }
       img.src = e.target.result
     }
@@ -210,7 +215,7 @@ export default function WriteReviewPage() {
                   </optgroup>
                 ))}
               </select>
-              <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-chocolate-light/40 pointer-events-none" />
+              <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-chocolate-light/55 pointer-events-none" />
             </div>
           </div>
 
@@ -223,7 +228,7 @@ export default function WriteReviewPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
               maxLength={50}
-              className="w-full px-4 py-3 rounded-xl border border-chocolate/15 bg-cream-light/50 text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/40 focus:ring-1 focus:ring-berry/20 transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-chocolate/15 bg-cream-light/50 text-chocolate placeholder:text-chocolate-light/55 focus:outline-none focus:border-berry/40 focus:ring-1 focus:ring-berry/20 transition-colors"
             />
           </div>
 
@@ -265,15 +270,15 @@ export default function WriteReviewPage() {
               placeholder="Tell us about your experience..."
               rows={4}
               maxLength={500}
-              className="w-full px-4 py-3 rounded-xl border border-chocolate/15 bg-cream-light/50 text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/40 focus:ring-1 focus:ring-berry/20 transition-colors resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-chocolate/15 bg-cream-light/50 text-chocolate placeholder:text-chocolate-light/55 focus:outline-none focus:border-berry/40 focus:ring-1 focus:ring-berry/20 transition-colors resize-none"
             />
-            <p className="text-right text-xs text-chocolate-light/40 mt-1">{text.length}/500</p>
+            <p className="text-right text-xs text-chocolate-light/55 mt-1">{text.length}/500</p>
           </div>
 
           {/* Photo Upload */}
           <div>
             <label className="block text-sm font-medium text-chocolate mb-2">
-              Photo <span className="text-chocolate-light/40 font-normal">(optional)</span>
+              Photo <span className="text-chocolate-light/55 font-normal">(optional)</span>
             </label>
             {photoPreview ? (
               <div className="relative inline-block">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Instagram, Phone, MessageCircle, Heart, ArrowUp } from 'lucide-react'
+import { Instagram, Phone, MessageCircle, Heart, ArrowUp, MapPin, Send, Cake, Cookie, Coffee } from 'lucide-react'
 import { assetUrl } from '../utils/assetPath'
 import { WHATSAPP_URL, INSTAGRAM_URL } from '../config/constants'
 
@@ -18,137 +18,72 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-cream border-t border-chocolate/5 relative overflow-hidden">
-      {/* Marquee Ticker */}
-      <div className="bg-chocolate overflow-hidden py-3">
-        <div className="marquee-track flex whitespace-nowrap">
-          {[...Array(2)].map((_, setIdx) => (
-            <div key={setIdx} className="flex shrink-0">
-              {['Cheesecakes', 'Cookies', 'Milk Cakes', 'Dessert Cups', 'Brownies', 'Mojitos', 'Milkshakes', 'Custom Cakes', 'Cupcakes', 'Cakesicles'].map((item) => (
-                <span key={`${setIdx}-${item}`} className="flex items-center gap-3 mx-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                  <span className="font-heading text-sm text-cream/70 tracking-wider">{item}</span>
-                </span>
-              ))}
-            </div>
-          ))}
+    <footer className="relative bg-gradient-to-b from-cream to-cream-light overflow-hidden">
+      {/* Animated bakery decorations */}
+      <Cake size={28} className="absolute top-8 left-[6%] text-gold/20 footer-bake-rise pointer-events-none" aria-hidden="true" />
+      <Cookie size={22} className="absolute top-16 right-[7%] text-berry/18 footer-bake-rise pointer-events-none" style={{ animationDelay: '1.2s' }} aria-hidden="true" />
+      <Coffee size={20} className="absolute bottom-16 left-[10%] text-chocolate/18 footer-bake-rise pointer-events-none" style={{ animationDelay: '2.4s' }} aria-hidden="true" />
+      <span className="absolute top-1/3 right-[15%] text-gold/30 text-xl footer-spin-slow pointer-events-none" aria-hidden="true">✦</span>
+
+      {/* Soft glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-24 bg-soft-pink/30 rounded-full blur-[80px] pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12">
+
+        {/* Top ornament */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <span className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/40" />
+          <span className="text-gold text-base">✦</span>
+          <span className="flex-1 h-px bg-gradient-to-l from-transparent to-gold/40" />
         </div>
-      </div>
 
-      {/* Decorative accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-soft-pink/20 rounded-full blur-[60px]" />
-
-      {/* ========== MOBILE FOOTER (below lg) ========== */}
-      <div className="lg:hidden relative px-4 py-10">
-        {/* Brand centered */}
-        <div className="flex flex-col items-center mb-6">
+        {/* Compact brand block */}
+        <div className="text-center mb-8">
           <img
             src={assetUrl('/images/logo.png')}
             alt="Cake & Crumb"
-            className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-gold/20 mb-3"
+            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shadow-md border-2 border-gold/40 mx-auto mb-2"
           />
-          <span className="font-script text-2xl text-chocolate block">
-            Cake <span className="text-berry">&</span> Crumb
-          </span>
-          <p className="font-heading text-xs text-chocolate-light/50 italic mt-1">
-            The Gourmet Chocolate & Berry Boutique
+          <h3 className="font-script text-2xl sm:text-3xl text-chocolate leading-none">
+            Cake <span className="text-gold">&</span> Crumb
+          </h3>
+          <p className="text-[9px] text-chocolate-light/45 mt-1 tracking-[0.3em] uppercase font-semibold">
+            Est. Vaso, Gujarat
           </p>
         </div>
 
-        {/* Social icon row */}
-        <div className="flex items-center justify-center gap-4 mb-7">
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white transition-all duration-500 shadow-sm"
-            aria-label="Instagram"
-          >
-            <Instagram size={19} />
-          </a>
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-green-500 hover:text-white transition-all duration-500 shadow-sm"
-            aria-label="WhatsApp"
-          >
-            <MessageCircle size={19} />
-          </a>
-          <a
-            href="tel:+919081668490"
-            className="w-11 h-11 rounded-full bg-chocolate/8 flex items-center justify-center text-chocolate hover:bg-chocolate hover:text-cream transition-all duration-500 shadow-sm"
-            aria-label="Phone"
-          >
-            <Phone size={19} />
-          </a>
-        </div>
+        {/* 3-column compact grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6 max-w-4xl mx-auto text-[13px]">
 
-        {/* Quick links - 2 column grid */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-2.5 w-full max-w-xs mx-auto mb-6">
-          {quickLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.to}
-              className="text-xs text-chocolate-light/50 hover:text-berry transition-colors duration-300 text-center py-1"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Contact info compact */}
-        <div className="text-center mb-2">
-          <p className="text-[11px] text-chocolate-light/40 leading-relaxed">
-            Vaso, Kheda, Gujarat, India
-          </p>
-          <div className="flex items-center justify-center gap-3 text-[11px] text-chocolate-light/40">
-            <a href="tel:+919081668490" className="hover:text-berry transition-colors">
-              +91 90816 68490
-            </a>
-            <span className="text-chocolate-light/20">|</span>
-            <a href="tel:+919173183440" className="hover:text-berry transition-colors">
-              +91 91731 83440
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* ========== DESKTOP FOOTER (lg+) ========== */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden lg:block">
-        <div className="grid lg:grid-cols-4 gap-12 text-left">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                src={assetUrl('/images/logo.png')}
-                alt="Cake & Crumb"
-                className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-gold/20"
-              />
-              <div>
-                <span className="font-script text-2xl text-chocolate block">
-                  Cake <span className="text-berry">&</span> Crumb
-                </span>
-              </div>
+          {/* Visit */}
+          <div className="text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-1.5 mb-2">
+              <MapPin size={11} className="text-gold" />
+              <h4 className="text-[10px] font-bold text-chocolate tracking-[0.18em] uppercase">Visit</h4>
             </div>
-            <p className="font-heading text-sm text-chocolate-light/60 italic mb-4">
-              The Gourmet Chocolate & Berry Boutique
+            <p className="text-chocolate-light/65 leading-snug">
+              Vaso, Kheda · Gujarat 387380
             </p>
-            <p className="text-sm text-chocolate-light/50 leading-relaxed">
-              Handcrafted premium cakes in Vaso, Gujarat. Made fresh, made with love.
+            <p className="text-[11px] text-chocolate-light/45 italic mt-1">
+              Pre-order — 1 day in advance
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Quick Links</h4>
-            <ul className="space-y-3">
+          {/* Explore */}
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="w-1 h-1 rounded-full bg-gold" />
+              <h4 className="text-[10px] font-bold text-chocolate tracking-[0.18em] uppercase">Explore</h4>
+              <span className="w-1 h-1 rounded-full bg-gold" />
+            </div>
+            <ul className="space-y-1 grid grid-cols-2 sm:grid-cols-1 gap-x-4">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300 inline-block"
+                    className="group inline-flex items-center gap-1 text-chocolate-light/65 hover:text-chocolate transition-colors"
                   >
+                    <span className="w-0 h-px bg-berry transition-all duration-300 group-hover:w-2.5" />
                     {link.label}
                   </Link>
                 </li>
@@ -156,88 +91,74 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Contact Us</h4>
-            <ul className="space-y-3">
-              <li>
-                <a href="tel:+919081668490" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
-                  <Phone size={14} />
-                  +91 90816 68490
-                </a>
-              </li>
-              <li>
-                <a href="tel:+919173183440" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-berry transition-colors duration-300">
-                  <Phone size={14} />
-                  +91 91731 83440
-                </a>
-              </li>
-              <li>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-green-600 transition-colors duration-300">
-                  <MessageCircle size={14} />
-                  WhatsApp Order
-                </a>
-              </li>
-              <li>
-                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 text-sm text-chocolate-light/50 hover:text-pink-500 transition-colors duration-300">
-                  <Instagram size={14} />
+          {/* Reach */}
+          <div className="text-center sm:text-right">
+            <div className="flex items-center justify-center sm:justify-end gap-1.5 mb-2">
+              <h4 className="text-[10px] font-bold text-chocolate tracking-[0.18em] uppercase">Reach</h4>
+              <Send size={11} className="text-gold" />
+            </div>
+            <ul className="space-y-1 text-chocolate-light/65">
+              <li><a href="tel:+919081668490" className="hover:text-berry transition-colors">+91 90816 68490</a></li>
+              <li><a href="tel:+919173183440" className="hover:text-berry transition-colors">+91 91731 83440</a></li>
+              <li className="pt-0.5">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-berry transition-colors text-[12px]">
                   @cake_and_crumb_1
                 </a>
               </li>
             </ul>
           </div>
+        </div>
 
-          {/* Social */}
-          <div>
-            <h4 className="font-heading text-base font-semibold text-chocolate mb-4">Follow Us</h4>
-            <div className="flex gap-3 mb-6">
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-chocolate/5 flex items-center justify-center text-chocolate hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:text-white transition-all duration-500 hover:shadow-lg hover:shadow-pink-500/15 hover:-translate-y-0.5"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-chocolate/5 flex items-center justify-center text-chocolate hover:bg-green-500 hover:text-white transition-all duration-500 hover:shadow-lg hover:shadow-green-500/15 hover:-translate-y-0.5"
-                aria-label="WhatsApp"
-              >
-                <MessageCircle size={18} />
-              </a>
-              <a
-                href="tel:+919081668490"
-                className="w-10 h-10 rounded-xl bg-chocolate/5 flex items-center justify-center text-chocolate hover:bg-chocolate hover:text-cream transition-all duration-500 hover:shadow-lg hover:-translate-y-0.5"
-                aria-label="Phone"
-              >
-                <Phone size={18} />
-              </a>
-            </div>
-            <p className="text-xs text-chocolate-light/35">
-              Vaso, Kheda, Gujarat, India
-            </p>
-          </div>
+        {/* Social row — compact */}
+        <div className="flex items-center justify-center gap-3 mt-8">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="group relative w-10 h-10 rounded-full bg-cream-light border border-gold/30 flex items-center justify-center text-chocolate hover:text-white transition-all duration-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-pink-500/25 overflow-hidden"
+          >
+            <span className="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <Instagram size={15} className="relative z-10" />
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="group relative w-10 h-10 rounded-full bg-cream-light border border-gold/30 flex items-center justify-center text-chocolate hover:text-white transition-all duration-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/25 overflow-hidden"
+          >
+            <span className="absolute inset-0 bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <MessageCircle size={15} className="relative z-10" />
+          </a>
+          <a
+            href="tel:+919081668490"
+            aria-label="Phone"
+            className="group relative w-10 h-10 rounded-full bg-cream-light border border-gold/30 flex items-center justify-center text-chocolate hover:text-cream transition-all duration-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-chocolate/20 overflow-hidden"
+          >
+            <span className="absolute inset-0 bg-chocolate opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <Phone size={15} className="relative z-10" />
+          </a>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-chocolate/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-chocolate-light/35 flex items-center gap-1.5">
-            &copy; {new Date().getFullYear()} Cake & Crumb. Baked with
-            <Heart size={12} className="text-berry fill-berry" />
-            in Vaso.
+      {/* Bottom bar — compact */}
+      <div className="relative mt-8 pt-4 pb-4 border-t border-chocolate/8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-[11px] text-chocolate-light/45 flex items-center gap-1.5 tracking-wide">
+            &copy; {new Date().getFullYear()} Cake <span className="text-gold">&</span> Crumb · Baked with
+            <Heart size={11} className="text-berry fill-berry animate-pulse" />
+            in Vaso
           </p>
           <button
             onClick={scrollToTop}
-            className="group w-10 h-10 rounded-xl bg-chocolate/5 flex items-center justify-center text-chocolate hover:bg-chocolate hover:text-cream transition-all duration-500 hover:-translate-y-1"
             aria-label="Scroll to top"
+            className="group flex items-center gap-2 text-[10px] font-semibold text-chocolate-light/55 hover:text-chocolate tracking-[0.18em] uppercase transition-colors"
           >
-            <ArrowUp size={18} className="group-hover:-translate-y-0.5 transition-transform duration-300" />
+            <span>Back to Top</span>
+            <span className="w-8 h-8 rounded-full bg-cream-light border border-gold/30 flex items-center justify-center group-hover:bg-chocolate group-hover:border-chocolate group-hover:text-cream transition-all duration-500 group-hover:-translate-y-0.5">
+              <ArrowUp size={12} />
+            </span>
           </button>
         </div>
       </div>

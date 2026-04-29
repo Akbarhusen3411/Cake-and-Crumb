@@ -68,13 +68,13 @@ export default function ScheduleStep({ onNext, onBack }) {
                   : 'bg-white text-chocolate-light border-chocolate/8 hover:border-chocolate/20 hover:shadow-md'
               }`}
             >
-              <p className={`text-[10px] font-medium uppercase ${selectedDate === d.date ? 'text-cream/60' : 'text-chocolate-light/40'}`}>
+              <p className={`text-[10px] font-medium uppercase ${selectedDate === d.date ? 'text-cream/60' : 'text-chocolate-light/55'}`}>
                 {d.day}
               </p>
               <p className={`text-xl font-bold ${selectedDate === d.date ? 'text-cream' : 'text-chocolate'}`}>
                 {d.dateNum}
               </p>
-              <p className={`text-[10px] ${selectedDate === d.date ? 'text-cream/60' : 'text-chocolate-light/40'}`}>
+              <p className={`text-[10px] ${selectedDate === d.date ? 'text-cream/60' : 'text-chocolate-light/55'}`}>
                 {d.month}
               </p>
             </button>

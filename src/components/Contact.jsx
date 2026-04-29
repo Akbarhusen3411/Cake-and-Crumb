@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Phone, Instagram, MessageCircle, MapPin, Send, Clock, ArrowUpRight, Sparkles, CheckCircle, Heart } from 'lucide-react'
+import { Phone, Instagram, MessageCircle, MapPin, Send, Clock, ArrowUpRight, CheckCircle, Heart } from 'lucide-react'
 import { WHATSAPP_URL, WHATSAPP_URL_ALT, WHATSAPP_NUMBER, INSTAGRAM_URL } from '../config/constants'
+import SectionHeader from './ui/SectionHeader'
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
@@ -37,72 +38,69 @@ export default function Contact() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Section Header */}
-        <div className="text-center mb-14">
-          <div className="fade-up inline-flex items-center gap-2 mb-4 px-4 py-2 bg-berry/5 border border-berry/10 rounded-full">
-            <Sparkles size={14} className="text-berry" />
-            <span className="text-xs font-medium text-berry tracking-widest uppercase">
-              Get in Touch
-            </span>
-          </div>
-          <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            Let's Create Something
-            <span className="block text-gradient">Sweet Together</span>
-          </h2>
-          <p className="fade-up text-chocolate-light/60 max-w-xl mx-auto text-sm leading-relaxed">
-            Reach out via WhatsApp for the fastest response, or DM us on Instagram.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Get in Touch"
+          title="Let's Create Something"
+          scriptAccent="Sweet Together"
+          description="Reach out via WhatsApp for the fastest response, or DM us on Instagram."
+        />
 
-        {/* Contact Icons with Details — simple inline row */}
-        <div className="fade-up flex flex-wrap justify-center gap-x-10 gap-y-6 sm:gap-x-14 mb-14">
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
-            <div className="w-11 h-11 rounded-full bg-green-500/10 flex items-center justify-center group-hover:bg-green-500 transition-all duration-400 group-hover:shadow-lg group-hover:shadow-green-500/20">
-              <MessageCircle size={20} className="text-green-600 group-hover:text-white transition-colors duration-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-chocolate leading-tight">WhatsApp</p>
-              <p className="text-xs text-chocolate-light/50">+91 90816 68490</p>
+        {/* Contact methods — 3 elegant cards */}
+        <div className="fade-up grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-14 max-w-4xl mx-auto">
+
+          {/* WhatsApp — primary contact */}
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group bg-white rounded-2xl p-5 border border-gold/20 hover:border-green-500/40 hover:shadow-xl hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-500 text-center relative overflow-hidden"
+          >
+            <div className="absolute -top-8 -right-8 w-24 h-24 bg-green-500/8 rounded-full blur-2xl group-hover:bg-green-500/15 transition-all duration-500" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-green-500 group-hover:scale-110 transition-all duration-500">
+                <MessageCircle size={20} className="text-green-600 group-hover:text-white transition-colors duration-500" />
+              </div>
+              <p className="text-[10px] font-bold text-green-600 tracking-[0.2em] uppercase mb-1">WhatsApp · Fastest reply</p>
+              <p className="text-sm font-semibold text-chocolate mb-0.5">+91 90816 68490</p>
+              <p className="text-xs text-chocolate-light/55">
+                Or alt: <a href={WHATSAPP_URL_ALT} target="_blank" rel="noopener noreferrer" className="hover:text-berry transition-colors">+91 91731 83440</a>
+              </p>
             </div>
           </a>
 
-          <a href={WHATSAPP_URL_ALT} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
-            <div className="w-11 h-11 rounded-full bg-green-500/10 flex items-center justify-center group-hover:bg-green-500 transition-all duration-400 group-hover:shadow-lg group-hover:shadow-green-500/20">
-              <MessageCircle size={20} className="text-green-600 group-hover:text-white transition-colors duration-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-chocolate leading-tight">WhatsApp Alt</p>
-              <p className="text-xs text-chocolate-light/50">+91 91731 83440</p>
-            </div>
-          </a>
-
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
-            <div className="w-11 h-11 rounded-full bg-pink-500/10 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-400 group-hover:shadow-lg group-hover:shadow-pink-500/20">
-              <Instagram size={20} className="text-pink-600 group-hover:text-white transition-colors duration-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-chocolate leading-tight">Instagram</p>
-              <p className="text-xs text-chocolate-light/50">@cake_and_crumb_1</p>
+          {/* Phone */}
+          <a
+            href="tel:+919081668490"
+            className="group bg-white rounded-2xl p-5 border border-gold/20 hover:border-gold/60 hover:shadow-xl hover:shadow-gold/15 hover:-translate-y-1 transition-all duration-500 text-center relative overflow-hidden"
+          >
+            <div className="absolute -top-8 -right-8 w-24 h-24 bg-gold/15 rounded-full blur-2xl group-hover:bg-gold/30 transition-all duration-500" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-2xl bg-gold/15 flex items-center justify-center mx-auto mb-3 group-hover:bg-gold group-hover:scale-110 transition-all duration-500">
+                <Phone size={20} className="text-gold group-hover:text-white transition-colors duration-500" />
+              </div>
+              <p className="text-[10px] font-bold text-chocolate tracking-[0.2em] uppercase mb-1">Call Us</p>
+              <p className="text-sm font-semibold text-chocolate mb-0.5">+91 90816 68490</p>
+              <p className="text-xs text-chocolate-light/55">
+                Or alt: <a href="tel:+919173183440" className="hover:text-berry transition-colors">+91 91731 83440</a>
+              </p>
             </div>
           </a>
 
-          <a href="tel:+919081668490" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
-            <div className="w-11 h-11 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold transition-all duration-400 group-hover:shadow-lg group-hover:shadow-gold/20">
-              <Phone size={20} className="text-gold group-hover:text-white transition-colors duration-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-chocolate leading-tight">Call Us</p>
-              <p className="text-xs text-chocolate-light/50">+91 90816 68490</p>
-            </div>
-          </a>
-
-          <a href="tel:+919173183440" className="group flex items-center gap-3 hover:-translate-y-1 transition-all duration-400">
-            <div className="w-11 h-11 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold transition-all duration-400 group-hover:shadow-lg group-hover:shadow-gold/20">
-              <Phone size={20} className="text-gold group-hover:text-white transition-colors duration-400" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-chocolate leading-tight">Alternate</p>
-              <p className="text-xs text-chocolate-light/50">+91 91731 83440</p>
+          {/* Instagram */}
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group bg-white rounded-2xl p-5 border border-gold/20 hover:border-pink-500/40 hover:shadow-xl hover:shadow-pink-500/15 hover:-translate-y-1 transition-all duration-500 text-center relative overflow-hidden"
+          >
+            <div className="absolute -top-8 -right-8 w-24 h-24 bg-pink-500/8 rounded-full blur-2xl group-hover:bg-pink-500/15 transition-all duration-500" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-gradient-to-br group-hover:from-purple-500 group-hover:to-pink-500 group-hover:scale-110 transition-all duration-500">
+                <Instagram size={20} className="text-pink-600 group-hover:text-white transition-colors duration-500" />
+              </div>
+              <p className="text-[10px] font-bold text-pink-600 tracking-[0.2em] uppercase mb-1">Instagram · DM us</p>
+              <p className="text-sm font-semibold text-chocolate mb-0.5">@cake_and_crumb_1</p>
+              <p className="text-xs text-chocolate-light/55">Custom cakes · Daily bakes</p>
             </div>
           </a>
         </div>
@@ -123,9 +121,8 @@ export default function Contact() {
                   { icon: MapPin, label: 'Bakery Location', value: 'Vaso, Kheda, Gujarat 387380', color: 'text-berry' },
                   { icon: Clock, label: 'Order Notice', value: 'Please order 24 hours in advance', color: 'text-gold' },
                   { icon: Heart, label: 'Custom Cakes', value: "DM us your vision — we'll bring it to life", color: 'text-pink-500' },
-                  { icon: MessageCircle, label: 'WhatsApp', value: '+91 90816 68490', color: 'text-green-500' },
-                  { icon: MessageCircle, label: 'WhatsApp', value: '+91 91731 83440', color: 'text-green-500' },
-                ].map((item, i) => {
+                  { icon: MessageCircle, label: 'WhatsApp', value: '+91 90816 68490 · +91 91731 83440', color: 'text-green-500' },
+                ].map((item) => {
                   const Icon = item.icon
                   return (
                     <div key={item.label} className="flex items-start gap-3">
@@ -180,7 +177,7 @@ export default function Contact() {
                     <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
                       focusedField === 'name' || formData.name
                         ? 'top-1.5 text-[10px] text-berry font-medium'
-                        : 'top-3 text-sm text-chocolate-light/35'
+                        : 'top-3 text-sm text-chocolate-light/55'
                     }`}>
                       Your Name
                     </label>
@@ -200,7 +197,7 @@ export default function Contact() {
                     <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
                       focusedField === 'phone' || formData.phone
                         ? 'top-1.5 text-[10px] text-berry font-medium'
-                        : 'top-3 text-sm text-chocolate-light/35'
+                        : 'top-3 text-sm text-chocolate-light/55'
                     }`}>
                       Phone Number
                     </label>
@@ -222,7 +219,7 @@ export default function Contact() {
                   <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
                     focusedField === 'message' || formData.message
                       ? 'top-1.5 text-[10px] text-berry font-medium'
-                      : 'top-3 text-sm text-chocolate-light/35'
+                      : 'top-3 text-sm text-chocolate-light/55'
                   }`}>
                     Cake type, occasion, date...
                   </label>

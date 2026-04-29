@@ -1,62 +1,60 @@
-import { Heart, Cookie, Cherry, Palette, Sparkles } from 'lucide-react'
+import { Heart, Cookie, Cherry, Palette } from 'lucide-react'
 import { whyChooseUs } from '../data/cakes'
+import SectionHeader from './ui/SectionHeader'
 
-const iconMap = {
-  HandHeart: Heart,
-  Cookie: Cookie,
-  Cherry: Cherry,
-  Palette: Palette,
-}
+const iconMap = { HandHeart: Heart, Cookie: Cookie, Cherry: Cherry, Palette: Palette }
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-20 bg-cream relative overflow-hidden wave-divider">
-      {/* Background accents */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-soft-pink/40 rounded-full blur-[100px]" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-gold/10 rounded-full blur-[80px]" />
+    <section className="py-20 sm:py-28 bg-gradient-to-b from-cream to-cream-light relative overflow-hidden">
+      {/* Soft background blurs */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-soft-pink/30 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-gold/12 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="fade-up inline-flex items-center gap-2 mb-4 px-4 py-2 bg-chocolate/5 border border-chocolate/8 rounded-full">
-            <Sparkles size={14} className="text-gold" />
-            <span className="text-xs font-medium text-chocolate-light/60 tracking-widest uppercase">
-              Our Promise
-            </span>
-          </div>
-          <h2 className="fade-up font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-chocolate mt-2 mb-4">
-            Why Choose <span className="font-script text-3xl sm:text-4xl lg:text-5xl">Cake & Crumb</span>
-          </h2>
-          <p className="fade-up text-chocolate-light/60 max-w-xl mx-auto leading-relaxed">
-            We believe every celebration deserves something extraordinary — made with heart, not shortcuts.
-          </p>
-        </div>
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader
+          eyebrow="Our Promise"
+          title="Why Choose"
+          scriptAccent="Cake & Crumb"
+          description="Every celebration deserves something extraordinary — made with heart, not shortcuts."
+        />
 
-        {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Editorial alternating blocks */}
+        <div className="space-y-14 sm:space-y-20 mt-4">
           {whyChooseUs.map((item, index) => {
             const Icon = iconMap[item.icon]
+            const isReversed = index % 2 === 1
             return (
               <div
                 key={index}
-                className="fade-up group text-center p-6 bg-cream-light rounded-2xl card-hover relative overflow-hidden"
-                style={{ transitionDelay: `${index * 120}ms` }}
+                className={`fade-up grid md:grid-cols-12 gap-6 md:gap-12 items-center ${isReversed ? 'md:[direction:rtl]' : ''}`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                {/* Hover gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-soft-pink/0 to-soft-pink/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                <div className="relative">
-                  {/* Step number */}
-                  <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-berry/10 text-berry text-xs font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-soft-pink/80 text-berry mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 group-hover:shadow-lg group-hover:shadow-berry/10">
-                    <Icon size={22} />
+                {/* Numeral block */}
+                <div className="md:col-span-5 md:[direction:ltr]">
+                  <div className="relative inline-flex items-center gap-5 sm:gap-7">
+                    <span className="font-script text-7xl sm:text-8xl lg:text-9xl text-gold/35 leading-none select-none pointer-events-none">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-soft-pink/30 blur-2xl -z-10" />
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cream to-cream-dark/40 border border-gold/20 flex items-center justify-center shadow-sm">
+                      <Icon size={22} className="text-berry" />
+                    </div>
                   </div>
-                  <h3 className="font-heading text-base font-semibold text-chocolate mb-2">
+                </div>
+
+                {/* Text block */}
+                <div className="md:col-span-7 md:[direction:ltr]">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="w-6 h-px bg-gold" />
+                    <span className="text-[10px] font-semibold text-berry tracking-[0.25em] uppercase">
+                      {String(index + 1).padStart(2, '0')} / {String(whyChooseUs.length).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-chocolate mb-3 leading-tight">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-chocolate-light/60 leading-relaxed">
+                  <p className="text-sm sm:text-base text-chocolate-light/65 leading-relaxed max-w-xl">
                     {item.description}
                   </p>
                 </div>

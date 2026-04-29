@@ -29,6 +29,10 @@ export default function Navbar({ onCartClick }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Pages where the top of the page has a dark hero image — navbar should use cream/light text
+  const HERO_OVERLAY_ROUTES = ['/', '/menu']
+  const heroOverlay = !scrolled && HERO_OVERLAY_ROUTES.includes(location.pathname) && !menuOpen
+
   const openMenu = useCallback(() => {
     setMenuVisible(true)
     requestAnimationFrame(() => {
@@ -57,14 +61,16 @@ export default function Navbar({ onCartClick }) {
   }, [])
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'navbar-scrolled py-2' : 'py-3 bg-transparent'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'navbar-scrolled py-2' : heroOverlay ? 'py-3 bg-gradient-to-b from-chocolate/40 via-chocolate/15 to-transparent' : 'py-3 bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group relative z-[110] min-w-0">
           <img src={assetUrl('/images/logo.png')} alt="Cake & Crumb" className="w-10 h-10 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg group-hover:scale-105 transition-transform duration-500 border-2 border-gold/30 shrink-0" />
           <div className="leading-tight min-w-0">
-            <span className="font-script text-lg sm:text-2xl tracking-wide block text-chocolate">Cake <span className="text-berry">&</span> Crumb</span>
-            <span className="font-heading text-[7px] sm:text-[10px] text-chocolate-light/50 italic tracking-wide block truncate">The Gourmet Chocolate & Berry Boutique</span>
+            <span className={`font-script text-lg sm:text-2xl tracking-wide block transition-colors duration-300 ${heroOverlay ? 'text-cream drop-shadow-md' : 'text-chocolate'}`}>
+              Cake <span className="text-gold">&</span> Crumb
+            </span>
+            <span className={`font-heading text-[7px] sm:text-[10px] italic tracking-wide block truncate transition-colors duration-300 ${heroOverlay ? 'text-cream/70' : 'text-chocolate-light/50'}`}>The Gourmet Chocolate & Berry Boutique</span>
           </div>
         </Link>
 
@@ -72,20 +78,22 @@ export default function Navbar({ onCartClick }) {
         <div className="hidden lg:flex items-center gap-7">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to
+            const activeColor = heroOverlay ? 'text-gold after:bg-gold' : 'text-berry after:bg-berry'
+            const inactiveColor = heroOverlay ? 'text-cream/85 hover:text-gold' : 'text-chocolate-light hover:text-berry'
             return (
-              <Link key={link.label} to={link.to} className={`text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-berry after:transition-all after:duration-500 ${isActive ? 'text-berry after:w-full' : 'text-chocolate-light hover:text-berry after:w-0 hover:after:w-full'}`}>
+              <Link key={link.label} to={link.to} className={`text-sm font-medium transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:transition-all after:duration-500 ${isActive ? `${activeColor} after:w-full` : `${inactiveColor} after:w-0 hover:after:w-full ${heroOverlay ? 'after:bg-gold' : 'after:bg-berry'}`}`}>
                 {link.label}
               </Link>
             )
           })}
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-chocolate/15 flex items-center justify-center text-chocolate-light hover:bg-berry hover:border-berry hover:text-white transition-all duration-300" aria-label="Instagram">
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 ${heroOverlay ? 'border-cream/40 text-cream hover:bg-cream hover:border-cream hover:text-chocolate' : 'border-chocolate/15 text-chocolate-light hover:bg-berry hover:border-berry hover:text-white'}`} aria-label="Instagram">
             <Instagram size={16} />
           </a>
-          <button onClick={onCartClick} className="relative w-9 h-9 rounded-full border border-chocolate/15 flex items-center justify-center text-chocolate-light hover:bg-chocolate hover:border-chocolate hover:text-cream transition-all duration-300" aria-label="Cart">
+          <button onClick={onCartClick} className={`relative w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 ${heroOverlay ? 'border-cream/40 text-cream hover:bg-cream hover:border-cream hover:text-chocolate' : 'border-chocolate/15 text-chocolate-light hover:bg-chocolate hover:border-chocolate hover:text-cream'}`} aria-label="Cart">
             <ShoppingBag size={16} />
             {itemCount > 0 && <span className="badge-pop absolute -top-1.5 -right-1.5 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md">{itemCount}</span>}
           </button>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-shimmer bg-chocolate text-cream px-6 py-2.5 rounded-full text-sm font-medium hover:bg-chocolate-light transition-all duration-500 hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2">
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={`btn-shimmer px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-500 hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 ${heroOverlay ? 'bg-cream text-chocolate hover:bg-white' : 'bg-chocolate text-cream hover:bg-chocolate-light'}`}>
             <MessageCircle size={15} />
             Order Now
           </a>
@@ -93,7 +101,7 @@ export default function Navbar({ onCartClick }) {
 
         {/* Mobile: Cart + Hamburger */}
         <div className="lg:hidden flex items-center gap-1 relative z-[110]">
-          <button onClick={onCartClick} className="relative w-10 h-10 flex items-center justify-center text-chocolate" aria-label="Cart">
+          <button onClick={onCartClick} className={`relative w-10 h-10 flex items-center justify-center transition-colors ${heroOverlay ? 'text-cream' : 'text-chocolate'}`} aria-label="Cart">
             <ShoppingBag size={20} />
             {itemCount > 0 && <span className="badge-pop absolute top-0.5 right-0.5 w-5 h-5 bg-berry text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md">{itemCount}</span>}
           </button>
@@ -102,9 +110,9 @@ export default function Navbar({ onCartClick }) {
             className="w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
             aria-label="Toggle menu"
           >
-            <span className={`block w-6 h-[2px] rounded-full bg-chocolate transition-all duration-300 ease-out ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
-            <span className={`block w-6 h-[2px] rounded-full bg-chocolate transition-all duration-200 ${menuOpen ? 'opacity-0 scale-x-0' : ''}`} />
-            <span className={`block w-6 h-[2px] rounded-full bg-chocolate transition-all duration-300 ease-out ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ease-out ${heroOverlay ? 'bg-cream' : 'bg-chocolate'} ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-200 ${heroOverlay ? 'bg-cream' : 'bg-chocolate'} ${menuOpen ? 'opacity-0 scale-x-0' : ''}`} />
+            <span className={`block w-6 h-[2px] rounded-full transition-all duration-300 ease-out ${heroOverlay ? 'bg-cream' : 'bg-chocolate'} ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
           </button>
         </div>
       </div>
@@ -170,7 +178,7 @@ export default function Navbar({ onCartClick }) {
                           : 'text-chocolate active:bg-chocolate/5'
                       }`}
                     >
-                      <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/40'} />
+                      <LinkIcon size={18} className={isActive ? 'text-gold' : 'text-chocolate-light/55'} />
                       <span className="font-heading text-[15px] font-semibold">{link.label}</span>
                       {isActive && <div className="ml-auto w-2 h-2 rounded-full bg-gold" />}
                     </Link>
@@ -193,7 +201,7 @@ export default function Navbar({ onCartClick }) {
                   <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><MessageCircle size={18} /></a>
                   <a href="tel:+919081668490" className="w-10 h-10 rounded-full bg-chocolate/5 flex items-center justify-center text-chocolate-light active:bg-chocolate/10"><Phone size={18} /></a>
                 </div>
-                <div className="flex items-center justify-center gap-1.5 text-chocolate-light/40">
+                <div className="flex items-center justify-center gap-1.5 text-chocolate-light/55">
                   <MapPin size={11} />
                   <span className="text-[11px]">Vaso, Kheda, Gujarat</span>
                 </div>

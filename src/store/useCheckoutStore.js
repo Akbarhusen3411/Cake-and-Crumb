@@ -42,6 +42,11 @@ const useCheckoutStore = create((set) => ({
     paymentStatus: 'claimed',
     upiTxnRef: upiTxnRef || '',
   }),
+  setPaymentCod: () => set({
+    paymentMethod: 'cod',
+    paymentStatus: 'pending',
+    upiTxnRef: '',
+  }),
   setOrderId: (id) => set({ orderId: id }),
 
   reset: () => set({

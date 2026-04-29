@@ -983,7 +983,7 @@ export default function ChatBot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && input.trim()) handleTextInput(input) }}
                 placeholder={orderStep ? 'Type here…' : 'Ask about our menu…'}
-                className="w-full bg-cream-light rounded-full pl-4 pr-3 py-2.5 text-sm text-chocolate outline-none border border-cream-dark/60 focus:border-gold/50 focus:ring-2 focus:ring-gold/15 transition-all placeholder:text-chocolate-light/40"
+                className="w-full bg-cream-light rounded-full pl-4 pr-3 py-2.5 text-sm text-chocolate outline-none border border-cream-dark/60 focus:border-gold/50 focus:ring-2 focus:ring-gold/15 transition-all placeholder:text-chocolate-light/55"
               />
             </div>
             <button

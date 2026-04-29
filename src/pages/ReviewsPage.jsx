@@ -1,13 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
-import Testimonials from '../components/Testimonials'
+import ClientReviewsSlider from '../components/ClientReviewsSlider'
 
 export default function ReviewsPage() {
-  const [searchParams] = useSearchParams()
-  const highlightProduct = searchParams.get('product') || ''
-
   return (
     <div className="pt-20">
-      <Testimonials highlightProduct={highlightProduct} />
+      <ClientReviewsSlider />
     </div>
   )
 }

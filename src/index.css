@@ -105,6 +105,86 @@ body {
 .stagger-children > *:nth-child(5) { transition-delay: 480ms; }
 .stagger-children > *:nth-child(6) { transition-delay: 600ms; }
 
+/* ===== Hero — letter-by-letter intro animation ===== */
+@keyframes hero-letter-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) rotate(8deg) scale(0.85);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ===== Reusable animation utilities (replaces inline style={{ animation: ... }}) ===== */
+.anim-msg-in {
+  animation: chat-msg-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.anim-msg-in-slow {
+  animation: chat-msg-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== Review photo enhancement — sharpens look of low-res customer uploads ===== */
+.review-photo {
+  filter: contrast(1.06) saturate(1.12) brightness(1.02);
+  image-rendering: -webkit-optimize-contrast;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ===== Gallery — Bakery Animations ===== */
+@keyframes gallery-rise {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes gallery-float-y {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-10px) rotate(8deg); }
+}
+@keyframes gallery-float-y-rev {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(8px) rotate(-6deg); }
+}
+.gallery-float       { animation: gallery-float-y 6s ease-in-out infinite; }
+.gallery-float-slow  { animation: gallery-float-y 9s ease-in-out infinite; }
+.gallery-float-reverse { animation: gallery-float-y-rev 7s ease-in-out infinite; }
+
+/* ===== Gallery Marquee — two horizontal scrolling rows ===== */
+@keyframes gallery-marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes gallery-marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+.gallery-marquee {
+  animation: gallery-marquee-left 50s linear infinite;
+}
+.gallery-marquee-reverse {
+  animation: gallery-marquee-right 60s linear infinite;
+}
+
+/* ===== Footer — Bakery Animations ===== */
+@keyframes footer-rise {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes footer-spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.footer-bake-rise { animation: footer-rise 4s ease-in-out infinite; }
+.footer-spin-slow { animation: footer-spin-slow 30s linear infinite; }
+
 /* ===== Card Grid Stagger Entrance ===== */
 @keyframes card-rise {
   from { opacity: 0; transform: translateY(14px); }

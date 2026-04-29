@@ -189,7 +189,7 @@ export default function AddressStep({ onNext }) {
               className={`w-full bg-white border rounded-xl px-4 py-3 text-chocolate text-sm focus:outline-none focus:border-berry/30 focus:ring-2 focus:ring-berry/10 pr-10 ${errors.pincode ? 'border-berry/40' : 'border-chocolate/8'}`}
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              {pincodeStatus === 'loading' && <Loader2 size={16} className="text-chocolate-light/40 animate-spin" />}
+              {pincodeStatus === 'loading' && <Loader2 size={16} className="text-chocolate-light/55 animate-spin" />}
               {pincodeStatus === 'found' && <CheckCircle size={16} className="text-green-500" />}
               {(pincodeStatus === 'not_found' || pincodeStatus === 'not_available') && <XCircle size={16} className="text-berry" />}
             </div>
@@ -286,7 +286,7 @@ export default function AddressStep({ onNext }) {
         )}
 
         {/* Delivery pricing info */}
-        <div className="text-[10px] text-chocolate-light/40 leading-relaxed">
+        <div className="text-[10px] text-chocolate-light/55 leading-relaxed">
           <p>📍 Bakery: {BAKERY_LOCATION}</p>
           <p>🆓 Free delivery within {FREE_RADIUS_KM} km • ₹{RATE_PER_KM}/km after that</p>
         </div>

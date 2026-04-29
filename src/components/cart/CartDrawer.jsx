@@ -214,7 +214,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                           if (pincodeResult) setPincodeResult(null)
                         }}
                         onKeyDown={(e) => e.key === 'Enter' && handlePincodeCheck()}
-                        className="w-24 px-2 py-1 text-xs rounded-lg border border-chocolate/15 bg-white text-chocolate placeholder:text-chocolate-light/35 focus:outline-none focus:border-berry/40"
+                        className="w-24 px-2 py-1 text-xs rounded-lg border border-chocolate/15 bg-white text-chocolate placeholder:text-chocolate-light/55 focus:outline-none focus:border-berry/40"
                       />
                       <button
                         onClick={handlePincodeCheck}
@@ -288,7 +288,7 @@ export default function CartDrawer({ isOpen, onClose, onCheckout }) {
                   </button>
                 </div>
 
-                <p className="text-center text-[10px] text-chocolate-light/40">
+                <p className="text-center text-[10px] text-chocolate-light/55">
                   {pincodeResult && !pincodeResult.error
                     ? 'Estimated fee — final amount confirmed at checkout'
                     : 'Enter pincode above to estimate delivery fee'}

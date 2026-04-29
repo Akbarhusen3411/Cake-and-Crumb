@@ -116,37 +116,7 @@ export const menuCategories = [
   },
 ]
 
-// ─── Featured Cards (for hero-like display) ──────────────
-export const featuredItems = [
-  {
-    id: 1,
-    name: 'Cheesecake Collection',
-    description: '23 handcrafted flavours — from Strawberry to Dubai Special. Banto cakes & slices!',
-    image: img('/images/real-strawberry-cheesecake.jpg'),
-    priceRange: 'From ₹120',
-    badge: 'Bestseller',
-  },
-  {
-    id: 2,
-    name: 'Fresh-Baked Cookies',
-    description: 'Warm, gooey cookies in 7 irresistible flavours. Mix & match your box.',
-    image: img('/images/real-triple-choc-cookies.jpg'),
-    priceRange: 'From ₹50',
-    badge: 'Popular',
-  },
-  {
-    id: 3,
-    name: 'Dessert Cups',
-    description: 'Layered cups of creamy goodness — custard, cheesecake, trifle & more.',
-    image: img('/images/real-biscoff-cups.jpg'),
-    priceRange: 'From ₹80',
-    badge: 'New',
-  },
-]
-
-// ─── Testimonials ────────────────────────────────────────
-// Only real customer reviews from Google Sheet are shown now
-export const testimonials = []
+// Testimonials live in Firestore — see src/hooks/useReviews.js
 
 // ─── Why Choose Us ───────────────────────────────────────
 export const whyChooseUs = [

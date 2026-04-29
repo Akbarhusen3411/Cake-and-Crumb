@@ -32,16 +32,16 @@ export default function CartSummary() {
             <span className="font-medium text-chocolate">₹{deliveryFee}</span>
           )
         ) : (
-          <span className="text-xs text-chocolate-light/40 italic">Calculated at checkout</span>
+          <span className="text-xs text-chocolate-light/55 italic">Calculated at checkout</span>
         )}
       </div>
       {deliveryFee !== null && deliveryFee > 0 && distanceKm > 0 && (
-        <p className="text-[11px] text-chocolate-light/40 text-center">
+        <p className="text-[11px] text-chocolate-light/55 text-center">
           {distanceKm} km from Vaso • ₹{RATE_PER_KM}/km
         </p>
       )}
       {deliveryFee === null && (
-        <p className="text-[11px] text-chocolate-light/40 text-center">
+        <p className="text-[11px] text-chocolate-light/55 text-center">
           Free within {FREE_RADIUS_KM} km • ₹{RATE_PER_KM}/km after
         </p>
       )}
